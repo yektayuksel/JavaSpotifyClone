@@ -4,12 +4,11 @@ import javax.swing.*;
 
 public class LoginScreen extends JFrame
 {
-	LoginPanel loginPanel = new LoginPanel();
-	LoginScreen()
+	LoginScreen(JPanel panel)
 	{
 		
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		this.add(loginPanel);
+		this.add(panel);
 		this.setVisible(true);
 		this.setResizable(false);
 		this.pack();

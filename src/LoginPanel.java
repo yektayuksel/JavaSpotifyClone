@@ -6,24 +6,30 @@ import javax.swing.border.Border;
 public class LoginPanel extends JPanel implements MouseListener
 {
 	Button loginButton = new Button(Button.SHAPE_CAPSULE, Button.VERTICAL, new Color(29,185,84),new Color(29,185,84).brighter(), Color.white, Color.white);
-	
+	Button signButton = new Button(Button.SHAPE_CAPSULE, Button.VERTICAL, new Color(29,185,84),new Color(29,185,84).brighter(), Color.white, Color.white);
    
 	public LoginPanel()
 	{
 		
-	
 		
-		//loginButton.setBackgroundPainted(true);
-		
-		loginButton.setText("GIRIS YAP");
+		loginButton.setText("Log in");
 		loginButton.setBorderThickness(1);
-		loginButton.setFont(new Font("Consolas", Font.BOLD, 50));
+		loginButton.setFont(new Font("Consolas", Font.PLAIN, 30));
 		loginButton.setForeground(Color.white);
 		loginButton.setFocusable(false);
 		loginButton.addMouseListener(this);
-		loginButton.setBounds(1280/2-250, 720/2+75, 500,150);
+		loginButton.setBounds(400, 720/2+75, 180,80);
+		
+		signButton.setText("Sign in");
+		signButton.setBorderThickness(1);
+		signButton.setFont(new Font("Consolas", Font.PLAIN, 30));
+		signButton.setForeground(Color.white);
+		signButton.setFocusable(false);
+		signButton.addMouseListener(this);
+		signButton.setBounds(700, 720/2+75, 180,80);
 		
 		this.add(loginButton);
+		this.add(signButton);
 		this.setLayout(new BorderLayout());
 		this.setPreferredSize(new Dimension(1280,720));
 	}
@@ -42,7 +48,13 @@ public class LoginPanel extends JPanel implements MouseListener
 	}
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
+	if(e.getSource() == loginButton)
+	{
+		new LoginScreen(new UserTypePanel());
+		((Window) getRootPane().getParent()).dispose();
+		
+	}
+		
 		
 	}
 	@Override
