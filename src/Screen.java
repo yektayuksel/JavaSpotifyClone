@@ -2,9 +2,10 @@ import java.awt.*;
 import javax.swing.*;
 
 
-public class LoginScreen extends JFrame
+public class Screen extends JFrame
+
 {
-	LoginScreen(JPanel panel)
+	Screen(JPanel panel)
 	{
 		
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
