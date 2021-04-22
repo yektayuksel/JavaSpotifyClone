@@ -5,6 +5,7 @@ import javax.swing.*;
 public class SignInPanel extends JPanel implements MouseListener
 {
 	JTextField userNameText;
+	JTextField passwordText;
 	JButton premiumButton;
 	JButton freeButton;
 	SignInPanel()
@@ -13,9 +14,15 @@ public class SignInPanel extends JPanel implements MouseListener
 		userNameText = new JTextField();
 		userNameText.setBounds(1280/2-250, 400, 500,50);
 		userNameText.setFont(new Font("Consolas", Font.BOLD, 30));
+		userNameText.setText("Username");
+		
+		passwordText = new JTextField();
+		passwordText.setBounds(1280/2-250, 480, 500,50);
+		passwordText.setFont(new Font("Consolas", Font.BOLD, 30));
+		passwordText.setText("Password");
 		
 		premiumButton = new JButton();
-		premiumButton.setBounds(400, 500, 180,80);
+		premiumButton.setBounds(400, 580, 180,80);
 		premiumButton.setFont(new Font("Consolas", Font.BOLD, 30));
 		premiumButton.setForeground(Color.white);
 		premiumButton.setText("Premium");
@@ -24,7 +31,7 @@ public class SignInPanel extends JPanel implements MouseListener
 		premiumButton.addMouseListener(this);
 		
 		freeButton = new JButton();
-		freeButton.setBounds(700, 500, 180,80);
+		freeButton.setBounds(700, 580, 180,80);
 		freeButton.setFont(new Font("Consolas", Font.BOLD, 30));
 		freeButton.setForeground(Color.white);
 		freeButton.setText("Free");
@@ -34,6 +41,7 @@ public class SignInPanel extends JPanel implements MouseListener
 		
 		
 		this.add(userNameText);
+		this.add(passwordText);
 		this.add(premiumButton);
 		this.add(freeButton);
 		this.setLayout(new BorderLayout());
@@ -47,19 +55,21 @@ public class SignInPanel extends JPanel implements MouseListener
 		Image spotifyLogo = new ImageIcon("images\\SpotifyLogo.png").getImage();
 		g2D.drawImage(spotifyLogo, (1280-800)/2, (720-540)/2, 800,240,null);
 	}
-	public void mousePressed(MouseEvent e) {
+	public void mousePressed(MouseEvent e) 
+	{
 		
+		String userName = userNameText.getText();
+		String password = passwordText.getText();
 		if(e.getSource() == premiumButton)
 		{
-			String userName = userNameText.getText();
-			//Database'e kullanýcý adý buradan alýancak.
+			
+			//Database'e kullanýcý adý ve þifresi buradan alýancak.
 			//Kullanýcý premium olarak eklencek
 			new Screen(new UserTypePanel());
 		}
 		else if(e.getSource() == freeButton)
 		{
-			String userName = userNameText.getText();
-			//Database'e kullanýcý adý buradan alýnacak.
+			//Database'e kullanýcý adý ve þifresi buradan alýnacak.
 			//Kullanýcý free olarak eklenecek
 			new Screen(new UserTypePanel());
 			
