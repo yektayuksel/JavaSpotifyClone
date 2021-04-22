@@ -72,9 +72,18 @@ public class UserTypePanel extends JPanel implements MouseListener
 		}
 		else if(e.getSource() == admin)
 		{
-			new Screen(new AdminPanel());
+			String password = JOptionPane.showInputDialog("Enter Your Password");
+			//þifre admin þifresi mi kontrol et ve alttaki kodu çalýþtýr.
+			//þifre yanlýþsa uyarý ver ve bu ekranda kalsýn.
+			if(password != null)
+			{
+				new Screen(new AdminPanel());
+				((Window) getRootPane().getParent()).dispose();
+			}
+			
+			
 		}
-		((Window) getRootPane().getParent()).dispose();
+		
 	}
 	@Override
 	public void mouseReleased(MouseEvent e) {
