@@ -45,7 +45,7 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		setAlbumCoverLabel();
 		initButtonImgs();
 		initButtons();
-		
+		System.out.println("selam");
 		
 		
 		
