@@ -46,11 +46,7 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		setAlbumCoverLabel();
 		initButtonImgs();
 		initButtons();
-<<<<<<< HEAD
-=======
-	
-		
->>>>>>> 91cb6dceca205ea19da663676967c950ca14da75
+
 		
 		progressBar = new JProgressBar();
 		//progressBar.setBackground(Color.black);
@@ -176,7 +172,7 @@ public class FreeUserPanel extends JPanel implements MouseListener
 	    g2.dispose();
 	    return resizedImg;
 	}
-	public void setAlbumCoverLabel() //Duzenlendiðinde parametre olarak Image AlbumCover alacak
+	public void setAlbumCoverLabel() //DuzenlendiÃ°inde parametre olarak Image AlbumCover alacak
 	{
 		albumCoverLabel = new JLabel();
 		albumCoverLabel.setBackground(Color.white);
@@ -196,7 +192,7 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		{
 			if(playButtonID == 0)
 			{
-				//Þarký oynamaya baþlar
+				//Ã�arkÃ½ oynamaya baÃ¾lar
 				playButton.setIcon((new ImageIcon(getScaledImage(pauseButtonImg1.getImage(), BUTTON_SIZE, BUTTON_SIZE))));
 				playButton.setPressedIcon((new ImageIcon(getScaledImage(pauseButtonImg2.getImage(), BUTTON_SIZE, BUTTON_SIZE))));
 				playButtonID = 1;
@@ -204,7 +200,7 @@ public class FreeUserPanel extends JPanel implements MouseListener
 			else if(playButtonID == 1)
 			{
 				
-				//Þarký durdurulur
+				//Ã�arkÃ½ durdurulur
 				playButton.setIcon((new ImageIcon(getScaledImage(playButtonImg1.getImage(), BUTTON_SIZE, BUTTON_SIZE))));
 				playButton.setPressedIcon((new ImageIcon(getScaledImage(playButtonImg2.getImage(), BUTTON_SIZE, BUTTON_SIZE))));
 				playButtonID = 0;
