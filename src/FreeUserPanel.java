@@ -19,6 +19,7 @@ public class FreeUserPanel extends JPanel implements MouseListener
 	JButton backwardButton;
 	JButton fastforwardButton;
 	JButton fastbackwardButton;
+	final int BUTTON_SIZE = 50;
 	
 	ImageIcon playButtonImg1;
 	ImageIcon pauseButtonImg1;
@@ -33,7 +34,7 @@ public class FreeUserPanel extends JPanel implements MouseListener
 	ImageIcon forwardButtonImg2;
 	ImageIcon backwardButtonImg2;
 	
-	final int BUTTON_SIZE = 50;
+	JProgressBar progressBar;
 	
 	
 	
@@ -45,11 +46,13 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		setAlbumCoverLabel();
 		initButtonImgs();
 		initButtons();
-		System.out.println("selam");
 		
-		
+		progressBar = new JProgressBar();
+		//progressBar.setBackground(Color.black);
+		progressBar.setBounds(550+180-225,100,450,20);
 		
 		bottomPanel.add(albumCoverLabel);
+		bottomPanel.add(progressBar);
 		this.add(leftPanel);
 		this.add(middlePanel);
 		this.add(bottomPanel);
@@ -106,7 +109,7 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		playButton.setIcon((new ImageIcon(getScaledImage(playButtonImg1.getImage(), BUTTON_SIZE, BUTTON_SIZE))));
 		playButton.setPressedIcon((new ImageIcon(getScaledImage(playButtonImg2.getImage(), BUTTON_SIZE, BUTTON_SIZE))));
 		playButton.setFocusable(false);
-		playButton.setBounds(550+180-25,20,BUTTON_SIZE,BUTTON_SIZE);
+		playButton.setBounds(705,20,BUTTON_SIZE,BUTTON_SIZE);
 		playButtonID = 0;
 		playButton.addMouseListener(this);
 		bottomPanel.add(playButton);
@@ -119,7 +122,7 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		forwardButton.setIcon((new ImageIcon(getScaledImage(forwardButtonImg1.getImage(), BUTTON_SIZE, BUTTON_SIZE))));
 		forwardButton.setPressedIcon((new ImageIcon(getScaledImage(forwardButtonImg2.getImage(), BUTTON_SIZE, BUTTON_SIZE))));
 		forwardButton.setFocusable(false);
-		forwardButton.setBounds(550+180-50+100+50+20,20,BUTTON_SIZE,BUTTON_SIZE);
+		forwardButton.setBounds(835,20,BUTTON_SIZE,BUTTON_SIZE);
 		forwardButton.addMouseListener(this);
 		bottomPanel.add(forwardButton);
 		
@@ -130,7 +133,7 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		backwardButton.setIcon((new ImageIcon(getScaledImage(backwardButtonImg1.getImage(), BUTTON_SIZE, BUTTON_SIZE))));
 		backwardButton.setPressedIcon((new ImageIcon(getScaledImage(backwardButtonImg2.getImage(), BUTTON_SIZE, BUTTON_SIZE))));
 		backwardButton.setFocusable(false);
-		backwardButton.setBounds(550+180-170,20,BUTTON_SIZE,BUTTON_SIZE);
+		backwardButton.setBounds(575,20,BUTTON_SIZE,BUTTON_SIZE);
 		backwardButton.addMouseListener(this);
 		bottomPanel.add(backwardButton);
 		
@@ -140,7 +143,7 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		fastforwardButton.setBorderPainted(false);
 		fastforwardButton.setIcon((new ImageIcon(getScaledImage(fastforwardButtonImg.getImage(), 45, 45))));
 		fastforwardButton.setFocusable(false);
-		fastforwardButton.setBounds(550+180-50+100,23,45,45);
+		fastforwardButton.setBounds(770,23,45,45);
 		fastforwardButton.addMouseListener(this);
 		bottomPanel.add(fastforwardButton);
 		
@@ -151,7 +154,7 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		fastbackwardButton.setBorderPainted(false);
 		fastbackwardButton.setIcon((new ImageIcon(getScaledImage(fastbackwardButtonImg.getImage(), 45, 45))));
 		fastbackwardButton.setFocusable(false);
-		fastbackwardButton.setBounds(550+180-90,23,45,45);
+		fastbackwardButton.setBounds(645,23,45,45);
 		fastbackwardButton.addMouseListener(this);
 		bottomPanel.add(fastbackwardButton);
 		
