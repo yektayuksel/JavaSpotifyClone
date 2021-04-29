@@ -7,6 +7,7 @@ public class SpotifyDB
 {
 	
 	
+	
 	SpotifyDB() throws ClassNotFoundException
 	{
 		
@@ -40,6 +41,20 @@ public class SpotifyDB
 	}
 	
 	
+	public static void addArtist(String artistName, String country)
+	{
+		
+		Connection conn = getConnection(); 
+		try 
+		{
+			PreparedStatement addartst = conn.prepareStatement("INSERT INTO artist (ArtistName,Country) VALUES('"+artistName+"','"+country+"')");
+			addartst.executeUpdate();
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+	}
 	
 	   
 	  

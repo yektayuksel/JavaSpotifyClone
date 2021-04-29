@@ -126,6 +126,7 @@ public class ArtistSettings extends JPanel implements MouseListener
 		if(e.getSource() == addButton)
 		{
 			//artist tablosuna gerekli verilerle yeni eleman ekle
+			SpotifyDB.addArtist(artistToAddName, artistToAddCountry);
 		}
 		else if(e.getSource() == deleteButton)
 		{
