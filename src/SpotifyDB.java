@@ -6,17 +6,27 @@ import com.mysql.cj.xdevapi.Statement;
 public class SpotifyDB 
 {
 	
-	static Connection conn;
+	
 	SpotifyDB() throws ClassNotFoundException
 	{
+		
+	}
+	
+	public void createTable() throws SQLException, ClassNotFoundException
+	{
+		
+	}
+	public static Connection getConnection()
+	{
+		Connection conn;
 		try
 	    {
 	      // create our mysql database connection
-	      //String myDriver = "com.mysql.cj.jdbc.Driver";
-	      String myUrl = "jdbc:mysql://localhost:3306/sql_spotify";
-	      //Class.forName(myDriver);
-	      conn = DriverManager.getConnection(myUrl, "root", "malcanus12");
-	      
+	      String myDriver = "com.mysql.cj.jdbc.Driver";
+	      String url = "jdbc:mysql://localhost:3306/spotify_db";
+	      Class.forName(myDriver);
+	      conn = DriverManager.getConnection(url, "root", "malcanus12");
+	      return conn;
 	      // our SQL SELECT query. 
 	      // if you only need a few columns, specify them by name instead of using "*"
 	     
@@ -26,36 +36,9 @@ public class SpotifyDB
 	      System.err.println("Got an exception! ");
 	      System.err.println(e.getMessage());
 	    }
+		 return null;
 	}
 	
-	public void createTable() throws SQLException, ClassNotFoundException
-	{
-		
-	}
-	public void viewTable() throws SQLException {
-		 String query = "SELECT * FROM sarki";
-
-	      // create the java statement
-	      java.sql.Statement st = conn.createStatement();
-	      
-	      // execute the query, and get a java resultset
-	      ResultSet rs = ((java.sql.Statement) st).executeQuery(query);
-	      
-	      // iterate through the java resultset
-	      while (rs.next())
-	      {
-	        int SarkiID = rs.getInt("SarkiID");
-	        int SanatciID = rs.getInt("SarkiID");
-	        int AlbumID = rs.getInt("SarkiID");
-	        String tarih = rs.getString("tarih");
-	        String Tur = rs.getString("Tur");
-	        int sure = rs.getInt("sure");
-	        int dinlenmeSayisi = rs.getInt("dinlenmeSayisi");
-	        // print the results
-	        System.out.format("%d, %d, %d, %s, %s,  %d, %d \n", SarkiID, SanatciID, AlbumID,  tarih, Tur, sure, dinlenmeSayisi);
-	      }
-	    st.close();
-	  }
 	
 	
 	   
