@@ -21,8 +21,9 @@ public class AdminPanel extends JPanel implements MouseListener
 	{
 		this.setBackground(new Color(33,33,33));
 		buttonTexts.add("Artist Settings");
-		buttonTexts.add("Song Settings");
 		buttonTexts.add("Album Settings");
+		buttonTexts.add("Song Settings");
+		
 		
 		
 		
@@ -72,15 +73,26 @@ public class AdminPanel extends JPanel implements MouseListener
     {
 		
 		
-		/*if(e.getSource() == loginButton)
+		
+		JButton button = (JButton)e.getSource();
+		if(button.getText().equals("Artist Settings"))
 		{
-			//Kullanýcýyý kontrol et ve premium veya free kullanýcý olmasýna göre aksiyon al
+			new Screen(new ArtistSettings());
 		}
-		((Window) getRootPane().getParent()).dispose();*/
+		else if(button.getText().equals("Song Settings"))
+		{
+			new Screen(new SongSettings());
+		}
+		else if(button.getText().equals("Album Settings"))
+		{
+			new Screen(new AlbumSettings());
+		}
+		((Window) getRootPane().getParent()).dispose();
 	}
 	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
+	public void mouseReleased(MouseEvent e) 
+	{
+		
 		
 	}
 	@Override
