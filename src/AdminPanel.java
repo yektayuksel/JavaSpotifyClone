@@ -20,7 +20,7 @@ public class AdminPanel extends JPanel implements MouseListener
 	AdminPanel()
 	{
 		this.setBackground(new Color(33,33,33));
-		buttonTexts.add("Musician Settings");
+		buttonTexts.add("Artist Settings");
 		buttonTexts.add("Song Settings");
 		buttonTexts.add("Album Settings");
 		

@@ -16,19 +16,12 @@ public class LoginPanel extends JPanel implements MouseListener
 	JButton loginButton;
 	JTextField userNameText;
 	JTextField passwordText;
+	JTextField emailText;
 	LoginPanel()
 	{
 		this.setBackground(new Color(33,33,33));
 		
-		userNameText = new JTextField();
-		userNameText.setBounds(1280/2-250, 400, 500,50);
-		userNameText.setFont(new Font("Consolas", Font.BOLD, 30));
-		userNameText.setText("Username");
-		
-		passwordText = new JTextField();
-		passwordText.setBounds(1280/2-250, 480, 500,50);
-		passwordText.setFont(new Font("Consolas", Font.BOLD, 30));
-		passwordText.setText("Password");
+		initTextFields();
 		
 		loginButton = new JButton();
 		loginButton.setBounds(1280/2-100, 580, 200, 75);
@@ -44,8 +37,27 @@ public class LoginPanel extends JPanel implements MouseListener
 		this.add(loginButton);
 		this.add(userNameText);
 		this.add(passwordText);
+		this.add(emailText);
 		this.setLayout(new BorderLayout());
 		this.setPreferredSize(new Dimension(1280,720));
+	}
+	private void initTextFields()
+	{
+		userNameText = new JTextField();
+		userNameText.setBounds(1280/2-250, 350, 500,50);
+		userNameText.setFont(new Font("Consolas", Font.BOLD, 30));
+		userNameText.setText("Username");
+		
+		passwordText = new JTextField();
+		passwordText.setBounds(1280/2-250, 430, 500,50);
+		passwordText.setFont(new Font("Consolas", Font.BOLD, 30));
+		passwordText.setText("Password");
+		
+		emailText = new JTextField();
+		emailText.setBounds(1280/2-250, 510, 500,50);
+		emailText.setFont(new Font("Consolas", Font.BOLD, 30));
+		emailText.setText("Email");
+		
 	}
 	public void paintComponent(Graphics g)
 	{
@@ -62,6 +74,7 @@ public class LoginPanel extends JPanel implements MouseListener
 		{
 			//Kullanýcý adý ve þifreyi kontrol et
 			//premium veya free kullanýcý olmasýna göre aksiyon al
+			new Screen(new FreeUserPanel());
 		}
 		((Window) getRootPane().getParent()).dispose();
 	}

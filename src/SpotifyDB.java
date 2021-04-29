@@ -1,5 +1,5 @@
 import java.sql.*;
-
+import java.util.ArrayList;
 
 import com.mysql.cj.xdevapi.Statement;
 
@@ -57,10 +57,7 @@ public class SpotifyDB
 	    st.close();
 	  }
 	
-	public ArrayList<String> getAlbumNames(String SanatciAdi)
-	{
-		String query = "SELECT AlbumAdi FROM Sanatci S, Album A Where S.SanatciID = A.SanatciID and S.SanatciAdi = " + SanatciAdi;
-	}
+	
 	   
 	  
 	

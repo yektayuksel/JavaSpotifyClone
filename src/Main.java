@@ -20,9 +20,9 @@ public class Main
 		//new Screen(new OpeningPanel());
 		//new Screen(new AdminPanel());
 		//new Screen(new FreeUserPanel());
-		SpotifyDB db = new SpotifyDB();
-		//db.createTable();
-		db.viewTable();
+		//new Screen(new SignInPanel());
+		//new Screen(new LoginPanel());
+		new Screen(new SongSettings());
 
 		
 		 
