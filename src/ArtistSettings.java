@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -126,7 +127,12 @@ public class ArtistSettings extends JPanel implements MouseListener
 		if(e.getSource() == addButton)
 		{
 			//artist tablosuna gerekli verilerle yeni eleman ekle
-			SpotifyDB.addArtist(artistToAddName, artistToAddCountry);
+			try {
+				SpotifyDB.addArtist(artistToAddName, artistToAddCountry);
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 		else if(e.getSource() == deleteButton)
 		{

@@ -119,7 +119,7 @@ public class SpotifyDB
 	public static ResultSet getPlaylist(String userID, String genre) throws SQLException
 	{
 		Connection conn = getConnection(); 
-		String query = "SELECT s.SongName, s.album, s.genre FROM song as s,playlist as p WHERE s.genre = '" + genre + "'and p.genre = '" + genre + "'and s.SongID = p.SongID and p.userID = " + userID;
+		String query = "SELECT s.SongName FROM song as s,playlist as p WHERE s.genre = '" + genre + "'and p.genre = '" + genre + "'and s.SongID = p.SongID and p.userID = " + userID + ";";
 		Statement st = conn.createStatement();
 		ResultSet rs = st.executeQuery(query);
 		return rs;

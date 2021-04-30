@@ -163,8 +163,6 @@ public class SongSettings extends JPanel implements MouseListener
 			new Screen(new AlbumSettings());
 			((Window) getRootPane().getParent()).dispose();
 		}
-			
-		
 	}
 
 	@Override

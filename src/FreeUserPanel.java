@@ -3,6 +3,8 @@ import java.awt.event.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.swing.*;
 
@@ -52,7 +54,12 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		setAlbumCoverLabel();
 		initButtonImgs();
 		initButtons();
-		addMiddleLabels();
+		try {
+			addMiddleLabels();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		progressBar = new JProgressBar();
 		progressBar.setBounds(BUTTON_LOCATION_X-30,BUTTON_LOCATION_Y+50,350,15);
@@ -190,6 +197,8 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		label.setBounds(x, y, w, h);
 		label.setBackground(defaultBackground);
 		label.addMouseListener(this);
+		label.setFont(new Font("Consolas", Font.BOLD, 30));
+		label.setForeground(Color.white);
 		label.setOpaque(true);
 		label.setBorder(BorderFactory.createLineBorder(Color.white));
 		//Label text'i database'den cekilecek ve label uzerine yazılacak.
@@ -197,14 +206,29 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		return label;
 	}
 	
-	public void addMiddleLabels()
+	public void addMiddleLabels() throws SQLException
 	{
 		
-		for(int i = 0; i < 10; i++)
-		{
-			JLabel label = createLabel(0,i*55,MIDDLE_LABEL_WIDTH,MIDDLE_LABEL_HEIGHT);
-			middlePanel.add(label);
-		}
+		
+		
+			
+			ResultSet rs = SpotifyDB.getPlaylist("1", "jazz");
+			
+			for(int i = 0;rs.next(); i++)
+			{
+				JLabel label = createLabel(0,i*55,MIDDLE_LABEL_WIDTH,MIDDLE_LABEL_HEIGHT);
+				label.setText(rs.getString("SongName"));
+				middlePanel.add(label);
+				
+			}
+			
+		
+	}
+	
+	public void addLeftLabels() throws SQLException
+	{
+		
+		
 	}
 	@Override
 	public void mousePressed(MouseEvent e) 
