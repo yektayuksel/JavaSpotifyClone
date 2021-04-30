@@ -135,6 +135,14 @@ public class SpotifyDB
 		return rs.getString("ArtistName");
 	}
 	
+	public static String getUserID(String userName) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		String query = "SELECT userID FROM user WHERE userName = " + userName;
+		Statement st = conn.createStatement();
+		ResultSet rs = st.executeQuery(query);
+		return rs.getString("userName");
+	}
 	
 	   
 	  

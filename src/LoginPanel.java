@@ -8,6 +8,7 @@ import java.awt.Image;
 import java.awt.Window;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.sql.SQLException;
 
 import javax.swing.*;
 
@@ -74,7 +75,16 @@ public class LoginPanel extends JPanel implements MouseListener
 		{
 			//Kullanýcý adý ve þifreyi kontrol et
 			//premium veya free kullanýcý olmasýna göre aksiyon al
-			new Screen(new FreeUserPanel());
+			String userName = userNameText.getText();
+			String ID;
+			try {
+				ID = SpotifyDB.getUserID(userName);
+				new Screen(new FreeUserPanel(ID));
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
 		}
 		((Window) getRootPane().getParent()).dispose();
 	}

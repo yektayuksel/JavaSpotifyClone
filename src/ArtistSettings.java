@@ -129,6 +129,7 @@ public class ArtistSettings extends JPanel implements MouseListener
 			//artist tablosuna gerekli verilerle yeni eleman ekle
 			try {
 				SpotifyDB.addArtist(artistToAddName, artistToAddCountry);
+				
 			} catch (SQLException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();

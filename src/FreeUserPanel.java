@@ -45,9 +45,10 @@ public class FreeUserPanel extends JPanel implements MouseListener
 	Color pressedColor = defaultBackground.darker();
 	Color eneteredColor = defaultBackground.brighter();
 	
-	
-	FreeUserPanel()
+	String userID;
+	FreeUserPanel(String ID)
 	{
+		userID = ID;
 		this.setLayout(null);
 		this.setBackground(new Color(33,33,33));
 		initPanels();
@@ -212,14 +213,10 @@ public class FreeUserPanel extends JPanel implements MouseListener
 			
 			for(int i = 0;rs.next(); i++)
 			{
-				
 				JLabel label = createLabel(0,i*55,MIDDLE_LABEL_WIDTH,MIDDLE_LABEL_HEIGHT);
 				label.setText( rs.getString("SongName") + " " + rs.getString("ArtistName") + " " + rs.getString("duration") );
 				middlePanel.add(label);
-				
 			}
-			
-		
 	}
 	
 	public void addLeftLabels() throws SQLException
