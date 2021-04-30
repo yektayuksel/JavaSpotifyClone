@@ -208,16 +208,13 @@ public class FreeUserPanel extends JPanel implements MouseListener
 	
 	public void addMiddleLabels() throws SQLException
 	{
-		
-		
-		
-			
 			ResultSet rs = SpotifyDB.getPlaylist("1", "jazz");
 			
 			for(int i = 0;rs.next(); i++)
 			{
+				
 				JLabel label = createLabel(0,i*55,MIDDLE_LABEL_WIDTH,MIDDLE_LABEL_HEIGHT);
-				label.setText(rs.getString("SongName"));
+				label.setText( rs.getString("SongName") + " " + rs.getString("ArtistName") + " " + rs.getString("duration") );
 				middlePanel.add(label);
 				
 			}
