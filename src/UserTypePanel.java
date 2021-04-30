@@ -68,6 +68,7 @@ public class UserTypePanel extends JPanel implements MouseListener
 		if(e.getSource() == user)
 		{
 			new Screen(new LoginPanel());
+			((Window) getRootPane().getParent()).dispose();
 			
 		}
 		else if(e.getSource() == admin)

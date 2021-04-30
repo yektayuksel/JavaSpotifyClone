@@ -1,7 +1,9 @@
 import java.sql.*;
 import java.util.ArrayList;
 
-import com.mysql.cj.xdevapi.Statement;
+import javax.swing.JOptionPane;
+
+
 
 public class SpotifyDB 
 {
@@ -41,10 +43,22 @@ public class SpotifyDB
 	}
 	
 	
-	public static void addArtist(String artistName, String country)
+	public static void addArtist(String artistName, String country) throws SQLException
 	{
 		
+		
 		Connection conn = getConnection(); 
+		
+
+		String query = "SELECT ArtistName, Country FROM artist WHERE ArtistName =" + artistName + " and Country = " + country;
+		Statement st = conn.createStatement();
+		ResultSet rs = st.executeQuery(query);
+		if(rs.next())
+		{
+			JOptionPane.showMessageDialog(null, "This singer already exists", "Warning", JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+			
 		try 
 		{
 			PreparedStatement addartst = conn.prepareStatement("INSERT INTO artist (ArtistName,Country) VALUES('"+artistName+"','"+country+"')");
@@ -83,13 +97,17 @@ public class SpotifyDB
 			e.printStackTrace();
 		}
 	}
-	public static void addToPlaylist(String songID, String genre)
+	public static void addToPlaylist(String userID, String SongID) throws SQLException
 	{
 		
 		Connection conn = getConnection(); 
+		
+		String query = "SELECT genre FROM song WHERE SongID = " + SongID;
+		Statement st = conn.createStatement();
+		ResultSet rs = st.executeQuery(query);
 		try 
 		{
-			PreparedStatement addtoplaylst = conn.prepareStatement("INSERT INTO song (SongID,genre) VALUES('"+songID+"','"+genre+"')");
+			PreparedStatement addtoplaylst = conn.prepareStatement("INSERT INTO playlist (userID,SongID,genre) VALUES('"+userID+"','"+SongID+"','"+rs.getString("genre")+"')");
 			addtoplaylst.executeUpdate();
 		}
 		catch (Exception e) 
@@ -97,6 +115,16 @@ public class SpotifyDB
 			e.printStackTrace();
 		}
 	}
+	
+	public static ResultSet getPlaylist(String userID, String genre) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		String query = "SELECT s.SongName, s.album, s.genre FROM song as s,playlist as p WHERE s.genre = '" + genre + "'and p.genre = '" + genre + "'and s.SongID = p.SongID and p.userID = " + userID;
+		Statement st = conn.createStatement();
+		ResultSet rs = st.executeQuery(query);
+		return rs;
+	}
+	
 	
 	   
 	  

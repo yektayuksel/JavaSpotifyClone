@@ -19,7 +19,7 @@ public class Main
 		
 		new Screen(new OpeningPanel());
 		//new Screen(new AdminPanel());
-		new Screen(new FreeUserPanel());
+		//new Screen(new FreeUserPanel());
 		//new Screen(new SignInPanel());
 		//new Screen(new LoginPanel());
 		//new Screen(new SongSettings());
