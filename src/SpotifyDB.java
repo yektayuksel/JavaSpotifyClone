@@ -55,6 +55,48 @@ public class SpotifyDB
 			e.printStackTrace();
 		}
 	}
+	public static void addAlbum(String albumName, String artistID, String releaseDate, String genre)
+	{
+		
+		Connection conn = getConnection(); 
+		try 
+		{
+			PreparedStatement addalbum = conn.prepareStatement("INSERT INTO album (AlbumName,ArtistID,releaseDate,genre) VALUES('"+albumName+"','"+artistID+"','"+releaseDate+"','"+genre+"')");
+			addalbum.executeUpdate();
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+	}
+	public static void addSong(String songName, String artistID, String albumID, String genre, String duration, String releaseDate)
+	{
+		
+		Connection conn = getConnection(); 
+		try 
+		{
+			PreparedStatement addsong = conn.prepareStatement("INSERT INTO song (SongName,ArtistID,AlbumID,genre,duration,releaseDate) VALUES('"+songName+"','"+artistID+"','"+albumID+"','"+genre+"','"+duration+"','"+releaseDate+"')");
+			addsong.executeUpdate();
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+	}
+	public static void addToPlaylist(String songID, String genre)
+	{
+		
+		Connection conn = getConnection(); 
+		try 
+		{
+			PreparedStatement addtoplaylst = conn.prepareStatement("INSERT INTO song (SongID,genre) VALUES('"+songID+"','"+genre+"')");
+			addtoplaylst.executeUpdate();
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+	}
 	
 	   
 	  

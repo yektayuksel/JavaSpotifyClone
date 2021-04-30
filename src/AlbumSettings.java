@@ -154,12 +154,14 @@ public class AlbumSettings extends JPanel implements MouseListener
 	@Override
 	public void mousePressed(MouseEvent e) 
 	{
+		
 		if(e.getSource() == addButton)
 		{
-			String artistName = (String) artistNameBox.getSelectedItem();
+			String artistID = (String) artistNameBox.getSelectedItem();
 			String albumName = albumNameTxt.getText();
-			String relaseDate  = relaseDateTxt.getText();
+			String releaseDate  = relaseDateTxt.getText();
 			String genre = genreTxt.getText();
+			SpotifyDB.addAlbum(albumName, artistID,releaseDate,genre);
 		}
 		else if(e.getSource() == deleteButton)
 		{
