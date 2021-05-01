@@ -119,7 +119,6 @@ public class SpotifyDB
 	public static ResultSet getPlaylist(String userID, String genre) throws SQLException
 	{
 		Connection conn = getConnection(); 
-		//SELECT s.SongName, s.SongID, a.ArtistName FROM song as s,playlist as p, artist as a WHERE s.genre = 'jazz'and p.genre = s.genre and s.SongID = p.SongID and p.userID = 1 and s.ArtistID = a.ArtistID;
 		String query = "SELECT s.SongName, s.duration, a.ArtistName FROM song as s,playlist as p,artist as a WHERE s.genre = '" + genre + "'and p.genre = '" + genre + "'and s.SongID = p.SongID and p.userID = " + userID + " and s.ArtistID = a.ArtistID;";
 		Statement st = conn.createStatement();
 		ResultSet rs = st.executeQuery(query);
@@ -135,14 +134,67 @@ public class SpotifyDB
 		return rs.getString("ArtistName");
 	}
 	
+	
+	/***!!!!user tablosundaki "userName" sutununu UNIQUE yapmaliyiz.!!!!***/ 
+	
 	public static String getUserID(String userName) throws SQLException
 	{
 		Connection conn = getConnection(); 
 		String query = "SELECT userID FROM user WHERE userName = " + userName;
 		Statement st = conn.createStatement();
 		ResultSet rs = st.executeQuery(query);
-		return rs.getString("userName");
+		return rs.getString("userID");
 	}
+	
+	
+	/***!!!!user tablosundaki "userName" sutununu UNIQUE yapmaliyiz.!!!!***/ 
+	
+	
+	/*public static ResultSet getUserName(String userID)
+	{
+		userID'si bilinen user'ýn adini dondurmeli
+		
+	}*/
+	
+	
+	//!!!Follow tablosu eklenmeli. Follower ve Following isminde iki adet "int" sutunu olacak.
+	//Sadece ID'ler tutulacak.
+	//Following sutununa sadece premium kullanicilar  eklenebilecek.!!!
+	
+	
+	/*public static ResultSet getFollowers(String userID)
+	{
+		userID'si bilinen user'ýn takipcilerini dondurmeli.
+		
+	}*/
+	
+	/*public static ResultSet getFollowings(String userID)
+	{
+		userID'si bilinen user'in takip ettiklerini dondurmeli.
+		
+	}*/
+	
+	/*public static ResultSet getAlbums(String ArtistID)
+	{
+		ArtistID'si bilinen artistin album isimlerini ve album id'lerini dondurmeli.
+		
+	}*/
+	/*public static ResultSet getSongs(String AlbumID)
+	{
+		AlbumID'si bilinen albumdeki sarki isimlerini ve sarki id'lerini dondurmeli.
+		
+	}*/
+	
+	
+	/*public static void deleteArtist(String ArtistID)
+	{
+		ArtistIDsi belli olan Artist'in butun sarkilarini ve albumlerini teker teker silmeli. Ilk 
+		once sarkilar silinecek, sonra albumler silinecek, en son sanatcinin kendisi silinecek.
+		Kontrol etmedim ama FOREIGN KEY iliskilerinden dolayi silme islemleri bu sirayla yapilmadiginda
+		problem cikabilir
+		
+	}*/
+	
 	
 	   
 	  
