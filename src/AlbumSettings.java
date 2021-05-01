@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.Window;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -161,7 +162,12 @@ public class AlbumSettings extends JPanel implements MouseListener
 			String albumName = albumNameTxt.getText();
 			String releaseDate  = relaseDateTxt.getText();
 			String genre = genreTxt.getText();
-			SpotifyDB.addAlbum(albumName, artistID,releaseDate,genre);
+			try {
+				SpotifyDB.addAlbum(albumName, artistID,releaseDate,genre);
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 		else if(e.getSource() == deleteButton)
 		{
