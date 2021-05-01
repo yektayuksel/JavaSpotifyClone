@@ -50,14 +50,14 @@ public class SpotifyDB
 		Connection conn = getConnection(); 
 		
 
-		String query = "SELECT ArtistName, Country FROM artist WHERE ArtistName =" + artistName + " and Country = " + country;
+		/*String query = "SELECT ArtistID FROM artist WHERE ArtistName =" + artistName + " and Country = " + country;
 		Statement st = conn.createStatement();
 		ResultSet rs = st.executeQuery(query);
 		if(rs.next())
 		{
 			JOptionPane.showMessageDialog(null, "This singer already exists", "Warning", JOptionPane.WARNING_MESSAGE);
 			return;
-		}
+		}*/
 			
 		try 
 		{
@@ -69,28 +69,50 @@ public class SpotifyDB
 			e.printStackTrace();
 		}
 	}
-	public static void addAlbum(String albumName, String artistID, String releaseDate, String genre)
+	public static void addAlbum(String albumName, String artistID, String releaseDate, String genre) throws SQLException
 	{
-		
 		Connection conn = getConnection(); 
+		
+		String query = "SELECT AlbumName FROM album WHERE ArtistID =" + artistID;
+		Statement st = conn.createStatement();
+		ResultSet rs = st.executeQuery(query);
+		while(rs.next())
+		{
+			if(rs.getString("AlbumName").equals(albumName))
+			JOptionPane.showMessageDialog(null, "This album already exists", "Warning", JOptionPane.WARNING_MESSAGE);
+			return;
+		}	
 		try 
 		{
 			PreparedStatement addalbum = conn.prepareStatement("INSERT INTO album (AlbumName,ArtistID,releaseDate,genre) VALUES('"+albumName+"','"+artistID+"','"+releaseDate+"','"+genre+"')");
 			addalbum.executeUpdate();
+			JOptionPane.showMessageDialog(null, albumName+"has added successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 		}
 		catch (Exception e) 
 		{
 			e.printStackTrace();
 		}
 	}
-	public static void addSong(String songName, String artistID, String albumID, String genre, String duration, String releaseDate)
+	public static void addSong(String songName, String artistID, String albumID, String genre, String duration, String releaseDate) throws SQLException
 	{
 		
-		Connection conn = getConnection(); 
+		Connection conn = getConnection();
+		
+		String query = "SELECT SongName FROM album WHERE ArtistID =" + artistID;
+		Statement st = conn.createStatement();
+		ResultSet rs = st.executeQuery(query);
+		while(rs.next())
+		{
+			if(rs.getString("SongName").equals(songName))
+			JOptionPane.showMessageDialog(null, "This song already exists", "Warning", JOptionPane.WARNING_MESSAGE);
+			return;
+		}	
+		
 		try 
 		{
 			PreparedStatement addsong = conn.prepareStatement("INSERT INTO song (SongName,ArtistID,AlbumID,genre,duration,releaseDate) VALUES('"+songName+"','"+artistID+"','"+albumID+"','"+genre+"','"+duration+"','"+releaseDate+"')");
 			addsong.executeUpdate();
+			JOptionPane.showMessageDialog(null, songName+"has added successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 		}
 		catch (Exception e) 
 		{
@@ -119,7 +141,7 @@ public class SpotifyDB
 	public static ResultSet getPlaylist(String userID, String genre) throws SQLException
 	{
 		Connection conn = getConnection(); 
-		String query = "SELECT s.SongName, s.duration, a.ArtistName FROM song as s,playlist as p,artist as a WHERE s.genre = '" + genre + "'and p.genre = '" + genre + "'and s.SongID = p.SongID and p.userID = " + userID + " and s.ArtistID = a.ArtistID;";
+		String query = "SELECT s.SongName, s.duration, a.ArtistName FROM song as s, playlist as p, artist as a WHERE s.genre = '" + genre + "'and p.genre = '" + genre + "'and s.SongID = p.SongID and p.userID = " + userID + " and s.ArtistID = a.ArtistID;";
 		Statement st = conn.createStatement();
 		ResultSet rs = st.executeQuery(query);
 		return rs;
@@ -135,7 +157,6 @@ public class SpotifyDB
 	}
 	
 	
-	/***!!!!user tablosundaki "userName" sutununu UNIQUE yapmaliyiz.!!!!***/ 
 	
 	public static String getUserID(String userName) throws SQLException
 	{
@@ -147,43 +168,77 @@ public class SpotifyDB
 	}
 	
 	
-	/***!!!!user tablosundaki "userName" sutununu UNIQUE yapmaliyiz.!!!!***/ 
 	
-	
-	/*public static ResultSet getUserName(String userID)
+	public static ResultSet getUserName(String userID) throws SQLException
 	{
-		userID'si bilinen user'ýn adini dondurmeli
+		Connection conn = getConnection(); 
+		String query = "SELECT userName FROM user WHERE userID = " + userID;
+		Statement st = conn.createStatement();
+		ResultSet rs = st.executeQuery(query);
+		return rs;
 		
-	}*/
+	}
 	
-	
-	//!!!Follow tablosu eklenmeli. Follower ve Following isminde iki adet "int" sutunu olacak.
-	//Sadece ID'ler tutulacak.
 	//Following sutununa sadece premium kullanicilar  eklenebilecek.!!!
 	
 	
-	/*public static ResultSet getFollowers(String userID)
+	public static ResultSet getFollowers(String userID) throws SQLException
 	{
-		userID'si bilinen user'ýn takipcilerini dondurmeli.
+		Connection conn = getConnection(); 
+		while(true)
+		{
+			String query = "SELECT FollowerID FROM follow WHERE FollowingID = " + userID;
+			Statement st = conn.createStatement();
+			ResultSet rs = st.executeQuery(query);
+			rs.getString("FollowerID");
+		}
+		//userID'si bilinen user'ýn takipcilerini dondurmeli.
+		//hepsi donebilir mi emin degilim ama query dogru olmasi lazim donguden cikamadim da
 		
-	}*/
+	}
 	
-	/*public static ResultSet getFollowings(String userID)
+	public static ResultSet getFollowings(String userID) throws SQLException
 	{
-		userID'si bilinen user'in takip ettiklerini dondurmeli.
+		Connection conn = getConnection(); 
+		while(true)
+		{
+			String query = "SELECT FollowingID FROM follow WHERE FollowerID = " + userID;
+			Statement st = conn.createStatement();
+			ResultSet rs = st.executeQuery(query);
+			rs.getString("FollowerID");
+		}
 		
-	}*/
+		//userID'si bilinen user'in takip ettiklerini dondurmeli.
+		
+	}
 	
-	/*public static ResultSet getAlbums(String ArtistID)
+	public static ResultSet getAlbums(String ArtistID) throws SQLException
 	{
-		ArtistID'si bilinen artistin album isimlerini ve album id'lerini dondurmeli.
+		Connection conn = getConnection(); 
+		while(true)
+		{
+			String query = "SELECT AlbumID, AlbumName FROM album WHERE ArtistID = " + ArtistID;
+			Statement st = conn.createStatement();
+			ResultSet rs = st.executeQuery(query);
+			rs.getString("AlbumID");
+		}
+		//ArtistID'si bilinen artistin album isimlerini ve album id'lerini dondurmeli.
+		//eksik var aklima gelmedi cozumu. rs'de cift sonuc dondurmem lazim.
 		
-	}*/
-	/*public static ResultSet getSongs(String AlbumID)
+	}
+	public static ResultSet getSongs(String AlbumID) throws SQLException
 	{
-		AlbumID'si bilinen albumdeki sarki isimlerini ve sarki id'lerini dondurmeli.
-		
-	}*/
+		Connection conn = getConnection(); 
+		while(true)
+		{
+			String query = "SELECT SongID, SongName FROM song WHERE ArtistID = " + AlbumID;
+			Statement st = conn.createStatement();
+			ResultSet rs = st.executeQuery(query);
+			rs.getString("SongID");
+		}
+		//AlbumID'si bilinen albumdeki sarki isimlerini ve sarki id'lerini dondurmeli.
+		//eksik var aklima gelmedi cozumu. rs'de cift sonuc dondurmem lazim.
+	}
 	
 	
 	/*public static void deleteArtist(String ArtistID)
