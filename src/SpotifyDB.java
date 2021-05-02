@@ -42,23 +42,27 @@ public class SpotifyDB
 		 return null;
 	}
 	
-	
+	public static void addUser(String userName, String email, String pswrd, String country, boolean isPremium, String cardNumber,boolean isPaid)
+	{
+		Connection conn = getConnection(); 
+		try 
+		{
+			PreparedStatement adduser = conn.prepareStatement("INSERT INTO user (userName,email,pswrd,Country,isPremium, cardNumber,isPaid) "
+			+ "VALUES('"+userName+"','"+email+"','"+pswrd+"','"+country+"',"+isPremium+","+cardNumber+","+isPaid+")");
+			
+			adduser.executeUpdate();
+			JOptionPane.showMessageDialog(null, userName+", you have been signed in successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+	}
 	public static void addArtist(String artistName, String country) throws SQLException
 	{
 		
 		
 		Connection conn = getConnection(); 
-		
-
-		/*String query = "SELECT ArtistID FROM artist WHERE ArtistName =" + artistName + " and Country = " + country;
-		Statement st = conn.createStatement();
-		ResultSet rs = st.executeQuery(query);
-		if(rs.next())
-		{
-			JOptionPane.showMessageDialog(null, "This singer already exists", "Warning", JOptionPane.WARNING_MESSAGE);
-			return;
-		}*/
-			
 		try 
 		{
 			PreparedStatement addartst = conn.prepareStatement("INSERT INTO artist (ArtistName,Country) VALUES('"+artistName+"','"+country+"')");
@@ -86,7 +90,7 @@ public class SpotifyDB
 		{
 			PreparedStatement addalbum = conn.prepareStatement("INSERT INTO album (AlbumName,ArtistID,releaseDate,genre) VALUES('"+albumName+"','"+artistID+"','"+releaseDate+"','"+genre+"')");
 			addalbum.executeUpdate();
-			JOptionPane.showMessageDialog(null, albumName+"has added successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(null, albumName+" has added successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 		}
 		catch (Exception e) 
 		{
@@ -112,7 +116,7 @@ public class SpotifyDB
 		{
 			PreparedStatement addsong = conn.prepareStatement("INSERT INTO song (SongName,ArtistID,AlbumID,genre,duration,releaseDate) VALUES('"+songName+"','"+artistID+"','"+albumID+"','"+genre+"','"+duration+"','"+releaseDate+"')");
 			addsong.executeUpdate();
-			JOptionPane.showMessageDialog(null, songName+"has added successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(null, songName+"The song has added successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 		}
 		catch (Exception e) 
 		{
@@ -185,13 +189,11 @@ public class SpotifyDB
 	public static ResultSet getFollowers(String userID) throws SQLException
 	{
 		Connection conn = getConnection(); 
-		while(true)
-		{
-			String query = "SELECT FollowerID FROM follow WHERE FollowingID = " + userID;
-			Statement st = conn.createStatement();
-			ResultSet rs = st.executeQuery(query);
-			rs.getString("FollowerID");
-		}
+		String query = "SELECT FollowerID FROM follow WHERE FollowingID = " + userID;
+		Statement st = conn.createStatement();
+		ResultSet rs = st.executeQuery(query);
+		return rs;
+		
 		//userID'si bilinen user'ýn takipcilerini dondurmeli.
 		//hepsi donebilir mi emin degilim ama query dogru olmasi lazim donguden cikamadim da
 		
@@ -200,13 +202,11 @@ public class SpotifyDB
 	public static ResultSet getFollowings(String userID) throws SQLException
 	{
 		Connection conn = getConnection(); 
-		while(true)
-		{
-			String query = "SELECT FollowingID FROM follow WHERE FollowerID = " + userID;
-			Statement st = conn.createStatement();
-			ResultSet rs = st.executeQuery(query);
-			rs.getString("FollowerID");
-		}
+		String query = "SELECT FollowingID FROM follow WHERE FollowerID = " + userID;
+		Statement st = conn.createStatement();
+		ResultSet rs = st.executeQuery(query);
+		return rs;
+		
 		
 		//userID'si bilinen user'in takip ettiklerini dondurmeli.
 		
@@ -215,32 +215,56 @@ public class SpotifyDB
 	public static ResultSet getAlbums(String ArtistID) throws SQLException
 	{
 		Connection conn = getConnection(); 
-		while(true)
-		{
-			String query = "SELECT AlbumID, AlbumName FROM album WHERE ArtistID = " + ArtistID;
-			Statement st = conn.createStatement();
-			ResultSet rs = st.executeQuery(query);
-			rs.getString("AlbumID");
-		}
+	
+		String query = "SELECT AlbumID, AlbumName FROM album WHERE ArtistID = " + ArtistID;
+		Statement st = conn.createStatement();
+		ResultSet rs = st.executeQuery(query);
+		return rs;
+		
 		//ArtistID'si bilinen artistin album isimlerini ve album id'lerini dondurmeli.
 		//eksik var aklima gelmedi cozumu. rs'de cift sonuc dondurmem lazim.
 		
 	}
-	public static ResultSet getSongs(String AlbumID) throws SQLException
+	public static ResultSet getAlbumSongs(String AlbumID) throws SQLException
 	{
 		Connection conn = getConnection(); 
-		while(true)
-		{
-			String query = "SELECT SongID, SongName FROM song WHERE ArtistID = " + AlbumID;
-			Statement st = conn.createStatement();
-			ResultSet rs = st.executeQuery(query);
-			rs.getString("SongID");
-		}
+		String query = "SELECT SongID, SongName FROM song WHERE AlbumID = " + AlbumID;
+		Statement st = conn.createStatement();
+		ResultSet rs = st.executeQuery(query);
+		return rs;
+		
 		//AlbumID'si bilinen albumdeki sarki isimlerini ve sarki id'lerini dondurmeli.
 		//eksik var aklima gelmedi cozumu. rs'de cift sonuc dondurmem lazim.
 	}
+	public static ResultSet getArtistSongs(String ArtistID) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		String query = "SELECT SongID, SongName FROM song WHERE ArtistID = " + ArtistID;
+		Statement st = conn.createStatement();
+		ResultSet rs = st.executeQuery(query);
+		return rs;
+		
+	}
 	
+	public static boolean checkIfUserExists(String userName) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		String query = "SELECT * FROM user WHERE user.userName = '" + userName + "'";
+		Statement st = conn.createStatement();
+		ResultSet rs = st.executeQuery(query);
+		
+	    return !rs.next();
+		
+	}
 	
+	public static boolean checkIfEmailExists(String email) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		String query = "SELECT userID FROM user WHERE email = '" + email + "'";
+		Statement st = conn.createStatement();
+		ResultSet rs = st.executeQuery(query);
+		return !rs.next();
+	}
 	/*public static void deleteArtist(String ArtistID)
 	{
 		ArtistIDsi belli olan Artist'in butun sarkilarini ve albumlerini teker teker silmeli. Ilk 

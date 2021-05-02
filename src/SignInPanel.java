@@ -1,5 +1,7 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.SQLException;
+
 import javax.swing.*;
 
 import java.util.regex.Matcher;
@@ -10,8 +12,16 @@ public class SignInPanel extends JPanel implements MouseListener
 	JTextField userNameText;
 	JTextField passwordText;
 	JTextField emailText;
+	JTextField countryText;
 	JButton premiumButton;
 	JButton freeButton;
+	final int TXTF_LOC_X = 390;
+	final int TXTF_LOC_Y = 350;
+	final int TXTF_GAPS = 60;
+	final int TXTF_W = 500;
+	final int TXTF_H = 40;
+	final int TXTF_PUNTO = 25;
+			
 	SignInPanel()
 	{
 		this.setBackground(new Color(33,33,33));
@@ -25,6 +35,7 @@ public class SignInPanel extends JPanel implements MouseListener
 		this.add(emailText);
 		this.add(premiumButton);
 		this.add(freeButton);
+		this.add(countryText);
 		this.setLayout(new BorderLayout());
 		this.setPreferredSize(new Dimension(1280,720));
 	}
@@ -54,19 +65,27 @@ public class SignInPanel extends JPanel implements MouseListener
 	private void initTextFields()
 	{
 		userNameText = new JTextField();
-		userNameText.setBounds(1280/2-250, 350, 500,50);
-		userNameText.setFont(new Font("Consolas", Font.BOLD, 30));
+		userNameText.setBounds(TXTF_LOC_X, TXTF_LOC_Y, TXTF_W,TXTF_H);
+		userNameText.setFont(new Font("Consolas", Font.BOLD, TXTF_PUNTO));
 		userNameText.setText("Username");
 		
 		passwordText = new JTextField();
-		passwordText.setBounds(1280/2-250, 430, 500,50);
-		passwordText.setFont(new Font("Consolas", Font.BOLD, 30));
+		passwordText.setBounds(TXTF_LOC_X, (int)userNameText.getLocation().getY()+TXTF_GAPS, TXTF_W,TXTF_H);
+		passwordText.setFont(new Font("Consolas", Font.BOLD, TXTF_PUNTO));
 		passwordText.setText("Password");
 		
 		emailText = new JTextField();
-		emailText.setBounds(1280/2-250, 510, 500,50);
-		emailText.setFont(new Font("Consolas", Font.BOLD, 30));
+		emailText.setBounds(TXTF_LOC_X, (int)passwordText.getLocation().getY()+TXTF_GAPS, TXTF_W,TXTF_H);
+		emailText.setFont(new Font("Consolas", Font.BOLD, TXTF_PUNTO));
 		emailText.setText("Email");
+		
+		countryText = new JTextField();
+		countryText.setBounds(TXTF_LOC_X, (int)emailText.getLocation().getY()+TXTF_GAPS, TXTF_W,TXTF_H);
+		countryText.setFont(new Font("Consolas", Font.BOLD, TXTF_PUNTO));
+		countryText.setText("Country");
+		
+		
+		
 		
 	}
 	public void paintComponent(Graphics g)
@@ -82,30 +101,46 @@ public class SignInPanel extends JPanel implements MouseListener
 		
 		
 		String userName = userNameText.getText();
-		String password = passwordText.getText();
+		String pswrd = passwordText.getText();
 		String email = emailText.getText();
+		String country = countryText.getText();
 		
 		//
+		try 
+		{
+			if(!SpotifyDB.checkIfUserExists(userName))
+			{
+				JOptionPane.showMessageDialog(null, "This username is already taken", "Warning", JOptionPane.WARNING_MESSAGE);
+				return;
+			}
+			if(!SpotifyDB.checkIfEmailExists(email))
+			{
+				JOptionPane.showMessageDialog(null, "This e-mail is already taken", "Warning", JOptionPane.WARNING_MESSAGE);
+				return;
+			}
+		} 
+		catch (SQLException e1) 
+		{
+			e1.printStackTrace();
+		}
 		if(!isValidEmail(email))
 		{
 			JOptionPane.showMessageDialog(null, "Enter a valid E-mail", "Warning", JOptionPane.WARNING_MESSAGE);
 			return;
 		}
-		//Usarname ve Email database'de var mi yok mu kontrol et.
-		//Yoklar ise ekleme islemlerine devam et.
+		
 	
 		if(e.getSource() == premiumButton)
 		{
-			
-			//Database'e kullanýcý adý ve þifresi buradan alýancak.
-			//Kullanýcý premium olarak eklencek
-			new Screen(new UserTypePanel());
+			String cardNumber = JOptionPane.showInputDialog("Enter Your Card Number");
+			SpotifyDB.addUser(userName, email, pswrd, country, true, cardNumber, true);
+			new Screen(new OpeningPanel());
 		}
 		else if(e.getSource() == freeButton)
 		{
-			//Database'e kullanýcý adý ve þifresi buradan alýnacak.
-			//Kullanýcý free olarak eklenecek
-			new Screen(new UserTypePanel());
+			SpotifyDB.addUser(userName, email, pswrd, country, false, null, false);
+			
+			new Screen(new OpeningPanel());
 			
 		}
 		((Window) getRootPane().getParent()).dispose();
@@ -130,36 +165,27 @@ public class SignInPanel extends JPanel implements MouseListener
 		
 	}
 	@Override
-	public void mouseEntered(MouseEvent e) {
-		if(e.getSource() == premiumButton)
-		{
-			changeEnteredBackground(premiumButton);
-		}
-		
-		
+	public void mouseEntered(MouseEvent e) 
+	{
+			changeEnteredBackground((JComponent)e.getSource());
 	}
 	@Override
 	public void mouseExited(MouseEvent e) 
 	{
-		if(e.getSource() == premiumButton)
-		{
-			changeExitedBackground(premiumButton);
-		}
-		
-		
+		changeExitedBackground((JComponent)e.getSource());
 	}
 	
-	public void changeEnteredBackground(JButton button)
+	public void changeEnteredBackground(JComponent obj)
 	{
-		button.setBackground(button.getBackground().darker());
+		obj.setBackground(obj.getBackground().darker());
 	}
-	public void changePressedBackground(JButton button)
+	public void changePressedBackground(JComponent obj)
 	{
-		button.setBackground(this.getBackground().darker());
+		obj.setBackground(this.getBackground().darker());
 	}
-	public void changeExitedBackground(JButton button)
+	public void changeExitedBackground(JComponent obj)
 	{
-		button.setBackground(this.getBackground().brighter());
+		obj.setBackground(this.getBackground().brighter());
 	}
 	@Override
 	public void mouseClicked(MouseEvent e) {
