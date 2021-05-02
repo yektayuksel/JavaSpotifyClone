@@ -7,20 +7,22 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 
-public class ArtistSettings extends JPanel implements MouseListener
+public class ArtistSettings extends JPanel implements MouseListener, ActionListener
 {
 	
-	JComboBox artistNameBox;
+	JComboBox<CBItem> artistNameBox;
 	JLabel artistToDelete;
 	JLabel addAnArtist;
 	JButton deleteButton;
@@ -36,17 +38,15 @@ public class ArtistSettings extends JPanel implements MouseListener
 		this.setBackground(new Color(33,33,33));
 		initComboBoxes();
 		initCreateArtist();
-		
-		
-		
-		this.add(artistNameBox);
-		this.add(artistToDelete);
-		this.add(deleteButton);
-		this.add(addAnArtist);
-		this.add(enterArtistNameText);
-		this.add(enterArtistCountryText);
-		this.add(addButton);
-		this.add(AlbumSettingsButton);
+		addComponentsToPanel();
+		try 
+		{
+			initArtistNameCB();
+		} 
+		catch (SQLException e) 
+		{
+			e.printStackTrace();
+		}
 		this.setLayout(new BorderLayout());
 		this.setPreferredSize(new Dimension(1280,720));
 	}
@@ -91,9 +91,7 @@ public class ArtistSettings extends JPanel implements MouseListener
 	}
 	public void initComboBoxes()
 	{
-		artistNameBox = new JComboBox();
-		artistNameBox.setEditable(true);
-		artistNameBox.setBounds(GENERAL_OBJ_LOC_X, GENERAL_OBJ_LOC_Y - 150, 450, 30);
+		
 		
 		artistToDelete = new JLabel();
 		artistToDelete.setText("Select an artist to delete:");
@@ -109,6 +107,11 @@ public class ArtistSettings extends JPanel implements MouseListener
 		deleteButton.setBackground(this.getBackground().brighter());
 		deleteButton.setFocusable(false);
 		deleteButton.addMouseListener(this);
+		
+		artistNameBox = new JComboBox();
+		artistNameBox.setEditable(true);
+		artistNameBox.setBounds(GENERAL_OBJ_LOC_X, GENERAL_OBJ_LOC_Y - 150, 450, 30);
+		artistNameBox.addActionListener(this);
 	}
 	
 	
@@ -117,11 +120,41 @@ public class ArtistSettings extends JPanel implements MouseListener
 		// TODO Auto-generated method stub
 		
 	}
+	public void addComponentsToPanel()
+	{
+		this.add(artistNameBox);
+		this.add(artistToDelete);
+		this.add(deleteButton);
+		this.add(addAnArtist);
+		this.add(enterArtistNameText);
+		this.add(enterArtistCountryText);
+		this.add(addButton);
+		this.add(AlbumSettingsButton);
+	}
+	
+	public void initArtistNameCB() throws SQLException
+	{
+		try {
+			artistNameBox.removeAllItems();
 
+	        ResultSet rs = SpotifyDB.getAllArtists();
+
+	        while(rs.next())
+	        {                
+				CBItem comItem = new CBItem(rs.getString("ArtistID"), rs.getString("ArtistName"));
+				artistNameBox.addItem(comItem);
+				
+
+	        }
+	    } catch (Exception e) {
+	        JOptionPane.showMessageDialog(this, "Error" + e  );
+	    }
+		
+	}
 	@Override
 	public void mousePressed(MouseEvent e) 
 	{
-		String artistToDelete = (String) artistNameBox.getSelectedItem();
+		String artistToDelete =  ((CBItem) artistNameBox.getSelectedItem()).getArtistName();
 		String artistToAddName = enterArtistNameText.getText();
 		String artistToAddCountry = enterArtistCountryText.getText();
 		if(e.getSource() == addButton)
@@ -129,6 +162,8 @@ public class ArtistSettings extends JPanel implements MouseListener
 			//artist tablosuna gerekli verilerle yeni eleman ekle
 			try {
 				SpotifyDB.addArtist(artistToAddName, artistToAddCountry);
+				initArtistNameCB();
+				repaint();
 				
 			} catch (SQLException e1) {
 				// TODO Auto-generated catch block
@@ -178,6 +213,12 @@ public class ArtistSettings extends JPanel implements MouseListener
 	public void changeExitedBackground(JButton button)
 	{
 		button.setBackground(this.getBackground().brighter());
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	

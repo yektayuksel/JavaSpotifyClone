@@ -5,11 +5,13 @@ import java.awt.Font;
 import java.awt.Window;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -24,7 +26,7 @@ public class AlbumSettings extends JPanel implements MouseListener
 	
 	JLabel albumToAdd;
 	JLabel selectAnArtistLabel;
-	JComboBox artistNameBox;
+	JComboBox<CBItem> artistNameBox;
 	JTextField albumNameTxt;
 	JTextField relaseDateTxt;
 	JTextField genreTxt;
@@ -39,6 +41,14 @@ public class AlbumSettings extends JPanel implements MouseListener
 		initComboBoxes();
 		initAddingSettings();
 		initMenuButtons();
+		try 
+		{
+			initArtistNameCB();
+		} 
+		catch (SQLException e) 
+		{
+			e.printStackTrace();
+		}
 		this.add(albumNameBox);
 		this.add(albumToDelete);
 		this.add(deleteButton);
@@ -76,6 +86,25 @@ public class AlbumSettings extends JPanel implements MouseListener
 		deleteButton.addMouseListener(this);
 	}
 	
+	public void initArtistNameCB() throws SQLException
+	{
+		try {
+			artistNameBox.removeAllItems();
+
+	        ResultSet rs = SpotifyDB.getAllArtists();
+
+	        while(rs.next())
+	        {                
+				CBItem comItem = new CBItem(rs.getString("ArtistID"), rs.getString("ArtistName"));
+				artistNameBox.addItem(comItem);
+				
+
+	        }
+	    } catch (Exception e) {
+	        JOptionPane.showMessageDialog(this, "Error" + e  );
+	    }
+		
+	}
 	public void initAddingSettings()
 	{
 		albumToAdd = new JLabel();

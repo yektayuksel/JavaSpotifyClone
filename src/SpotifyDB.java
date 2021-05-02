@@ -64,6 +64,8 @@ public class SpotifyDB
 		{
 			PreparedStatement addartst = conn.prepareStatement("INSERT INTO artist (ArtistName,Country) VALUES('"+artistName+"','"+country+"')");
 			addartst.executeUpdate();
+			JOptionPane.showMessageDialog(null, "Artist added successfully", "Succes", JOptionPane.INFORMATION_MESSAGE);
+			
 		}
 		catch (Exception e) 
 		{
@@ -293,7 +295,14 @@ public class SpotifyDB
 		return rs.next();
 	}
 	
-	
+	public static ResultSet getAllArtists() throws SQLException
+	{
+		Connection conn = getConnection(); 
+		String query = "SELECT ArtistID, ArtistName FROM artist";
+		Statement st = conn.createStatement();
+		ResultSet rs = st.executeQuery(query);
+		return rs;
+	}
 	
 	   
 	  
