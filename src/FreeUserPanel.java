@@ -44,11 +44,26 @@ public class FreeUserPanel extends JPanel implements MouseListener
 	Color defaultBackground = new Color(33,33,33).brighter();
 	Color pressedColor = defaultBackground.darker();
 	Color eneteredColor = defaultBackground.brighter();
-	
+	boolean premium;
 	String userID;
 	FreeUserPanel(String ID)
 	{
 		userID = ID;
+		try 
+		{
+			if(SpotifyDB.checkPremium(ID))
+			{
+				 premium = true;
+			}
+			else
+			{
+				 premium = false;
+			}
+		} 
+		catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		this.setLayout(null);
 		this.setBackground(new Color(33,33,33));
 		initPanels();
@@ -58,7 +73,6 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		try {
 			addMiddleLabels();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

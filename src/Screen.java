@@ -12,8 +12,11 @@ public class Screen extends JFrame
 		this.add(panel);
 		this.setVisible(true);
 		this.setResizable(false);
+		Image icon = Toolkit.getDefaultToolkit().getImage("images\\smallSpotifyLogo.png");    
+		this.setIconImage(icon);
 		centerFrame();
 		this.pack();
+		this.setTitle("Spotify");
 	}
 	private void centerFrame() 
 	{

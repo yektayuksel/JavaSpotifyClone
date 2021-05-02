@@ -24,14 +24,11 @@ public class SpotifyDB
 		Connection conn;
 		try
 	    {
-	      // create our mysql database connection
 	      String myDriver = "com.mysql.cj.jdbc.Driver";
 	      String url = "jdbc:mysql://localhost:3306/spotify_db";
 	      Class.forName(myDriver);
 	      conn = DriverManager.getConnection(url, "root", "malcanus12");
 	      return conn;
-	      // our SQL SELECT query. 
-	      // if you only need a few columns, specify them by name instead of using "*"
 	     
 	    }
 	    catch (Exception e)
@@ -157,6 +154,7 @@ public class SpotifyDB
 		String query = "SELECT a.ArtistName FROM artist AS a, song AS s WHERE s.SongID = " + SongID + " and a.ArtistID = s.ArtistID";
 		Statement st = conn.createStatement();
 		ResultSet rs = st.executeQuery(query);
+		rs.next();
 		return rs.getString("ArtistName");
 	}
 	
@@ -165,10 +163,13 @@ public class SpotifyDB
 	public static String getUserID(String userName) throws SQLException
 	{
 		Connection conn = getConnection(); 
-		String query = "SELECT userID FROM user WHERE userName = " + userName;
+		String query = "SELECT userID FROM user WHERE userName = '" + userName +"'";
 		Statement st = conn.createStatement();
 		ResultSet rs = st.executeQuery(query);
-		return rs.getString("userID");
+		rs.next();
+		Integer ID = rs.getInt("userID");
+		
+		return ID.toString();
 	}
 	
 	
@@ -176,7 +177,7 @@ public class SpotifyDB
 	public static ResultSet getUserName(String userID) throws SQLException
 	{
 		Connection conn = getConnection(); 
-		String query = "SELECT userName FROM user WHERE userID = " + userID;
+		String query = "SELECT userName FROM user WHERE userID = '" + userID + "'";
 		Statement st = conn.createStatement();
 		ResultSet rs = st.executeQuery(query);
 		return rs;
@@ -273,6 +274,25 @@ public class SpotifyDB
 		problem cikabilir
 		
 	}*/
+	
+	public static boolean checkPassword(String userName, String pswrd) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		String query = "SELECT * FROM user WHERE pswrd = '" + pswrd + "' and userName = '"+ userName + "'";
+		Statement st = conn.createStatement();
+		ResultSet rs = st.executeQuery(query);
+		return rs.next();
+	}
+	
+	public static boolean checkPremium(String userID) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		String query = "SELECT * FROM user WHERE isPremium = '" + true + "' and userID = '"+ userID + "'";
+		Statement st = conn.createStatement();
+		ResultSet rs = st.executeQuery(query);
+		return rs.next();
+	}
+	
 	
 	
 	   
