@@ -105,7 +105,6 @@ public class SignInPanel extends JPanel implements MouseListener
 		String email = emailText.getText();
 		String country = countryText.getText();
 		
-		//
 		try 
 		{
 			if(!SpotifyDB.checkIfUserExists(userName))
@@ -133,6 +132,15 @@ public class SignInPanel extends JPanel implements MouseListener
 		if(e.getSource() == premiumButton)
 		{
 			String cardNumber = JOptionPane.showInputDialog("Enter Your Card Number");
+			if(cardNumber == null)
+			{
+				return;
+			}
+			else if(cardNumber.equals(""))
+			{
+				JOptionPane.showMessageDialog(null, "Enter a card number", "Warning", JOptionPane.WARNING_MESSAGE);
+				return;
+			}
 			SpotifyDB.addUser(userName, email, pswrd, country, true, cardNumber, true);
 			new Screen(new OpeningPanel());
 		}

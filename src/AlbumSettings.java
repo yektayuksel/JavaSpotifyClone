@@ -3,6 +3,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.sql.ResultSet;
@@ -15,13 +17,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class AlbumSettings extends JPanel implements MouseListener
+public class AlbumSettings extends JPanel implements MouseListener,ActionListener
 {
 	static final int GENERAL_OBJ_LOC_Y = 310;
 	static final int GENERAL_OBJ_LOC_X = 420;
 	
-	JComboBox albumNameBox;
+	JComboBox<CBItem> albumNameBox;
 	JLabel albumToDelete;
+	JLabel artistNameToDelete;
+	JComboBox<CBItem> artistToDeleteNameBox;
 	JButton deleteButton;
 	
 	JLabel albumToAdd;
@@ -41,6 +45,8 @@ public class AlbumSettings extends JPanel implements MouseListener
 		initComboBoxes();
 		initAddingSettings();
 		initMenuButtons();
+		initArtistComboBoxes(artistToDeleteNameBox);
+		initArtistComboBoxes(artistNameBox);
 		try 
 		{
 			initArtistNameCB();
@@ -61,6 +67,8 @@ public class AlbumSettings extends JPanel implements MouseListener
 		this.add(addButton);
 		this.add(artistSettingsButton);
 		this.add(songSettingsButton);
+		this.add(artistNameToDelete);
+		this.add(artistToDeleteNameBox);
 		this.setLayout(new BorderLayout());
 		this.setPreferredSize(new Dimension(1280,720));
 	}
@@ -68,16 +76,28 @@ public class AlbumSettings extends JPanel implements MouseListener
 	{
 		albumNameBox = new JComboBox();
 		albumNameBox.setEditable(true);
-		albumNameBox.setBounds(GENERAL_OBJ_LOC_X, GENERAL_OBJ_LOC_Y - 150, 450, 30);
+		albumNameBox.setBounds(GENERAL_OBJ_LOC_X, GENERAL_OBJ_LOC_Y - 100, 450, 30);
 		
 		albumToDelete = new JLabel();
-		albumToDelete.setText("Select an album to delete:");
-		albumToDelete.setBounds(GENERAL_OBJ_LOC_X,GENERAL_OBJ_LOC_Y - 200, 500, 30);
+		albumToDelete.setText("Select an album to delete");
+		albumToDelete.setBounds(GENERAL_OBJ_LOC_X,GENERAL_OBJ_LOC_Y  - 150, 500, 30);
 		albumToDelete.setFont(new Font("Consolas", Font.BOLD, 30));
 		albumToDelete.setForeground(Color.white);
 		
+		
+		artistToDeleteNameBox = new JComboBox();
+		artistToDeleteNameBox.setEditable(true);
+		artistToDeleteNameBox.setBounds(GENERAL_OBJ_LOC_X, GENERAL_OBJ_LOC_Y - 200, 450, 30);
+		artistToDeleteNameBox.addActionListener(this);
+		
+		artistNameToDelete = new JLabel();
+		artistNameToDelete.setText("Select the artist");
+		artistNameToDelete.setBounds(GENERAL_OBJ_LOC_X,GENERAL_OBJ_LOC_Y - 250, 500, 30);
+		artistNameToDelete.setFont(new Font("Consolas", Font.BOLD, 30));
+		artistNameToDelete.setForeground(Color.white);
+		
 		deleteButton = new JButton();
-		deleteButton.setBounds(GENERAL_OBJ_LOC_X+350, GENERAL_OBJ_LOC_Y - 100, 100, 30);
+		deleteButton.setBounds(GENERAL_OBJ_LOC_X+350, GENERAL_OBJ_LOC_Y - 50, 100, 30);
 		deleteButton.setFont(new Font("Consolas", Font.BOLD, 20));
 		deleteButton.setForeground(Color.white);
 		deleteButton.setText("Delete");
@@ -175,6 +195,45 @@ public class AlbumSettings extends JPanel implements MouseListener
 		songSettingsButton.addMouseListener(this);
 	}
 
+	public void initAlbumComboBoxes()
+	{
+		/*artistNameBox
+		albumNameBox*/
+		try {
+			albumNameBox.removeAllItems();
+			
+			CBItem item = (CBItem)artistToDeleteNameBox.getSelectedItem();
+	        ResultSet rs = SpotifyDB.getAllAlbums(item.getID());
+
+	        while(rs.next())
+	        {                
+				CBItem comItem = new CBItem(rs.getString("AlbumID"), rs.getString("AlbumName"));
+				albumNameBox.addItem(comItem);
+				
+
+	        }
+	    } catch (Exception e) {
+	        JOptionPane.showMessageDialog(this, "Error" + e  );
+	    }
+	}
+	public void initArtistComboBoxes(JComboBox cb)
+	{
+		try {
+			cb.removeAllItems();
+
+	        ResultSet rs = SpotifyDB.getAllArtists();
+
+	        while(rs.next())
+	        {                
+				CBItem comItem = new CBItem(rs.getString("ArtistID"), rs.getString("ArtistName"));
+				cb.addItem(comItem);
+				
+
+	        }
+	    } catch (Exception e) {
+	        JOptionPane.showMessageDialog(this, "Error" + e  );
+	    }
+	}
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
@@ -187,16 +246,20 @@ public class AlbumSettings extends JPanel implements MouseListener
 		
 		if(e.getSource() == addButton)
 		{
-			String artistID = (String) artistNameBox.getSelectedItem();
+			CBItem id = (CBItem)artistNameBox.getSelectedItem();
+			String artistID = id.getID();
 			String albumName = albumNameTxt.getText();
 			String releaseDate  = relaseDateTxt.getText();
 			String genre = genreTxt.getText();
-			try {
+			try 
+			{
 				SpotifyDB.addAlbum(albumName, artistID,releaseDate,genre);
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
+			} 
+			catch (SQLException e1) 
+			{
 				e1.printStackTrace();
 			}
+			initAlbumComboBoxes();
 		}
 		else if(e.getSource() == deleteButton)
 		{
@@ -244,6 +307,14 @@ public class AlbumSettings extends JPanel implements MouseListener
 	public void changeExitedBackground(JButton button)
 	{
 		button.setBackground(this.getBackground().brighter());
+	}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() == artistToDeleteNameBox)
+		{
+			initAlbumComboBoxes();
+		}
+		
 	}
 
 }

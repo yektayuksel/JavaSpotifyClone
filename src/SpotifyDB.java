@@ -82,8 +82,12 @@ public class SpotifyDB
 		while(rs.next())
 		{
 			if(rs.getString("AlbumName").equals(albumName))
-			JOptionPane.showMessageDialog(null, "This album already exists", "Warning", JOptionPane.WARNING_MESSAGE);
-			return;
+			{
+				JOptionPane.showMessageDialog(null, "This album already exists", "Warning", JOptionPane.WARNING_MESSAGE);
+				return;
+			}
+			
+			
 		}	
 		try 
 		{
@@ -101,7 +105,7 @@ public class SpotifyDB
 		
 		Connection conn = getConnection();
 		
-		String query = "SELECT SongName FROM album WHERE ArtistID =" + artistID;
+		String query = "SELECT SongName FROM song WHERE ArtistID = '" + artistID + "'";
 		Statement st = conn.createStatement();
 		ResultSet rs = st.executeQuery(query);
 		while(rs.next())
@@ -215,7 +219,7 @@ public class SpotifyDB
 		
 	}
 	
-	public static ResultSet getAlbums(String ArtistID) throws SQLException
+	public static ResultSet getAllAlbums(String ArtistID) throws SQLException
 	{
 		Connection conn = getConnection(); 
 	
@@ -302,6 +306,16 @@ public class SpotifyDB
 		Statement st = conn.createStatement();
 		ResultSet rs = st.executeQuery(query);
 		return rs;
+	}
+	
+	public static String getAlbumRelaseDate(String AlbumID) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		String query = "SELECT releaseDate FROM album WHERE AlbumID = '" + AlbumID + "'";
+		Statement st = conn.createStatement();
+		ResultSet rs = st.executeQuery(query);
+		rs.next();
+		return rs.getString("releaseDate");
 	}
 	
 	   

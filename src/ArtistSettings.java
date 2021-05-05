@@ -154,12 +154,14 @@ public class ArtistSettings extends JPanel implements MouseListener, ActionListe
 	@Override
 	public void mousePressed(MouseEvent e) 
 	{
-		String artistToDelete =  ((CBItem) artistNameBox.getSelectedItem()).getArtistName();
-		String artistToAddName = enterArtistNameText.getText();
-		String artistToAddCountry = enterArtistCountryText.getText();
+		
+		
+		
 		if(e.getSource() == addButton)
 		{
 			//artist tablosuna gerekli verilerle yeni eleman ekle
+			String artistToAddName = enterArtistNameText.getText();
+			String artistToAddCountry = enterArtistCountryText.getText();
 			try {
 				SpotifyDB.addArtist(artistToAddName, artistToAddCountry);
 				initArtistNameCB();
@@ -172,6 +174,7 @@ public class ArtistSettings extends JPanel implements MouseListener, ActionListe
 		}
 		else if(e.getSource() == deleteButton)
 		{
+			String artistToDelete =  ((CBItem) artistNameBox.getSelectedItem()).getArtistName();
 			//Gerekli sorguyu yap ve isimler eslesen artisti sil
 		}
 		else if(e.getSource() == AlbumSettingsButton)

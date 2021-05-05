@@ -3,27 +3,32 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class SongSettings extends JPanel implements MouseListener
+public class SongSettings extends JPanel implements MouseListener,ActionListener
 {
 	
-	JComboBox songToDeleteBox;
+	JComboBox<CBItem> songToDeleteBox;
 	JLabel songToDeleteLabel;
 	JButton deleteButton;
 	
 	JLabel addSongLabel;
 	JLabel selectArtistLabel;
 	JLabel selectAlbumLabel;
-	JComboBox albumNameBox;
-	JComboBox artistNameBox;
+	JComboBox<CBItem> albumNameBox;
+	JComboBox<CBItem> artistNameBox;
 	JTextField songNameText;
 	JTextField genreText;
 	JTextField durationText;
@@ -38,6 +43,7 @@ public class SongSettings extends JPanel implements MouseListener
 		initDeleteSettings();
 		initAddingSettings();
 		initMenuButtons();
+		initArtistComboBoxes();
 		this.add(songToDeleteBox);
 		this.add(songToDeleteLabel);
 		this.add(deleteButton);
@@ -73,6 +79,7 @@ public class SongSettings extends JPanel implements MouseListener
 		artistNameBox = new JComboBox();
 		artistNameBox.setEditable(true);
 		artistNameBox.setBounds(GENERAL_OBJ_LOC_X, GENERAL_OBJ_LOC_Y +90, 450, 30);
+		artistNameBox.addActionListener(this);
 		
 		selectAlbumLabel = new JLabel();
 		selectAlbumLabel.setText("Select the album");
@@ -149,6 +156,47 @@ public class SongSettings extends JPanel implements MouseListener
 		
 	
 	}
+	
+	public void initArtistComboBoxes()
+	{
+		try {
+			artistNameBox.removeAllItems();
+
+	        ResultSet rs = SpotifyDB.getAllArtists();
+
+	        while(rs.next())
+	        {                
+				CBItem comItem = new CBItem(rs.getString("ArtistID"), rs.getString("ArtistName"));
+				artistNameBox.addItem(comItem);
+				
+
+	        }
+	    } catch (Exception e) {
+	        JOptionPane.showMessageDialog(this, "Error" + e  );
+	    }
+	}
+	
+	public void initAlbumComboBoxes()
+	{
+		/*artistNameBox
+		albumNameBox*/
+		try {
+			albumNameBox.removeAllItems();
+			
+			CBItem item = (CBItem)artistNameBox.getSelectedItem();
+	        ResultSet rs = SpotifyDB.getAllAlbums(item.getID());
+
+	        while(rs.next())
+	        {                
+				CBItem comItem = new CBItem(rs.getString("AlbumID"), rs.getString("AlbumName"));
+				albumNameBox.addItem(comItem);
+				
+
+	        }
+	    } catch (Exception e) {
+	        JOptionPane.showMessageDialog(this, "Error" + e  );
+	    }
+	}
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
@@ -162,6 +210,26 @@ public class SongSettings extends JPanel implements MouseListener
 		{
 			new Screen(new AlbumSettings());
 			((Window) getRootPane().getParent()).dispose();
+		}
+		else if(e.getSource() == addButton)
+		{
+			
+			CBItem cb = (CBItem)albumNameBox.getSelectedItem();
+			String albumID = cb.getID(); 
+			CBItem cb2 = (CBItem) artistNameBox.getSelectedItem();
+			String artistID = cb2.getID();
+			String songName = songNameText.getText();
+			String genre = genreText.getText();
+			String duration = durationText.getText();
+			String releaseDate;
+			try {
+				releaseDate = SpotifyDB.getAlbumRelaseDate(albumID);
+				SpotifyDB.addSong( songName,  artistID,  albumID,  genre,  duration,  releaseDate);
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
 		}
 	}
 
@@ -194,6 +262,16 @@ public class SongSettings extends JPanel implements MouseListener
 	public void changeExitedBackground(JButton button)
 	{
 		button.setBackground(this.getBackground().brighter());
+	}
+
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() == artistNameBox);
+		{
+			initAlbumComboBoxes();
+		}
+		
 	}
 
 }
