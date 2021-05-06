@@ -231,6 +231,20 @@ public class SongSettings extends JPanel implements MouseListener,ActionListener
 			}
 			
 		}
+		else if(e.getSource() == deleteButton)
+		{
+			CBItem song = (CBItem)songToDeleteBox.getSelectedItem();
+			String songID = song.getID();
+			try 
+			{
+				SpotifyDB.deleteSong(songID);
+				JOptionPane.showMessageDialog(null, "The song has deleted successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+			} 
+			catch (SQLException e1)
+			{
+				e1.printStackTrace();
+			}
+		}
 	}
 
 	@Override

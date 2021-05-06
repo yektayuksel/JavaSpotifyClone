@@ -174,8 +174,16 @@ public class ArtistSettings extends JPanel implements MouseListener, ActionListe
 		}
 		else if(e.getSource() == deleteButton)
 		{
-			String artistToDelete =  ((CBItem) artistNameBox.getSelectedItem()).getArtistName();
-			//Gerekli sorguyu yap ve isimler eslesen artisti sil
+			String artistToDelete =  ((CBItem) artistNameBox.getSelectedItem()).getID();
+			try 
+			{
+				SpotifyDB.deleteArtist(artistToDelete);
+				JOptionPane.showMessageDialog(null, "The artist has deleted successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+			} 
+			catch (SQLException e1) 
+			{
+				e1.printStackTrace();
+			}
 		}
 		else if(e.getSource() == AlbumSettingsButton)
 		{

@@ -14,6 +14,7 @@ public class FreeUserPanel extends JPanel implements MouseListener
 	JPanel middlePanel;
 	JPanel bottomPanel;
 	JLabel albumCoverLabel;
+	
 	final int MIDDLE_LABEL_WIDTH = 1100;
 	final int MIDDLE_LABEL_HEIGHT = 55;
 	
@@ -46,6 +47,13 @@ public class FreeUserPanel extends JPanel implements MouseListener
 	Color eneteredColor = defaultBackground.brighter();
 	boolean premium;
 	String userID;
+	
+	//---Top panel---
+	JPanel topPanel;
+	JButton myPlaylistsButton;
+	JButton usersButton;
+	
+	
 	FreeUserPanel(String ID)
 	{
 		userID = ID;

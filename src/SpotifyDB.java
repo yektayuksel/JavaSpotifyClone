@@ -190,7 +190,6 @@ public class SpotifyDB
 		
 	}
 	
-	//Following sutununa sadece premium kullanicilar  eklenebilecek.!!!
 	
 	
 	public static ResultSet getFollowers(String userID) throws SQLException
@@ -200,10 +199,6 @@ public class SpotifyDB
 		Statement st = conn.createStatement();
 		ResultSet rs = st.executeQuery(query);
 		return rs;
-		
-		//userID'si bilinen user'ýn takipcilerini dondurmeli.
-		//hepsi donebilir mi emin degilim ama query dogru olmasi lazim donguden cikamadim da
-		
 	}
 	
 	public static ResultSet getFollowings(String userID) throws SQLException
@@ -214,39 +209,30 @@ public class SpotifyDB
 		ResultSet rs = st.executeQuery(query);
 		return rs;
 		
-		
-		//userID'si bilinen user'in takip ettiklerini dondurmeli.
-		
 	}
 	
 	public static ResultSet getAllAlbums(String ArtistID) throws SQLException
 	{
 		Connection conn = getConnection(); 
 	
-		String query = "SELECT AlbumID, AlbumName FROM album WHERE ArtistID = " + ArtistID;
+		String query = "SELECT AlbumID, AlbumName FROM album WHERE ArtistID = '" + ArtistID + "'";
 		Statement st = conn.createStatement();
 		ResultSet rs = st.executeQuery(query);
 		return rs;
-		
-		//ArtistID'si bilinen artistin album isimlerini ve album id'lerini dondurmeli.
-		//eksik var aklima gelmedi cozumu. rs'de cift sonuc dondurmem lazim.
-		
 	}
 	public static ResultSet getAlbumSongs(String AlbumID) throws SQLException
 	{
 		Connection conn = getConnection(); 
-		String query = "SELECT SongID, SongName FROM song WHERE AlbumID = " + AlbumID;
+		String query = "SELECT SongID, SongName FROM song WHERE AlbumID = '" + AlbumID + "'";
 		Statement st = conn.createStatement();
 		ResultSet rs = st.executeQuery(query);
 		return rs;
 		
-		//AlbumID'si bilinen albumdeki sarki isimlerini ve sarki id'lerini dondurmeli.
-		//eksik var aklima gelmedi cozumu. rs'de cift sonuc dondurmem lazim.
 	}
 	public static ResultSet getArtistSongs(String ArtistID) throws SQLException
 	{
 		Connection conn = getConnection(); 
-		String query = "SELECT SongID, SongName FROM song WHERE ArtistID = " + ArtistID;
+		String query = "SELECT SongID, SongName FROM song WHERE ArtistID = '" + ArtistID + "'";
 		Statement st = conn.createStatement();
 		ResultSet rs = st.executeQuery(query);
 		return rs;
@@ -318,8 +304,41 @@ public class SpotifyDB
 		return rs.getString("releaseDate");
 	}
 	
-	   
-	  
+	public static void deleteSong(String SongID) throws SQLException 
+	{
+		Connection conn = getConnection();
+		PreparedStatement deleteSong = conn.prepareStatement("DELETE FROM song WHERE SongID = '" + SongID +"'");
+		deleteSong.executeUpdate();
+		
+	}
+	
+	public static void deleteAlbum(String AlbumID) throws SQLException
+	{
+		ResultSet rs = getAlbumSongs(AlbumID);
+		Connection conn = getConnection();
+		
+		while(rs.next())
+		{
+			 deleteSong(rs.getString("SongID"));
+		}
+		
+		PreparedStatement deleteAlbum = conn.prepareStatement("DELETE FROM album WHERE AlbumID = '" + AlbumID +"'");
+		deleteAlbum.executeUpdate();
+	}
+	
+	public static void deleteArtist(String ArtistID) throws SQLException
+	{
+		ResultSet rs = getAllAlbums(ArtistID);
+		Connection conn = getConnection();
+		
+		while(rs.next())
+		{
+			deleteAlbum(rs.getString("AlbumID"));
+		}
+		
+		PreparedStatement deleteAlbum = conn.prepareStatement("DELETE FROM artist WHERE ArtistID = '" + ArtistID +"'");
+		deleteAlbum.executeUpdate();
+	}
 	
 
 }

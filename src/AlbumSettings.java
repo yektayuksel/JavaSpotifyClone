@@ -263,7 +263,17 @@ public class AlbumSettings extends JPanel implements MouseListener,ActionListene
 		}
 		else if(e.getSource() == deleteButton)
 		{
-			String albumName = (String) albumNameBox.getSelectedItem();
+			CBItem album = (CBItem) albumNameBox.getSelectedItem();
+			String albumID = album.getID();
+			try 
+			{
+				SpotifyDB.deleteAlbum(albumID);
+				JOptionPane.showMessageDialog(null, "The album has deleted successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+			} 
+			catch (SQLException e1) 
+			{
+				e1.printStackTrace();
+			}
 		}
 		else if(e.getSource() == artistSettingsButton)
 		{
