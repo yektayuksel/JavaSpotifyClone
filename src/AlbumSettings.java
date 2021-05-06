@@ -269,6 +269,8 @@ public class AlbumSettings extends JPanel implements MouseListener,ActionListene
 			{
 				SpotifyDB.deleteAlbum(albumID);
 				JOptionPane.showMessageDialog(null, "The album has deleted successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+				initAlbumComboBoxes();
+				repaint();
 			} 
 			catch (SQLException e1) 
 			{

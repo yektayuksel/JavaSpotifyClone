@@ -179,6 +179,8 @@ public class ArtistSettings extends JPanel implements MouseListener, ActionListe
 			{
 				SpotifyDB.deleteArtist(artistToDelete);
 				JOptionPane.showMessageDialog(null, "The artist has deleted successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+				initArtistNameCB();
+				repaint();
 			} 
 			catch (SQLException e1) 
 			{
