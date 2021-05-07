@@ -15,10 +15,6 @@ public class SpotifyDB
 		
 	}
 	
-	public void createTable() throws SQLException, ClassNotFoundException
-	{
-		
-	}
 	public static Connection getConnection()
 	{
 		Connection conn;
@@ -258,14 +254,7 @@ public class SpotifyDB
 		ResultSet rs = st.executeQuery(query);
 		return !rs.next();
 	}
-	/*public static void deleteArtist(String ArtistID)
-	{
-		ArtistIDsi belli olan Artist'in butun sarkilarini ve albumlerini teker teker silmeli. Ilk 
-		once sarkilar silinecek, sonra albumler silinecek, en son sanatcinin kendisi silinecek.
-		Kontrol etmedim ama FOREIGN KEY iliskilerinden dolayi silme islemleri bu sirayla yapilmadiginda
-		problem cikabilir
-		
-	}*/
+	
 	
 	public static boolean checkPassword(String userName, String pswrd) throws SQLException
 	{
@@ -340,5 +329,12 @@ public class SpotifyDB
 		deleteAlbum.executeUpdate();
 	}
 	
-
+	public static ResultSet getPremiumUsers(String userID) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		String query = "SELECT userName, userID FROM user WHERE isPremium = true and userID != '" + userID +"'";
+		Statement st = conn.createStatement();
+		ResultSet rs = st.executeQuery(query);
+		return rs;
+	}
 }

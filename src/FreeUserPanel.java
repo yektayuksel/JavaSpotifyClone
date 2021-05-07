@@ -5,6 +5,7 @@ import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.swing.*;
 
@@ -53,6 +54,8 @@ public class FreeUserPanel extends JPanel implements MouseListener
 	JButton myPlaylistsButton;
 	JButton usersButton;
 	
+	ArrayList<Button> userButtons;
+	
 	
 	FreeUserPanel(String ID)
 	{
@@ -98,6 +101,16 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		this.setPreferredSize(new Dimension(1280,720));
 	}
 
+	
+	public void initUserButtons() throws SQLException
+	{
+		ResultSet rs = SpotifyDB.getPremiumUsers(this.userID);
+		while(rs.next())
+		{
+			userButtons.add(new Button(rs.getString("userID"), rs.getString("userName")));
+		}
+	}
+	
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
