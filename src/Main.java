@@ -23,7 +23,7 @@ public class Main
 		//new Screen(new SignInPanel());
 		//new Screen(new LoginPanel());
 		
-
+		SpotifyDB.updateSongDuration("2","2.06");
 		
 		 
     }

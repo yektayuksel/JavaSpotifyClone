@@ -328,6 +328,12 @@ public class SpotifyDB
 		PreparedStatement deleteAlbum = conn.prepareStatement("DELETE FROM artist WHERE ArtistID = '" + ArtistID +"'");
 		deleteAlbum.executeUpdate();
 	}
+	public static void deletePlayListsSong(String SongID) throws SQLException
+	{
+		Connection conn = getConnection();
+		PreparedStatement deletePlayListsSong = conn.prepareStatement("DELETE FROM playlist WHERE songID = '" + SongID +"'");
+		deletePlayListsSong.executeUpdate();
+	}
 	
 	public static ResultSet getPremiumUsers(String userID) throws SQLException
 	{
@@ -336,5 +342,116 @@ public class SpotifyDB
 		Statement st = conn.createStatement();
 		ResultSet rs = st.executeQuery(query);
 		return rs;
+	}
+
+	public static void updateArtistName(String artistID, String artistCountry) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		PreparedStatement updateArtistName = conn.prepareStatement("UPDATE artist SET ArtistName = '" + artistCountry + "'  WHERE ArtistID = '"+ artistID +"'");
+		updateArtistName.executeUpdate();
+	}
+	public static void updateArtistCountry(String artistID, String artistCountry) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		PreparedStatement updateArtistCountry = conn.prepareStatement("UPDATE artist SET Country = '" + artistCountry + "'  WHERE ArtistID = '"+ artistID +"'");
+		updateArtistCountry.executeUpdate();
+	}
+	public static void updateAlbumName(String albumID, String albumName) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		PreparedStatement updateAlbumName = conn.prepareStatement("UPDATE album SET AlbumName = '" + albumName + "'  WHERE AlbumID = '"+ albumID +"'");
+		updateAlbumName.executeUpdate();
+	}
+	public static void updateAlbumReleasedate(String albumID, String AlbumReleasedate) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		PreparedStatement updateAlbumReleasedate = conn.prepareStatement("UPDATE album SET releaseDate = '" + AlbumReleasedate + "'  WHERE AlbumID = '"+ albumID +"'");
+		updateAlbumReleasedate.executeUpdate();
+	}
+	public static void updateAlbumgenre(String albumID, String albumGenre) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		PreparedStatement updateAlbumgenre = conn.prepareStatement("UPDATE album SET genre = '" + albumGenre + "'  WHERE AlbumID = '"+ albumID +"'");
+		updateAlbumgenre.executeUpdate();
+	}
+	public static void updateSongName(String songID, String songName) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		PreparedStatement updateSongName = conn.prepareStatement("UPDATE song SET SongName = '" + songName + "'  WHERE SongID = '"+ songID +"'");
+		updateSongName.executeUpdate();
+	}
+	public static void updateSongGenre(String songID, String songGenre) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		PreparedStatement updateSongGenre = conn.prepareStatement("UPDATE song SET genre = '" + songGenre + "'  WHERE SongID = '"+ songID +"'");
+		updateSongGenre.executeUpdate();
+	}
+	public static void updateSongDuration(String songID, String duration) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		PreparedStatement updateSongDuration = conn.prepareStatement("UPDATE song SET duration = '" + duration + "'  WHERE SongID = '"+ songID +"'");
+		updateSongDuration.executeUpdate();
+	}
+	public static void updateSongTimesPlayed(String songID, String TimesPlayed) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		PreparedStatement updateSongTimesPlayed = conn.prepareStatement("UPDATE song SET timesPlayed = '" + TimesPlayed + "'  WHERE SongID = '"+ songID +"'");
+		updateSongTimesPlayed.executeUpdate();
+	}
+	public static void updateSongReleaseDate(String songID, String songReleaseDate) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		PreparedStatement updateSongReleaseDate = conn.prepareStatement("UPDATE song SET releaseDate = '" + songReleaseDate + "'  WHERE SongID = '"+ songID +"'");
+		updateSongReleaseDate.executeUpdate();
+	}
+	public static void updateUserName(String UserID, String UserName) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		PreparedStatement updateUserName = conn.prepareStatement("UPDATE user SET userName = '" + UserName + "'  WHERE userID = '"+ UserID +"'");
+		updateUserName.executeUpdate();
+	}
+	public static void updateUserEmail(String UserID, String Email) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		PreparedStatement updateUserEmail = conn.prepareStatement("UPDATE user SET email = '" + Email + "'  WHERE userID = '"+ UserID +"'");
+		updateUserEmail.executeUpdate();
+	}
+	public static void updateUserPswrd(String UserID, String Pswrd) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		PreparedStatement updateUserPswrd = conn.prepareStatement("UPDATE user SET pswrd = '" + Pswrd + "'  WHERE userID = '"+ UserID +"'");
+		updateUserPswrd.executeUpdate();
+	}
+	public static void updateUserCountry(String UserID, String UserCountry) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		PreparedStatement updateUserCountry = conn.prepareStatement("UPDATE user SET Country = '" + UserCountry + "'  WHERE userID = '"+ UserID +"'");
+		updateUserCountry.executeUpdate();
+	}
+	/*
+	public static void updateUserPremium(String isPaid) throws SQLException
+	{
+		if(isPaid == yes)
+		{
+			Connection conn = getConnection(); 
+			PreparedStatement updateUserPremium = conn.prepareStatement("UPDATE user SET isPremium = '" + "yes" + "'  WHERE userID = '"+ UserID +"'");
+			updateUserPremium.executeUpdate();
+		}
+		else
+		{
+			hata cikaralim
+		}
+	}*/
+	public static void updateUserCardNumber(String UserID, String CardNumber) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		PreparedStatement updateUserCardNumber = conn.prepareStatement("UPDATE user SET cardNumber = '" + CardNumber + "'  WHERE userID = '"+ UserID +"'");
+		updateUserCardNumber.executeUpdate();
+	}
+	public static void updateUserIsPaidCountry(String UserID, String IsPaid) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		PreparedStatement updateUserIsPaid = conn.prepareStatement("UPDATE user SET isPaid = '" + IsPaid + "'  WHERE userID = '"+ UserID +"'");
+		updateUserIsPaid.executeUpdate();
 	}
 }
