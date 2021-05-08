@@ -60,7 +60,7 @@ public class FreeUserPanel extends JPanel implements MouseListener
 	ArrayList<Button> userButtons;
 	JComboBox<CBItem> playlistsCB = new JComboBox<CBItem>();
 	ArrayList<Button> userPlaylistButtons = new ArrayList<Button>();
-	
+	ArrayList<Button> artistButtons = new ArrayList<Button>();
 	
 	FreeUserPanel(String ID) throws SQLException
 	{
@@ -86,6 +86,7 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		initButtonImgs();
 		initButtons();
 		initUserButtons();
+		initArtistButtons();
 	    addMiddleLabels();
 	
 		
@@ -362,9 +363,7 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		}
 		else if(e.getSource() == myPlaylistsButton)
 		{
-			leftPanel.removeAll();
-			leftPanel.revalidate();
-			leftPanel.repaint();
+			clearLeftPanel();
 			
 			for(int i = 0; i < userPlaylistButtons.size(); i++)
 			{
@@ -374,16 +373,28 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		}
 		else if(e.getSource() == usersButton)
 		{
-			leftPanel.removeAll();
-			leftPanel.revalidate();
-			leftPanel.repaint();
+			clearLeftPanel();
 			
 			for(int i = 0; i < userButtons.size(); i++)
 			{
 				leftPanel.add(userButtons.get(i));
 			}
 		}
+		else if(e.getSource() == artistsButton)
+		{
+			clearLeftPanel();
+			for(int i = 0; i < artistButtons.size(); i++)
+			{
+				leftPanel.add(artistButtons.get(i));
+			}
+		}
 			
+	}
+	public void clearLeftPanel()
+	{
+		leftPanel.removeAll();
+		leftPanel.revalidate();
+		leftPanel.repaint();
 	}
 	public void initUserPlaylistButtons()
 	{
@@ -411,7 +422,35 @@ public class FreeUserPanel extends JPanel implements MouseListener
 			userPlaylistButtons.get(i).addMouseListener(this);
 		}
 	}
-
+	
+	public void initArtistButtons() throws SQLException
+	{
+		//artistButtons
+		ResultSet rs = SpotifyDB.getAllArtists();
+		artistButtons.clear();
+		while(rs.next())
+		{
+			artistButtons.add(new Button(rs.getString("ArtistID"), rs.getString("ArtistName")));
+		}
+		
+		for(int i = 0; i < artistButtons.size(); i++)
+		{
+			if(i == 0)
+			{
+				artistButtons.get(i).setBounds(0, 50, 150, 50);
+			}
+			else
+			{
+				artistButtons.get(i).setBounds(0, (int)artistButtons.get(i-1).getLocation().getY()+70, 150, 50);
+			}
+			artistButtons.get(i).setFont(new Font("Consolas", Font.BOLD, 20));
+			artistButtons.get(i).setForeground(Color.white);
+			artistButtons.get(i).setBackground(Color.black);
+			artistButtons.get(i).setFocusable(false);
+			artistButtons.get(i).addMouseListener(this);
+		}
+		
+	}
 	
 	@Override
 	public void mouseReleased(MouseEvent e) 
