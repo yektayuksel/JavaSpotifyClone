@@ -122,6 +122,12 @@ public class SpotifyDB
 			e.printStackTrace();
 		}
 	}
+	public static void Follow(String UserID, String followingID) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		PreparedStatement Follow = conn.prepareStatement("INSERT INTO follow (FollowerID,FollowingID) VALUES('"+UserID+"','"+followingID+"'");
+		Follow.executeUpdate();
+	}
 	public static void addToPlaylist(String userID, String SongID) throws SQLException
 	{
 		
@@ -131,7 +137,7 @@ public class SpotifyDB
 		Statement st = conn.createStatement();
 		ResultSet rs = st.executeQuery(query);
 		try 
-		{
+		{			
 			PreparedStatement addtoplaylst = conn.prepareStatement("INSERT INTO playlist (userID,SongID,genre) VALUES('"+userID+"','"+SongID+"','"+rs.getString("genre")+"')");
 			addtoplaylst.executeUpdate();
 		}
@@ -334,7 +340,12 @@ public class SpotifyDB
 		PreparedStatement deletePlayListsSong = conn.prepareStatement("DELETE FROM playlist WHERE songID = '" + SongID +"'");
 		deletePlayListsSong.executeUpdate();
 	}
-	
+	public static void unFollow(String userID, String followingID) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		PreparedStatement unFollow = conn.prepareStatement("DELETE FROM follow WHERE FollowerID = '" + userID + "' and FollowingID = '"+ followingID + "'");
+		unFollow.executeUpdate();
+	}
 	public static ResultSet getPremiumUsers(String userID) throws SQLException
 	{
 		Connection conn = getConnection(); 
@@ -449,4 +460,5 @@ public class SpotifyDB
 		PreparedStatement updateUserIsPaid = conn.prepareStatement("UPDATE user SET isPaid = '" + IsPaid + "'  WHERE userID = '"+ UserID +"'");
 		updateUserIsPaid.executeUpdate();
 	}
+
 }
