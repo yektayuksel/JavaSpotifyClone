@@ -8,6 +8,7 @@ public class Button extends JButton
 	{
 		this.ID = ID;
 		this.displayText = displayText;
+		this.setText(displayText);
 	}
 	public String getID() {
 		return ID;

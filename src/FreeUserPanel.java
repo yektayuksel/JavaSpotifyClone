@@ -53,48 +53,44 @@ public class FreeUserPanel extends JPanel implements MouseListener
 	JPanel topPanel;
 	JButton myPlaylistsButton;
 	JButton usersButton;
-	
+	JButton artistsButton;
+	JButton followers;
+	JButton following;
+	//---Left Panel---
 	ArrayList<Button> userButtons;
+	JComboBox<CBItem> playlistsCB = new JComboBox<CBItem>();
+	ArrayList<Button> userPlaylistButtons = new ArrayList<Button>();
 	
 	
-	FreeUserPanel(String ID)
+	FreeUserPanel(String ID) throws SQLException
 	{
 		userID = ID;
-		try 
-		{
-			if(SpotifyDB.checkPremium(ID))
-			{
-				 premium = true;
-			}
-			else
-			{
-				 premium = false;
-			}
-		} 
-		catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		userButtons = new ArrayList<Button>();
+	    if(SpotifyDB.checkPremium(ID))
+	    {
+	    	premium = true;
+	    }
+	    else
+	    {
+	    	premium = false;
 		}
+		
 		this.setLayout(null);
 		this.setBackground(new Color(33,33,33));
-		initPanels();
 		setAlbumCoverLabel();
+		initLeftPanel();
+		initTopPanel();
+		initMiddlePanel();
+		initBottomPanel();
+		initUserPlaylistButtons();
 		initButtonImgs();
 		initButtons();
-		try {
-			addMiddleLabels();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		initUserButtons();
+	    addMiddleLabels();
+	
 		
-		progressBar = new JProgressBar();
-		progressBar.setBounds(BUTTON_LOCATION_X-30,BUTTON_LOCATION_Y+50,350,15);
 		
-		bottomPanel.add(albumCoverLabel);
-		bottomPanel.add(progressBar);
-		this.add(leftPanel);
-		this.add(middlePanel);
-		this.add(bottomPanel);
+		
 		
 		
 		
@@ -116,25 +112,100 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		// TODO Auto-generated method stub
 		
 	}
-	public void initPanels()
+	
+	public void initLeftPanel()
 	{
 		leftPanel = new JPanel();
-		leftPanel.setBounds(0,0,180,550);
+		leftPanel.setBounds(0,0,150,620);
 		leftPanel.setBackground(Color.red);
 		leftPanel.setLayout(null);
-		
-		middlePanel = new JPanel();
-		middlePanel.setBounds(180,0,1100,550);
-		//middlePanel.setBackground(Color.blue);
-		middlePanel.setBackground(new Color(33,33,33).brighter());
-		middlePanel.setLayout(null);
-		
-		bottomPanel = new JPanel();
-		bottomPanel.setBounds(0,550,1280,100);
-		bottomPanel.setBackground(Color.green);
-		bottomPanel.setLayout(null);
+		this.add(leftPanel);
 	}
 	
+	
+	public void initTopPanel()
+	{
+		topPanel = new JPanel();
+		topPanel.setBounds(150,0,1130,50);
+		topPanel.setBackground(Color.blue);
+		topPanel.setLayout(null);
+		myPlaylistsButton = new JButton();
+		myPlaylistsButton.setBounds(1, 0, 200, 50);
+		myPlaylistsButton.setFont(new Font("Consolas", Font.BOLD, 20));
+		myPlaylistsButton.setForeground(Color.white);
+		myPlaylistsButton.setText("My Playlists");
+		myPlaylistsButton.setBackground(Color.black);
+		myPlaylistsButton.setFocusable(false);
+		myPlaylistsButton.addMouseListener(this);
+		
+		
+		usersButton = new JButton();
+		usersButton.setBounds((int)myPlaylistsButton.getLocation().getX()+232, 0, 200, 50);
+		usersButton.setFont(new Font("Consolas", Font.BOLD, 20));
+		usersButton.setForeground(Color.white);
+		usersButton.setText("Users");
+		usersButton.setBackground(Color.black);
+		usersButton.setFocusable(false);
+		usersButton.addMouseListener(this);
+		 
+		artistsButton = new JButton();
+		artistsButton.setBounds((int)usersButton.getLocation().getX()+232, 0, 200, 50);
+		artistsButton.setFont(new Font("Consolas", Font.BOLD, 20));
+		artistsButton.setForeground(Color.white);
+		artistsButton.setText("Artists");
+		artistsButton.setBackground(Color.black);
+		artistsButton.setFocusable(false);
+		artistsButton.addMouseListener(this);
+		
+		followers = new JButton();
+		followers.setBounds((int)artistsButton.getLocation().getX()+232, 0, 200, 50);
+		followers.setFont(new Font("Consolas", Font.BOLD, 20));
+		followers.setForeground(Color.white);
+		followers.setText("Followers");
+		followers.setBackground(Color.black);
+		followers.setFocusable(false);
+		followers.addMouseListener(this);
+		/*following;*/
+		following = new JButton();
+		following.setBounds((int)followers.getLocation().getX()+232, 0, 200, 50);
+		following.setFont(new Font("Consolas", Font.BOLD, 20));
+		following.setForeground(Color.white);
+		following.setText("Following");
+		following.setBackground(Color.black);
+		following.setFocusable(false);
+		following.addMouseListener(this);
+		
+		topPanel.add(myPlaylistsButton);
+		topPanel.add(usersButton);
+		topPanel.add(artistsButton);
+		topPanel.add(followers);
+		topPanel.add(following);
+		this.add(topPanel);
+	}
+	
+	public void initMiddlePanel()
+	{
+		middlePanel = new JPanel();
+		middlePanel.setBounds(150,50,1130,570);
+		middlePanel.setBackground(Color.white);
+		//middlePanel.setBackground(new Color(33,33,33).brighter());
+		middlePanel.setLayout(null);
+		this.add(middlePanel);
+	}
+	public void initBottomPanel()
+	{
+
+		bottomPanel = new JPanel();
+		bottomPanel.setBounds(0,620,1280,100);
+		bottomPanel.setBackground(Color.green);
+		bottomPanel.setLayout(null);
+		progressBar = new JProgressBar();
+		progressBar.setBounds(BUTTON_LOCATION_X-30,BUTTON_LOCATION_Y+50,350,15);
+		bottomPanel.add(albumCoverLabel);
+		bottomPanel.add(progressBar);
+		
+		this.add(bottomPanel);
+	}
 	public void initButtonImgs()
 	{
 		playButtonImg1 = new ImageIcon("images\\playButton.png");
@@ -262,11 +333,59 @@ public class FreeUserPanel extends JPanel implements MouseListener
 	@Override
 	public void mousePressed(MouseEvent e) 
 	{
+		JButton btn = (JButton)e.getSource();
 		changePressedBackground((JComponent)e.getSource());
-		
-		
+		if(userButtons.contains(btn))
+		{/*Sadece premium kullanicilarin gosterildigi panelde ustune tiklanilan kullanicilarin IDleri ile
+		  beraber combobox'a playlistler item olarak eklenir. Daha sonra bu comboboxta secilen item'a gore
+		  ortadaki panelde kullanicinin o playlistindeli sarkilar gosterilir.*/
+			
+			Button btn2 = (Button) btn;
+			
+			playlistsCB.removeAllItems();
+			playlistsCB.addItem(new CBItem(btn2.ID, "Jazz"));
+			playlistsCB.addItem(new CBItem(btn2.ID, "Pop"));
+			playlistsCB.addItem(new CBItem(btn2.ID, "Classical"));
+		}
+		else if(e.getSource() == myPlaylistsButton)
+		{
+			leftPanel.removeAll();
+			leftPanel.revalidate();
+			leftPanel.repaint();
+			
+			for(int i = 0; i < userPlaylistButtons.size(); i++)
+			{
+				leftPanel.add(userPlaylistButtons.get(i));
+			}
+			
+		}
 	}
-
+	public void initUserPlaylistButtons()
+	{
+		userPlaylistButtons.clear();
+		Button jazzButton = new Button(userID, "Jazz");
+		Button popButton = new Button(userID, "Pop");
+		Button classicalButton = new Button(userID, "Classical");
+		userPlaylistButtons.add(jazzButton);
+		userPlaylistButtons.add(popButton);
+		userPlaylistButtons.add(classicalButton);
+		for(int i = 0; i < userPlaylistButtons.size(); i++)
+		{
+			if(i == 0)
+			{
+				userPlaylistButtons.get(i).setBounds(0, 50, 150, 50);
+			}
+			else
+			{
+				userPlaylistButtons.get(i).setBounds(0, (int)userPlaylistButtons.get(i-1).getLocation().getY()+70, 150, 50);
+			}
+			userPlaylistButtons.get(i).setFont(new Font("Consolas", Font.BOLD, 20));
+			userPlaylistButtons.get(i).setForeground(Color.white);
+			userPlaylistButtons.get(i).setBackground(Color.black);
+			userPlaylistButtons.get(i).setFocusable(false);
+			userPlaylistButtons.get(i).addMouseListener(this);
+		}
+	}
 	@Override
 	public void mouseReleased(MouseEvent e) 
 	{

@@ -3,20 +3,14 @@ import javax.swing.JComboBox;
 public class CBItem
 {
 	String ID;
-	String ArtistName;
+	String text;
 	
 	CBItem(String ID, String ArtistName)
 	{
 		this.ID = ID;
-		this.ArtistName = ArtistName;
+		this.text = ArtistName;
 	}
-	public String getArtistName() {
-		return ArtistName;
-	}
-
-	public void setArtistName(String artistName) {
-		ArtistName = artistName;
-	}
+	
 
 	
 	
@@ -30,7 +24,7 @@ public class CBItem
 	 @Override
 	 public String toString() 
 	 {
-	    return ArtistName;
+	    return text;
 	 }
 	
 }
