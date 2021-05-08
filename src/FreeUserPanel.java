@@ -105,6 +105,23 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		{
 			userButtons.add(new Button(rs.getString("userID"), rs.getString("userName")));
 		}
+		
+		for(int i = 0; i < userButtons.size(); i++)
+		{
+			if(i == 0)
+			{
+				userButtons.get(i).setBounds(0, 50, 150, 50);
+			}
+			else
+			{
+				userButtons.get(i).setBounds(0, (int)userButtons.get(i-1).getLocation().getY()+70, 150, 50);
+			}
+			userButtons.get(i).setFont(new Font("Consolas", Font.BOLD, 20));
+			userButtons.get(i).setForeground(Color.white);
+			userButtons.get(i).setBackground(Color.black);
+			userButtons.get(i).setFocusable(false);
+			userButtons.get(i).addMouseListener(this);
+		}
 	}
 	
 	@Override
@@ -325,11 +342,7 @@ public class FreeUserPanel extends JPanel implements MouseListener
 			}
 	}
 	
-	public void addLeftLabels() throws SQLException
-	{
-		
-		
-	}
+	
 	@Override
 	public void mousePressed(MouseEvent e) 
 	{
@@ -359,6 +372,18 @@ public class FreeUserPanel extends JPanel implements MouseListener
 			}
 			
 		}
+		else if(e.getSource() == usersButton)
+		{
+			leftPanel.removeAll();
+			leftPanel.revalidate();
+			leftPanel.repaint();
+			
+			for(int i = 0; i < userButtons.size(); i++)
+			{
+				leftPanel.add(userButtons.get(i));
+			}
+		}
+			
 	}
 	public void initUserPlaylistButtons()
 	{
@@ -386,6 +411,8 @@ public class FreeUserPanel extends JPanel implements MouseListener
 			userPlaylistButtons.get(i).addMouseListener(this);
 		}
 	}
+
+	
 	@Override
 	public void mouseReleased(MouseEvent e) 
 	{
