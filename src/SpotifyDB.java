@@ -204,7 +204,7 @@ public class SpotifyDB
 	public static ResultSet getFollowers(String userID) throws SQLException
 	{
 		Connection conn = getConnection(); 
-		String query = "SELECT FollowerID FROM follow WHERE FollowingID = " + userID;
+		String query = "SELECT f.FollowerID, u.userName FROM follow f, user uWHERE f.FollowingID = '" + userID + "' and f.FollowerID = u.userID";
 		Statement st = conn.createStatement();
 		ResultSet rs = st.executeQuery(query);
 		return rs;
@@ -232,7 +232,7 @@ public class SpotifyDB
 	public static ResultSet getAlbumSongs(String AlbumID) throws SQLException
 	{
 		Connection conn = getConnection(); 
-		String query = "SELECT SongID, SongName FROM song WHERE AlbumID = '" + AlbumID + "'";
+		String query = "SELECT SongID, SongName, genre FROM song WHERE AlbumID = '" + AlbumID + "'";
 		Statement st = conn.createStatement();
 		ResultSet rs = st.executeQuery(query);
 		return rs;

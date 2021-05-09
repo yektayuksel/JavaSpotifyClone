@@ -60,7 +60,11 @@ public class FreeUserPanel extends JPanel implements MouseListener
 	ArrayList<Button> userButtons;
 	JComboBox<CBItem> playlistsCB = new JComboBox<CBItem>();
 	ArrayList<Button> userPlaylistButtons = new ArrayList<Button>();
-	ArrayList<Button> artistButtons = new ArrayList<Button>();
+	ArrayList<Button> artistButtonsList = new ArrayList<Button>();
+	//---Middle Panel---
+	ArrayList<Button> followerList = new ArrayList<Button>();
+	ArrayList<Button> artistAlbumsList = new ArrayList<Button>();
+	ArrayList<Button> songsList = new ArrayList<Button>();
 	
 	FreeUserPanel(String ID) throws SQLException
 	{
@@ -87,6 +91,7 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		initButtons();
 		initUserButtons();
 		initArtistButtons();
+		//initFollowerListButtons();
 	    addMiddleLabels();
 	
 		
@@ -363,7 +368,7 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		}
 		else if(e.getSource() == myPlaylistsButton)
 		{
-			clearLeftPanel();
+			clearPanel(leftPanel);
 			
 			for(int i = 0; i < userPlaylistButtons.size(); i++)
 			{
@@ -373,7 +378,7 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		}
 		else if(e.getSource() == usersButton)
 		{
-			clearLeftPanel();
+			clearPanel(leftPanel);
 			
 			for(int i = 0; i < userButtons.size(); i++)
 			{
@@ -382,19 +387,97 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		}
 		else if(e.getSource() == artistsButton)
 		{
-			clearLeftPanel();
-			for(int i = 0; i < artistButtons.size(); i++)
+			clearPanel(leftPanel);
+			for(int i = 0; i < artistButtonsList.size(); i++)
 			{
-				leftPanel.add(artistButtons.get(i));
+				leftPanel.add(artistButtonsList.get(i));
 			}
+		}
+		else if(artistButtonsList.contains(btn))
+		{
+			
+			clearPanel(middlePanel);
+			artistAlbumsList.clear();
+			Button button = (Button)e.getSource();
+			try 
+			{
+				ResultSet rs = SpotifyDB.getAllAlbums(button.getID());
+				while(rs.next())
+				{
+					artistAlbumsList.add(new Button(rs.getString("AlbumID"), rs.getString("AlbumName")));
+				}
+			} 
+			catch (SQLException e1) 
+			{
+				e1.printStackTrace();
+			}
+			for(int i = 0; i < artistAlbumsList.size(); i++)
+			{
+				if(i == 0)
+				{
+					artistAlbumsList.get(i).setBounds(0, 50, 150, 50);
+				}
+				else
+				{
+					artistAlbumsList.get(i).setBounds(0, (int)artistAlbumsList.get(i-1).getLocation().getY()+70, 150, 50);
+				}
+				artistAlbumsList.get(i).setFont(new Font("Consolas", Font.BOLD, 20));
+				artistAlbumsList.get(i).setForeground(Color.white);
+				artistAlbumsList.get(i).setBackground(Color.black);
+				artistAlbumsList.get(i).setFocusable(false);
+				artistAlbumsList.get(i).addMouseListener(this);
+				middlePanel.add(artistAlbumsList.get(i));
+			}
+		}
+		else if(artistAlbumsList.contains(btn))
+		{
+			Button button = (Button)e.getSource();
+			clearPanel(middlePanel);
+			songsList.clear();
+			try 
+			{
+				ResultSet rs = SpotifyDB.getAlbumSongs(button.getID());
+				//SongID SongName
+				while(rs.next())
+				{
+					songsList.add(new Button(rs.getString("SongID"), rs.getString("SongName")));
+					songsList.get(songsList.size()-1).setGenre(rs.getString("genre"));
+				}
+			} 
+			catch (SQLException e1) 
+			{
+				e1.printStackTrace();
+			}
+			for(int i = 0; i < songsList.size(); i++)
+			{
+				if(i == 0)
+				{
+					songsList.get(i).setBounds(0, 50, 150, 50);
+				}
+				else
+				{
+					songsList.get(i).setBounds(0, (int)songsList.get(i-1).getLocation().getY()+70, 150, 50);
+				}
+				songsList.get(i).setFont(new Font("Consolas", Font.BOLD, 20));
+				songsList.get(i).setForeground(Color.white);
+				songsList.get(i).setBackground(Color.black);
+				songsList.get(i).setFocusable(false);
+				songsList.get(i).addMouseListener(this);
+				middlePanel.add(songsList.get(i));
+			}
+			
+		}
+		else if(songsList.contains(btn))
+		{
+			
 		}
 			
 	}
-	public void clearLeftPanel()
+	public void clearPanel(JPanel panel)
 	{
-		leftPanel.removeAll();
-		leftPanel.revalidate();
-		leftPanel.repaint();
+		panel.removeAll();
+		panel.revalidate();
+		panel.repaint();
 	}
 	public void initUserPlaylistButtons()
 	{
@@ -425,33 +508,57 @@ public class FreeUserPanel extends JPanel implements MouseListener
 	
 	public void initArtistButtons() throws SQLException
 	{
-		//artistButtons
 		ResultSet rs = SpotifyDB.getAllArtists();
-		artistButtons.clear();
+		artistButtonsList.clear();
 		while(rs.next())
 		{
-			artistButtons.add(new Button(rs.getString("ArtistID"), rs.getString("ArtistName")));
+			artistButtonsList.add(new Button(rs.getString("ArtistID"), rs.getString("ArtistName")));
 		}
 		
-		for(int i = 0; i < artistButtons.size(); i++)
+		for(int i = 0; i < artistButtonsList.size(); i++)
 		{
 			if(i == 0)
 			{
-				artistButtons.get(i).setBounds(0, 50, 150, 50);
+				artistButtonsList.get(i).setBounds(0, 50, 150, 50);
 			}
 			else
 			{
-				artistButtons.get(i).setBounds(0, (int)artistButtons.get(i-1).getLocation().getY()+70, 150, 50);
+				artistButtonsList.get(i).setBounds(0, (int)artistButtonsList.get(i-1).getLocation().getY()+70, 150, 50);
 			}
-			artistButtons.get(i).setFont(new Font("Consolas", Font.BOLD, 20));
-			artistButtons.get(i).setForeground(Color.white);
-			artistButtons.get(i).setBackground(Color.black);
-			artistButtons.get(i).setFocusable(false);
-			artistButtons.get(i).addMouseListener(this);
+			artistButtonsList.get(i).setFont(new Font("Consolas", Font.BOLD, 20));
+			artistButtonsList.get(i).setForeground(Color.white);
+			artistButtonsList.get(i).setBackground(Color.black);
+			artistButtonsList.get(i).setFocusable(false);
+			artistButtonsList.get(i).addMouseListener(this);
 		}
 		
 	}
-	
+	public void initFollowerListButtons() throws SQLException
+	{
+		//followerList
+		ResultSet rs = SpotifyDB.getFollowers(userID);
+		while(rs.next())
+		{
+			followerList.add(new Button(rs.getString("f.FollowerID"), rs.getString("u.userID")));
+		}
+		
+		for(int i = 0; i < followerList.size(); i++)
+		{
+			if(i == 0)
+			{
+				followerList.get(i).setBounds(0, 50, 150, 50);
+			}
+			else
+			{
+				followerList.get(i).setBounds(0, (int)followerList.get(i-1).getLocation().getY()+70, 150, 50);
+			}
+			followerList.get(i).setFont(new Font("Consolas", Font.BOLD, 20));
+			followerList.get(i).setForeground(Color.white);
+			followerList.get(i).setBackground(Color.black);
+			followerList.get(i).setFocusable(false);
+			followerList.get(i).addMouseListener(this);
+		}
+	}
 	@Override
 	public void mouseReleased(MouseEvent e) 
 	{
