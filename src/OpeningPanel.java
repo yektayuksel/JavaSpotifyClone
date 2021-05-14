@@ -22,7 +22,7 @@ public class OpeningPanel extends JPanel implements MouseListener
 		loginButton.addMouseListener(this);
 		loginButton.setBounds(400, 720/2+75, 180,80);
 		
-		signButton.setText("Sign in");
+		signButton.setText("Sign up");
 		signButton.setBackground(new Color(29,185,84));
 		signButton.setFont(new Font("Consolas", Font.PLAIN, 30));
 		signButton.setForeground(Color.white);

@@ -44,7 +44,7 @@ public class SpotifyDB
 			+ "VALUES('"+userName+"','"+email+"','"+pswrd+"','"+country+"',"+isPremium+","+cardNumber+","+isPaid+")");
 			
 			adduser.executeUpdate();
-			JOptionPane.showMessageDialog(null, userName+", you have been signed in successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(null, userName+", you have been signed up successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 		}
 		catch (Exception e) 
 		{
@@ -128,17 +128,17 @@ public class SpotifyDB
 		PreparedStatement Follow = conn.prepareStatement("INSERT INTO follow (FollowerID,FollowingID) VALUES('"+UserID+"','"+followingID+"'");
 		Follow.executeUpdate();
 	}
-	public static void addToPlaylist(String userID, String SongID) throws SQLException
+	public static void addToPlaylist(String userID, String SongID, String genre) throws SQLException
 	{
 		
 		Connection conn = getConnection(); 
 		
-		String query = "SELECT genre FROM song WHERE SongID = " + SongID;
+		String query = "SELECT genre FROM song WHERE SongID = '" + SongID + "'";
 		Statement st = conn.createStatement();
 		ResultSet rs = st.executeQuery(query);
 		try 
 		{			
-			PreparedStatement addtoplaylst = conn.prepareStatement("INSERT INTO playlist (userID,SongID,genre) VALUES('"+userID+"','"+SongID+"','"+rs.getString("genre")+"')");
+			PreparedStatement addtoplaylst = conn.prepareStatement("INSERT INTO playlist (userID,SongID,genre) VALUES('"+userID+"','"+SongID+"','"+genre+"')");
 			addtoplaylst.executeUpdate();
 		}
 		catch (Exception e) 

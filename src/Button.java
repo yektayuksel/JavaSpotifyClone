@@ -2,11 +2,11 @@ import javax.swing.JButton;
 
 public class Button extends JButton
 {
-	String ID;
-	String displayText;
-	String genre;
+	public String ID;
+	public String displayText;
+	public String genre;
 	
-	Button(String ID, String displayText)
+	public Button(String ID, String displayText)
 	{
 		this.ID = ID;
 		this.displayText = displayText;

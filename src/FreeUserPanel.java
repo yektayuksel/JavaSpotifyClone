@@ -11,60 +11,75 @@ import javax.swing.*;
 
 public class FreeUserPanel extends JPanel implements MouseListener
 {
-	JPanel leftPanel;
-	JPanel middlePanel;
-	JPanel bottomPanel;
-	JLabel albumCoverLabel;
-	
-	final int MIDDLE_LABEL_WIDTH = 1100;
-	final int MIDDLE_LABEL_HEIGHT = 55;
-	
-	JButton playButton;
-	int playButtonID;
-	JButton forwardButton;
-	JButton backwardButton;
-	JButton fastforwardButton;
-	JButton fastbackwardButton;
-	final int BUTTON_SIZE = 30;
-	final int BUTTON_LOCATION_Y = 20;
-	final int BUTTON_GAP = BUTTON_SIZE*2-5;
-	final int BUTTON_LOCATION_X = 645-70;
-	ImageIcon playButtonImg1;
-	ImageIcon pauseButtonImg1;
-	ImageIcon forwardButtonImg1;
-	ImageIcon backwardButtonImg1;
-	ImageIcon fastforwardButtonImg;
-	ImageIcon fastbackwardButtonImg;
+	/**/
 	
 	
-	ImageIcon playButtonImg2;
-	ImageIcon pauseButtonImg2;
-	ImageIcon forwardButtonImg2;
-	ImageIcon backwardButtonImg2;
-	
-	JProgressBar progressBar;
-	Color defaultBackground = new Color(33,33,33).brighter();
-	Color pressedColor = defaultBackground.darker();
-	Color eneteredColor = defaultBackground.brighter();
 	boolean premium;
 	String userID;
 	
+	
+	
+	
 	//---Top panel---
+	/*Ust panelde bulunacak olan gerekli degiskenler*/
 	JPanel topPanel;
 	JButton myPlaylistsButton;
 	JButton usersButton;
 	JButton artistsButton;
 	JButton followers;
 	JButton following;
+	/*---------------------------------------------------------*/	
+	
 	//---Left Panel---
+	/*Sol panelde bulunacak gerekli listelerin olusturulmasi*/
+	JPanel leftPanel;
 	ArrayList<Button> userButtons;
 	JComboBox<CBItem> playlistsCB = new JComboBox<CBItem>();
 	ArrayList<Button> userPlaylistButtons = new ArrayList<Button>();
 	ArrayList<Button> artistButtonsList = new ArrayList<Button>();
+	/*---------------------------------------------------------*/
+	
 	//---Middle Panel---
+	/*Orta panelde bulunacak olan listelerin oluturulmasi*/
+	JPanel middlePanel;
+	final int MIDDLE_LABEL_WIDTH = 1100;
+	final int MIDDLE_LABEL_HEIGHT = 55;
 	ArrayList<Button> followerList = new ArrayList<Button>();
 	ArrayList<Button> artistAlbumsList = new ArrayList<Button>();
 	ArrayList<Button> songsList = new ArrayList<Button>();
+	/*--------------------------------------------------------*/
+	
+	//---BottomPanel---
+	/*Alt panelde bulunan butonlar icin gerekli degiskenler*/
+	JPanel bottomPanel;
+	JProgressBar progressBar;
+	JButton playButton;
+	int playButtonID;
+	JButton forwardButton;
+	JButton backwardButton;
+	JButton fastforwardButton;
+	JButton fastbackwardButton;
+	//Alt panelde bulunan butonların boyutlarinin ve lokasyonlarinin ayarlanmasi
+	final int BUTTON_SIZE = 30;
+	final int BUTTON_LOCATION_Y = 20;
+	final int BUTTON_GAP = BUTTON_SIZE*2-5;
+	final int BUTTON_LOCATION_X = 645-70;
+	
+	ImageIcon playButtonImg1;
+	ImageIcon playButtonImg2;
+	
+	ImageIcon pauseButtonImg1;
+	ImageIcon pauseButtonImg2;
+	
+	ImageIcon forwardButtonImg1;
+	ImageIcon forwardButtonImg2;
+	
+	ImageIcon backwardButtonImg1;
+	ImageIcon backwardButtonImg2;
+	
+	ImageIcon fastforwardButtonImg;
+	ImageIcon fastbackwardButtonImg;
+	/*--------------------------------------------------------*/
 	
 	FreeUserPanel(String ID) throws SQLException
 	{
@@ -81,7 +96,6 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		
 		this.setLayout(null);
 		this.setBackground(new Color(33,33,33));
-		setAlbumCoverLabel();
 		initLeftPanel();
 		initTopPanel();
 		initMiddlePanel();
@@ -92,50 +106,10 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		initUserButtons();
 		initArtistButtons();
 		//initFollowerListButtons();
-	    addMiddleLabels();
-	
-		
-		
-		
-		
-		
-		
 		this.setPreferredSize(new Dimension(1280,720));
 	}
-
 	
-	public void initUserButtons() throws SQLException
-	{
-		ResultSet rs = SpotifyDB.getPremiumUsers(this.userID);
-		while(rs.next())
-		{
-			userButtons.add(new Button(rs.getString("userID"), rs.getString("userName")));
-		}
-		
-		for(int i = 0; i < userButtons.size(); i++)
-		{
-			if(i == 0)
-			{
-				userButtons.get(i).setBounds(0, 50, 150, 50);
-			}
-			else
-			{
-				userButtons.get(i).setBounds(0, (int)userButtons.get(i-1).getLocation().getY()+70, 150, 50);
-			}
-			userButtons.get(i).setFont(new Font("Consolas", Font.BOLD, 20));
-			userButtons.get(i).setForeground(Color.white);
-			userButtons.get(i).setBackground(Color.black);
-			userButtons.get(i).setFocusable(false);
-			userButtons.get(i).addMouseListener(this);
-		}
-	}
-	
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-	
+	/*---Sol panel icin gerekli ayarlamalarin yapildigi metod---*/
 	public void initLeftPanel()
 	{
 		leftPanel = new JPanel();
@@ -144,8 +118,9 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		leftPanel.setLayout(null);
 		this.add(leftPanel);
 	}
+	/*-----------------------------------------------------------------------------------*/
 	
-	
+	/*Yukardaki panelin ayarlamalarinin yapildigi ve uzerinde bulunacak butonlarin eklendigi metod */
 	public void initTopPanel()
 	{
 		topPanel = new JPanel();
@@ -188,7 +163,6 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		followers.setBackground(Color.black);
 		followers.setFocusable(false);
 		followers.addMouseListener(this);
-		/*following;*/
 		following = new JButton();
 		following.setBounds((int)followers.getLocation().getX()+232, 0, 200, 50);
 		following.setFont(new Font("Consolas", Font.BOLD, 20));
@@ -205,7 +179,9 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		topPanel.add(following);
 		this.add(topPanel);
 	}
+	/*-----------------------------------------------------------------------------------*/
 	
+	/*Ortada bulunan panelin ayarlamalarinin yapildigi metod*/
 	public void initMiddlePanel()
 	{
 		middlePanel = new JPanel();
@@ -215,6 +191,9 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		middlePanel.setLayout(null);
 		this.add(middlePanel);
 	}
+	/*-------------------------------------------------------------------------------------*/
+	
+	/*Alt panelin ayarlamalarinin yapildigi metod*/
 	public void initBottomPanel()
 	{
 
@@ -224,11 +203,10 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		bottomPanel.setLayout(null);
 		progressBar = new JProgressBar();
 		progressBar.setBounds(BUTTON_LOCATION_X-30,BUTTON_LOCATION_Y+50,350,15);
-		bottomPanel.add(albumCoverLabel);
 		bottomPanel.add(progressBar);
-		
 		this.add(bottomPanel);
 	}
+	//Alt panelde bulunan play/pause/skip butonlarinin resimlerinin ayarlandigi metod
 	public void initButtonImgs()
 	{
 		playButtonImg1 = new ImageIcon("images\\playButton.png");
@@ -244,7 +222,7 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		fastforwardButtonImg = new ImageIcon("images\\fastForwardButton.png");
 		fastbackwardButtonImg = new ImageIcon("images\\fastBackwardButton.png");
 	}
-	
+	//Alt panelde bulunan butonlarin konumlarinin ayarlandigi metod
 	public void initButtons()
 	{
 		
@@ -303,7 +281,42 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		forwardButton.addMouseListener(this);
 		bottomPanel.add(forwardButton);
 	}
+	/*-----------------------------------------------------------------------------------*/
 	
+	/*Ust panelde bulunan "Users" butonuna islev kazandirmak icin gerekli metod
+	 * database'den sadece premium kullanicilarin bilgilerini getirir ve bir ArrayList icine atar.
+	 * Daha sonra bu ArrayList icinde bulunan bir butona basildiginde, o kullanici ile alakali
+	 * bilgilere erisim saglanabilir.*/
+	public void initUserButtons() throws SQLException
+	{
+		userButtons.clear();
+		ResultSet rs = SpotifyDB.getPremiumUsers(this.userID);
+		while(rs.next())
+		{
+			userButtons.add(new Button(rs.getString("userID"), rs.getString("userName")));
+		}
+		
+		for(int i = 0; i < userButtons.size(); i++)
+		{
+			if(i == 0)
+			{
+				userButtons.get(i).setBounds(0, 50, 150, 50);
+			}
+			else
+			{
+				userButtons.get(i).setBounds(0, (int)userButtons.get(i-1).getLocation().getY()+70, 150, 50);
+			}
+			userButtons.get(i).setFont(new Font("Consolas", Font.BOLD, 20));
+			userButtons.get(i).setForeground(Color.white);
+			userButtons.get(i).setBackground(Color.black);
+			userButtons.get(i).setFocusable(false);
+			userButtons.get(i).addMouseListener(this);
+		}
+	}
+	/*-----------------------------------------------------------------------------------*/
+	
+	/*Boyutu gereginden buyuk veya kucuk olan resmi tekrar istenilen boyutlarda ayarlanmasi icin kullanilan
+	 * metoddur.*/
 	private Image getScaledImage(Image srcImg, int w, int h)
 	{
 	    BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TRANSLUCENT);
@@ -313,58 +326,65 @@ public class FreeUserPanel extends JPanel implements MouseListener
 	    g2.dispose();
 	    return resizedImg;
 	}
-	public void setAlbumCoverLabel() //Duzenlendiginde parametre olarak Image AlbumCover alacak
-	{
-		albumCoverLabel = new JLabel();
-		albumCoverLabel.setBackground(Color.white);
-		albumCoverLabel.setBounds(20,10,80,80);
-		albumCoverLabel.setOpaque(true);
-	}
+	/*-----------------------------------------------------------------------------------*/
 	
-	public JLabel createLabel(int x, int y, int w, int h)
+	/*Herhangi bir panel uzerindeki elemanlar temizlenmek istendiginde kullancilan metod*/
+	public void clearPanel(JPanel panel)
 	{
-		JLabel label = new JLabel();
-		label.setBounds(x, y, w, h);
-		label.setBackground(defaultBackground);
-		label.addMouseListener(this);
-		label.setFont(new Font("Consolas", Font.BOLD, 30));
-		label.setForeground(Color.white);
-		label.setOpaque(true);
-		label.setBorder(BorderFactory.createLineBorder(Color.white));
-		//Label text'i database'den cekilecek ve label uzerine yazılacak.
+		panel.removeAll();
+		panel.revalidate();
+		panel.repaint();
+	}
+	/*-----------------------------------------------------------------------------------*/
+	
+	/*Gerekli butonlari alta itecek ve gerekli comboBox'i gosterecek olan metoddur*/
+	public void addPlayclistCB(ArrayList<Button> buttons, Button button, JPanel panel) throws SQLException
+	{
 		
-		return label;
+		clearPanel(leftPanel);
+		playlistsCB.removeAllItems();
+		playlistsCB.addItem(new CBItem(button.ID, "Jazz"));
+		playlistsCB.addItem(new CBItem(button.ID, "Pop"));
+		playlistsCB.addItem(new CBItem(button.ID, "Classical"));
+		playlistsCB.setEditable(true);
+		playlistsCB.setBounds((int)button.getLocation().getX(),  (int)button.getLocation().getY()+50, 150, 25);
+		panel.add(playlistsCB);
+		initUserButtons();
+		for(int i = 0; i < buttons.size(); i++)
+		{
+			leftPanel.add(buttons.get(i));
+		}
+		repaint();
+		
+		
 	}
+	/*-----------------------------------------------------------------------------------*/
 	
-	public void addMiddleLabels() throws SQLException
-	{
-			ResultSet rs = SpotifyDB.getPlaylist("1", "jazz");
-			
-			for(int i = 0;rs.next(); i++)
-			{
-				JLabel label = createLabel(0,i*55,MIDDLE_LABEL_WIDTH,MIDDLE_LABEL_HEIGHT);
-				label.setText( rs.getString("SongName") + " " + rs.getString("ArtistName") + " " + rs.getString("duration") );
-				middlePanel.add(label);
-			}
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
-	
-	
 	@Override
 	public void mousePressed(MouseEvent e) 
 	{
 		JButton btn = (JButton)e.getSource();
 		changePressedBackground((JComponent)e.getSource());
 		if(userButtons.contains(btn))
-		{/*Sadece premium kullanicilarin gosterildigi panelde ustune tiklanilan kullanicilarin IDleri ile
-		  beraber combobox'a playlistler item olarak eklenir. Daha sonra bu comboboxta secilen item'a gore
-		  ortadaki panelde kullanicinin o playlistindeli sarkilar gosterilir.*/
+		{
+		/*"Users" butonuna tiklandiktan sonra eger sol panelden bir kullanici secilirse aktif olacak
+		 * if blogudur. Uzerine tiklanilan kullanici butonunun hemen altinda bir ComboBox olusturur. ComboBox
+		 * icerisinde ilgili kullanicinin calma listeleri bulunmaktadir.*/
 			
 			Button btn2 = (Button) btn;
+			try {
+				addPlayclistCB(userButtons, btn2, leftPanel);
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			
-			playlistsCB.removeAllItems();
-			playlistsCB.addItem(new CBItem(btn2.ID, "Jazz"));
-			playlistsCB.addItem(new CBItem(btn2.ID, "Pop"));
-			playlistsCB.addItem(new CBItem(btn2.ID, "Classical"));
+			
 		}
 		else if(e.getSource() == myPlaylistsButton)
 		{
@@ -428,6 +448,7 @@ public class FreeUserPanel extends JPanel implements MouseListener
 				artistAlbumsList.get(i).addMouseListener(this);
 				middlePanel.add(artistAlbumsList.get(i));
 			}
+			
 		}
 		else if(artistAlbumsList.contains(btn))
 		{
@@ -464,21 +485,31 @@ public class FreeUserPanel extends JPanel implements MouseListener
 				songsList.get(i).setFocusable(false);
 				songsList.get(i).addMouseListener(this);
 				middlePanel.add(songsList.get(i));
+				
 			}
 			
 		}
 		else if(songsList.contains(btn))
 		{
-			
+			Button button = (Button)btn;
+			int a = JOptionPane.showOptionDialog(null, button.getText() + " going to be added to your playlist.", "Warning", JOptionPane.YES_NO_OPTION , JOptionPane.INFORMATION_MESSAGE, null,null, 0);
+			if(a == JOptionPane.YES_OPTION)
+			{
+				try {
+					SpotifyDB.addToPlaylist(this.userID, button.getID(), button.getGenre());
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			else
+			{
+				return;
+			}
 		}
 			
 	}
-	public void clearPanel(JPanel panel)
-	{
-		panel.removeAll();
-		panel.revalidate();
-		panel.repaint();
-	}
+	
 	public void initUserPlaylistButtons()
 	{
 		userPlaylistButtons.clear();
@@ -514,7 +545,6 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		{
 			artistButtonsList.add(new Button(rs.getString("ArtistID"), rs.getString("ArtistName")));
 		}
-		
 		for(int i = 0; i < artistButtonsList.size(); i++)
 		{
 			if(i == 0)
@@ -531,6 +561,7 @@ public class FreeUserPanel extends JPanel implements MouseListener
 			artistButtonsList.get(i).setFocusable(false);
 			artistButtonsList.get(i).addMouseListener(this);
 		}
+		
 		
 	}
 	public void initFollowerListButtons() throws SQLException
@@ -559,6 +590,7 @@ public class FreeUserPanel extends JPanel implements MouseListener
 			followerList.get(i).addMouseListener(this);
 		}
 	}
+	
 	@Override
 	public void mouseReleased(MouseEvent e) 
 	{
