@@ -8,6 +8,7 @@ import java.awt.Image;
 import java.awt.Window;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -81,7 +82,12 @@ public class AdminPanel extends JPanel implements MouseListener
 		}
 		else if(button.getText().equals("Song Settings"))
 		{
-			new Screen(new SongSettings());
+			try {
+				new Screen(new SongSettings());
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 		else if(button.getText().equals("Album Settings"))
 		{

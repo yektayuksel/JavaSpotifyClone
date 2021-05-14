@@ -107,15 +107,19 @@ public class SpotifyDB
 		while(rs.next())
 		{
 			if(rs.getString("SongName").equals(songName))
-			JOptionPane.showMessageDialog(null, "This song already exists", "Warning", JOptionPane.WARNING_MESSAGE);
-			return;
+			{
+				JOptionPane.showMessageDialog(null, "This song already exists", "Warning", JOptionPane.WARNING_MESSAGE);
+				return;
+			}
+			
+			
 		}	
 		
 		try 
 		{
 			PreparedStatement addsong = conn.prepareStatement("INSERT INTO song (SongName,ArtistID,AlbumID,genre,duration,releaseDate) VALUES('"+songName+"','"+artistID+"','"+albumID+"','"+genre+"','"+duration+"','"+releaseDate+"')");
 			addsong.executeUpdate();
-			JOptionPane.showMessageDialog(null, songName+"The song has added successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(null, songName+" has added successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 		}
 		catch (Exception e) 
 		{
@@ -150,7 +154,7 @@ public class SpotifyDB
 	public static ResultSet getPlaylist(String userID, String genre) throws SQLException
 	{
 		Connection conn = getConnection(); 
-		String query = "SELECT s.SongName, s.duration, a.ArtistName FROM song as s, playlist as p, artist as a WHERE s.genre = '" + genre + "'and p.genre = '" + genre + "'and s.SongID = p.SongID and p.userID = '" + userID + "' and s.ArtistID = a.ArtistID;";
+		String query = "SELECT s.SongID, s.SongName, s.duration, a.ArtistName, s.genre FROM song as s, playlist as p, artist as a WHERE s.genre = '" + genre + "'and p.genre = '" + genre + "'and s.SongID = p.SongID and p.userID = '" + userID + "' and s.ArtistID = a.ArtistID;";
 		Statement st = conn.createStatement();
 		ResultSet rs = st.executeQuery(query);
 		return rs;
@@ -247,7 +251,14 @@ public class SpotifyDB
 		return rs;
 		
 	}
-	
+	public static ResultSet getAllSongs() throws SQLException
+	{
+		Connection conn = getConnection(); 
+		String query = "SELECT SongID, SongName FROM song";
+		Statement st = conn.createStatement();
+		ResultSet rs = st.executeQuery(query);
+		return rs;
+	}
 	public static boolean checkIfUserExists(String userName) throws SQLException
 	{
 		Connection conn = getConnection(); 
@@ -310,7 +321,9 @@ public class SpotifyDB
 	{
 		Connection conn = getConnection();
 		PreparedStatement deleteSong = conn.prepareStatement("DELETE FROM song WHERE SongID = '" + SongID +"'");
+		deletePlayListsSong(SongID);
 		deleteSong.executeUpdate();
+		JOptionPane.showMessageDialog(null, "Song has deleted successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 		
 	}
 	
@@ -326,6 +339,7 @@ public class SpotifyDB
 		
 		PreparedStatement deleteAlbum = conn.prepareStatement("DELETE FROM album WHERE AlbumID = '" + AlbumID +"'");
 		deleteAlbum.executeUpdate();
+		JOptionPane.showMessageDialog(null, "Album has deleted successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	public static void deleteArtist(String ArtistID) throws SQLException
@@ -340,6 +354,7 @@ public class SpotifyDB
 		
 		PreparedStatement deleteAlbum = conn.prepareStatement("DELETE FROM artist WHERE ArtistID = '" + ArtistID +"'");
 		deleteAlbum.executeUpdate();
+		JOptionPane.showMessageDialog(null, "Artist has deleted successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 	}
 	public static void deletePlayListsSong(String SongID) throws SQLException
 	{
@@ -362,53 +377,61 @@ public class SpotifyDB
 		return rs;
 	}
 
-	public static void updateArtistName(String artistID, String artistCountry) throws SQLException
+	public static void updateArtistName(String artistID, String artistName) throws SQLException
 	{
 		Connection conn = getConnection(); 
-		PreparedStatement updateArtistName = conn.prepareStatement("UPDATE artist SET ArtistName = '" + artistCountry + "'  WHERE ArtistID = '"+ artistID +"'");
+		PreparedStatement updateArtistName = conn.prepareStatement("UPDATE artist SET ArtistName = '" + artistName + "'  WHERE ArtistID = '"+ artistID +"'");
 		updateArtistName.executeUpdate();
+		JOptionPane.showMessageDialog(null, "Artist name has updated successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 	}
 	public static void updateArtistCountry(String artistID, String artistCountry) throws SQLException
 	{
 		Connection conn = getConnection(); 
 		PreparedStatement updateArtistCountry = conn.prepareStatement("UPDATE artist SET Country = '" + artistCountry + "'  WHERE ArtistID = '"+ artistID +"'");
 		updateArtistCountry.executeUpdate();
+		JOptionPane.showMessageDialog(null, "Artist's country has updated successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 	}
 	public static void updateAlbumName(String albumID, String albumName) throws SQLException
 	{
 		Connection conn = getConnection(); 
 		PreparedStatement updateAlbumName = conn.prepareStatement("UPDATE album SET AlbumName = '" + albumName + "'  WHERE AlbumID = '"+ albumID +"'");
 		updateAlbumName.executeUpdate();
+		JOptionPane.showMessageDialog(null, "You have updated the album name successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 	}
 	public static void updateAlbumReleaseDate(String albumID, String AlbumReleasedate) throws SQLException
 	{
 		Connection conn = getConnection(); 
 		PreparedStatement updateAlbumReleasedate = conn.prepareStatement("UPDATE album SET releaseDate = '" + AlbumReleasedate + "'  WHERE AlbumID = '"+ albumID +"'");
 		updateAlbumReleasedate.executeUpdate();
+		JOptionPane.showMessageDialog(null, "You have updated the release date successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 	}
 	public static void updateAlbumGenre(String albumID, String albumGenre) throws SQLException
 	{
 		Connection conn = getConnection(); 
 		PreparedStatement updateAlbumgenre = conn.prepareStatement("UPDATE album SET genre = '" + albumGenre + "'  WHERE AlbumID = '"+ albumID +"'");
 		updateAlbumgenre.executeUpdate();
+		JOptionPane.showMessageDialog(null, "You have updated the genre successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 	}
 	public static void updateSongName(String songID, String songName) throws SQLException
 	{
 		Connection conn = getConnection(); 
 		PreparedStatement updateSongName = conn.prepareStatement("UPDATE song SET SongName = '" + songName + "'  WHERE SongID = '"+ songID +"'");
 		updateSongName.executeUpdate();
+		JOptionPane.showMessageDialog(null, "You have updated the song name successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 	}
 	public static void updateSongGenre(String songID, String songGenre) throws SQLException
 	{
 		Connection conn = getConnection(); 
 		PreparedStatement updateSongGenre = conn.prepareStatement("UPDATE song SET genre = '" + songGenre + "'  WHERE SongID = '"+ songID +"'");
 		updateSongGenre.executeUpdate();
+		JOptionPane.showMessageDialog(null, "You have updated the genre successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 	}
 	public static void updateSongDuration(String songID, String duration) throws SQLException
 	{
 		Connection conn = getConnection(); 
 		PreparedStatement updateSongDuration = conn.prepareStatement("UPDATE song SET duration = '" + duration + "'  WHERE SongID = '"+ songID +"'");
 		updateSongDuration.executeUpdate();
+		JOptionPane.showMessageDialog(null, "You have updated the duration successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 	}
 	public static void updateSongTimesPlayed(String songID, String TimesPlayed) throws SQLException
 	{

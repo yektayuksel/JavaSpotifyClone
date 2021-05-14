@@ -20,7 +20,7 @@ import javax.swing.JTextField;
 public class AlbumSettings extends JPanel implements MouseListener,ActionListener
 {
 	static final int GENERAL_OBJ_LOC_Y = 310;
-	static final int GENERAL_OBJ_LOC_X = 420;
+	static final int GENERAL_OBJ_LOC_X = 175;
 	
 	JComboBox<CBItem> albumNameBox;
 	JLabel albumToDelete;
@@ -33,11 +33,23 @@ public class AlbumSettings extends JPanel implements MouseListener,ActionListene
 	JComboBox<CBItem> artistNameBox;
 	JTextField albumNameTxt;
 	JTextField relaseDateTxt;
-	JTextField genreTxt;
+	JComboBox<String> genreCB;
 	JButton addButton;
 	
 	JButton artistSettingsButton;
 	JButton songSettingsButton;
+	
+	JLabel selectAnAlbumUpdateLabel;
+	JLabel artistNameUpdate;
+	JLabel selectAlbumPropertyUpdateLabel;
+	JLabel newValueLabel;
+	JLabel selectTheAlbumUpdateLabel;
+	JComboBox<CBItem> selectTheAlbumUpdateCB;
+	JTextField newValueTxt;
+	JButton updateButton;
+	JComboBox<CBItem> selectArtistUpdateCB;
+	JComboBox<String> selectAlbumUpdatePropCB;
+	
 	AlbumSettings()
 	{
 		
@@ -47,6 +59,7 @@ public class AlbumSettings extends JPanel implements MouseListener,ActionListene
 		initMenuButtons();
 		initArtistComboBoxes(artistToDeleteNameBox);
 		initArtistComboBoxes(artistNameBox);
+		initUpdateSetting();
 		try 
 		{
 			initArtistNameCB();
@@ -63,7 +76,7 @@ public class AlbumSettings extends JPanel implements MouseListener,ActionListene
 		this.add(artistNameBox);
 		this.add(albumNameTxt);
 		this.add(relaseDateTxt);
-		this.add(genreTxt);
+		this.add(genreCB);
 		this.add(addButton);
 		this.add(artistSettingsButton);
 		this.add(songSettingsButton);
@@ -74,7 +87,7 @@ public class AlbumSettings extends JPanel implements MouseListener,ActionListene
 	}
 	public void initComboBoxes()
 	{
-		albumNameBox = new JComboBox();
+		albumNameBox = new JComboBox<CBItem>();
 		albumNameBox.setEditable(true);
 		albumNameBox.setBounds(GENERAL_OBJ_LOC_X, GENERAL_OBJ_LOC_Y - 100, 450, 30);
 		
@@ -132,7 +145,7 @@ public class AlbumSettings extends JPanel implements MouseListener,ActionListene
 		artistNameBox = new JComboBox();
 		albumNameTxt = new JTextField();
 		relaseDateTxt = new JTextField();
-		genreTxt = new JTextField();
+		genreCB = new JComboBox<String>();
 		
 		
 		albumToAdd.setText("Add an album");
@@ -157,9 +170,11 @@ public class AlbumSettings extends JPanel implements MouseListener,ActionListene
 		relaseDateTxt.setFont(new Font("Consolas", Font.BOLD, 20));
 		relaseDateTxt.setText("Release date of the album");
 		
-		genreTxt.setBounds(GENERAL_OBJ_LOC_X, GENERAL_OBJ_LOC_Y + 240, 450,30);
-		genreTxt.setFont(new Font("Consolas", Font.BOLD, 20));
-		genreTxt.setText("Genre");
+		genreCB.setBounds(GENERAL_OBJ_LOC_X, GENERAL_OBJ_LOC_Y + 240, 450,30);
+		genreCB.setFont(new Font("Consolas", Font.BOLD, 20));
+		genreCB.addItem("Jazz");
+		genreCB.addItem("Clasiccal");
+		genreCB.addItem("Pop");
 		
 		addButton = new JButton();
 		addButton.setBounds(GENERAL_OBJ_LOC_X+350, GENERAL_OBJ_LOC_Y +290, 100, 30);
@@ -177,7 +192,7 @@ public class AlbumSettings extends JPanel implements MouseListener,ActionListene
 		
 		
 		artistSettingsButton = new JButton();
-		artistSettingsButton.setBounds(60, GENERAL_OBJ_LOC_Y+300,  250, 50);
+		artistSettingsButton.setBounds(30, GENERAL_OBJ_LOC_Y+340,  250, 50);
 		artistSettingsButton.setFont(new Font("Consolas", Font.BOLD, 25));
 		artistSettingsButton.setForeground(Color.white);
 		artistSettingsButton.setText("Artist Settings");
@@ -186,7 +201,7 @@ public class AlbumSettings extends JPanel implements MouseListener,ActionListene
 		artistSettingsButton.addMouseListener(this);
 		
 		songSettingsButton = new JButton();
-		songSettingsButton.setBounds(GENERAL_OBJ_LOC_X+550, GENERAL_OBJ_LOC_Y+300,  250, 50);
+		songSettingsButton.setBounds(GENERAL_OBJ_LOC_X+825, GENERAL_OBJ_LOC_Y+340,  250, 50);
 		songSettingsButton.setFont(new Font("Consolas", Font.BOLD, 25));
 		songSettingsButton.setForeground(Color.white);
 		songSettingsButton.setText("Song Settings");
@@ -194,7 +209,98 @@ public class AlbumSettings extends JPanel implements MouseListener,ActionListene
 		songSettingsButton.setFocusable(false);
 		songSettingsButton.addMouseListener(this);
 	}
+	public void initUpdateSetting()
+	{
+		selectAnAlbumUpdateLabel = new JLabel();
+		selectAnAlbumUpdateLabel.setText("Select an album to update");
+		selectAnAlbumUpdateLabel.setBounds(GENERAL_OBJ_LOC_X+520 ,GENERAL_OBJ_LOC_Y - 260, 500, 30);
+		selectAnAlbumUpdateLabel.setFont(new Font("Consolas", Font.BOLD, 30));
+		selectAnAlbumUpdateLabel.setForeground(Color.white);
+		this.add(selectAnAlbumUpdateLabel);
+		
+		selectArtistUpdateCB = new JComboBox<CBItem>();
+		try 
+		{
+			selectArtistUpdateCB.removeAllItems();
+	        ResultSet rs = SpotifyDB.getAllArtists();
 
+	        while(rs.next())
+	        {                
+				CBItem comItem = new CBItem(rs.getString("ArtistID"), rs.getString("ArtistName"));
+				selectArtistUpdateCB.addItem(comItem);
+				
+
+	        }
+	    }
+		catch (Exception e) 
+		{
+	        JOptionPane.showMessageDialog(this, "Error" + e  );
+	    }
+		
+		artistNameUpdate = new JLabel();
+		artistNameUpdate.setText("Select the artist");
+		artistNameUpdate.setBounds(GENERAL_OBJ_LOC_X+520,GENERAL_OBJ_LOC_Y - 210, 500, 30);
+		artistNameUpdate.setFont(new Font("Consolas", Font.BOLD, 20));
+		artistNameUpdate.setForeground(Color.white);
+		this.add(artistNameUpdate);
+		
+		selectArtistUpdateCB.setEditable(true);
+		selectArtistUpdateCB.setBounds(GENERAL_OBJ_LOC_X+520, GENERAL_OBJ_LOC_Y - 160, 450, 30);
+		selectArtistUpdateCB.addActionListener(this);
+		this.add(selectArtistUpdateCB);
+		
+		selectTheAlbumUpdateLabel = new JLabel();
+		selectTheAlbumUpdateLabel.setText("Select the album");
+		selectTheAlbumUpdateLabel.setBounds(GENERAL_OBJ_LOC_X+520,GENERAL_OBJ_LOC_Y - 110, 500, 30);
+		selectTheAlbumUpdateLabel.setFont(new Font("Consolas", Font.BOLD, 20));
+		selectTheAlbumUpdateLabel.setForeground(Color.white);
+		this.add(selectTheAlbumUpdateLabel);
+		
+		selectTheAlbumUpdateCB = new JComboBox<CBItem>();
+		selectTheAlbumUpdateCB.setEditable(true);
+		selectTheAlbumUpdateCB.setBounds(GENERAL_OBJ_LOC_X+520, GENERAL_OBJ_LOC_Y-60, 450, 30);
+		selectTheAlbumUpdateCB.addActionListener(this);
+		this.add(selectTheAlbumUpdateCB);
+		
+		selectAlbumPropertyUpdateLabel = new JLabel();
+		selectAlbumPropertyUpdateLabel.setText("Select a property to update ");
+		selectAlbumPropertyUpdateLabel.setBounds(GENERAL_OBJ_LOC_X+520,GENERAL_OBJ_LOC_Y + 90, 500, 30);
+		selectAlbumPropertyUpdateLabel.setFont(new Font("Consolas", Font.BOLD, 20));
+		selectAlbumPropertyUpdateLabel.setForeground(Color.white);
+		this.add(selectAlbumPropertyUpdateLabel);
+		
+		selectAlbumUpdatePropCB = new JComboBox<String>();
+		selectAlbumUpdatePropCB.addItem("Album Name");
+		selectAlbumUpdatePropCB.addItem("Genre");
+		selectAlbumUpdatePropCB.addItem("Release Date");
+		selectAlbumUpdatePropCB.setEditable(true);
+		selectAlbumUpdatePropCB.setBounds(GENERAL_OBJ_LOC_X+520, GENERAL_OBJ_LOC_Y+140, 450, 30);
+		selectAlbumUpdatePropCB.addActionListener(this);
+		this.add(selectAlbumUpdatePropCB);
+		
+		
+		newValueLabel = new JLabel();
+		newValueLabel.setText("Enter the new value");
+		newValueLabel.setBounds(GENERAL_OBJ_LOC_X+520,GENERAL_OBJ_LOC_Y + 190, 500, 30);
+		newValueLabel.setFont(new Font("Consolas", Font.BOLD, 20));
+		newValueLabel.setForeground(Color.white);
+		this.add(newValueLabel);		
+		
+		newValueTxt = new JTextField();
+		newValueTxt.setBounds(GENERAL_OBJ_LOC_X+520, GENERAL_OBJ_LOC_Y + 240, 450,30);
+		newValueTxt.setFont(new Font("Consolas", Font.BOLD, 20));
+		this.add(newValueTxt);
+		
+		updateButton = new JButton();
+		updateButton.setBounds(GENERAL_OBJ_LOC_X+870, GENERAL_OBJ_LOC_Y + 290, 100, 30);
+		updateButton.setFont(new Font("Consolas", Font.BOLD, 20));
+		updateButton.setForeground(Color.white);
+		updateButton.setText("Update");
+		updateButton.setBackground(this.getBackground().brighter());
+		updateButton.setFocusable(false);
+		updateButton.addMouseListener(this);
+		this.add(updateButton);
+	}
 	public void initAlbumComboBoxes()
 	{
 		/*artistNameBox
@@ -250,7 +356,7 @@ public class AlbumSettings extends JPanel implements MouseListener,ActionListene
 			String artistID = id.getID();
 			String albumName = albumNameTxt.getText();
 			String releaseDate  = relaseDateTxt.getText();
-			String genre = genreTxt.getText();
+			String genre = genreCB.getSelectedItem().toString();
 			try 
 			{
 				SpotifyDB.addAlbum(albumName, artistID,releaseDate,genre);
@@ -284,8 +390,44 @@ public class AlbumSettings extends JPanel implements MouseListener,ActionListene
 		}
 		else if(e.getSource() == songSettingsButton)
 		{
-			new Screen(new SongSettings());
+			try {
+				new Screen(new SongSettings());
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			((Window) getRootPane().getParent()).dispose();
+		}
+		else if(e.getSource() == updateButton)
+		{
+			CBItem item = (CBItem)selectTheAlbumUpdateCB.getSelectedItem();
+			String str = selectAlbumUpdatePropCB.getSelectedItem().toString();
+			String newValue = newValueTxt.getText();
+			
+			try 
+			{
+				if(str.equals("Album Name"))
+				{
+					SpotifyDB.updateAlbumName(item.getID(), newValue);
+				}
+				else if (str.equals("Genre"))
+				{
+					SpotifyDB.updateAlbumGenre(item.getID(), newValue);
+				}
+				else if(str.equals("Release Date"))
+				{
+					SpotifyDB.updateAlbumReleaseDate(item.getID(), newValue);
+				}
+			} 
+			catch (SQLException e1) 
+			{
+				e1.printStackTrace();
+			}
+			repaint();
+			
+			
+				
+				
 		}
 		
 	}
@@ -325,6 +467,25 @@ public class AlbumSettings extends JPanel implements MouseListener,ActionListene
 		if(e.getSource() == artistToDeleteNameBox)
 		{
 			initAlbumComboBoxes();
+		}
+		if(e.getSource() == selectArtistUpdateCB)
+		{
+			CBItem item = (CBItem) selectArtistUpdateCB.getSelectedItem(); 
+			
+			try 
+			{
+				selectTheAlbumUpdateCB.removeAllItems();
+				ResultSet rs = SpotifyDB.getAllAlbums(item.getID());
+                while(rs.next())
+                {
+                	selectTheAlbumUpdateCB.addItem(new CBItem(rs.getString("AlbumID"), rs.getString("AlbumName")));
+                }
+                repaint();
+			} 
+			catch (SQLException e1) 
+			{
+				e1.printStackTrace();
+			}
 		}
 		
 	}

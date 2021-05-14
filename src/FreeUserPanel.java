@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 import javax.swing.*;
 
-public class FreeUserPanel extends JPanel implements MouseListener
+public class FreeUserPanel extends JPanel implements MouseListener,ActionListener
 {
 	/**/
 	
@@ -348,6 +348,7 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		playlistsCB.addItem(new CBItem(button.ID, "Classical"));
 		playlistsCB.setEditable(true);
 		playlistsCB.setBounds((int)button.getLocation().getX(),  (int)button.getLocation().getY()+50, 150, 25);
+		playlistsCB.addActionListener(this);
 		panel.add(playlistsCB);
 		initUserButtons();
 		for(int i = 0; i < buttons.size(); i++)
@@ -388,8 +389,8 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		}
 		else if(e.getSource() == myPlaylistsButton)
 		{
+			/*Kullanicinin kendi playlistlerine erisebilmesi icin gerekli islemler*/
 			clearPanel(leftPanel);
-			
 			for(int i = 0; i < userPlaylistButtons.size(); i++)
 			{
 				leftPanel.add(userPlaylistButtons.get(i));
@@ -399,7 +400,6 @@ public class FreeUserPanel extends JPanel implements MouseListener
 		else if(e.getSource() == usersButton)
 		{
 			clearPanel(leftPanel);
-			
 			for(int i = 0; i < userButtons.size(); i++)
 			{
 				leftPanel.add(userButtons.get(i));
@@ -641,6 +641,49 @@ public class FreeUserPanel extends JPanel implements MouseListener
 	public void changePressedBackground(JComponent obj)
 	{
 		obj.setBackground(obj.getBackground().darker().darker());
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() == playlistsCB)
+		{
+			CBItem item = (CBItem)playlistsCB.getSelectedItem();
+			clearPanel(middlePanel);
+			
+			songsList.clear();
+			try 
+			{
+				ResultSet rs = SpotifyDB.getPlaylist(item.getID(), item.getText());
+				while(rs.next())
+				{
+					songsList.add(new Button(rs.getString("s.SongID"), rs.getString("a.ArtistName")+"   "+rs.getString("s.SongName") + rs.getString("s.genre") + "   " + rs.getString("s.duration")));
+					songsList.get(songsList.size()-1).setGenre(rs.getString("genre"));
+				}
+			} 
+			catch (SQLException e1) 
+			{
+				e1.printStackTrace();
+			}
+			for(int i = 0; i < songsList.size(); i++)
+			{
+				if(i == 0)
+				{
+					songsList.get(i).setBounds(0, 50, 1130, 50);
+				}
+				else
+				{
+					songsList.get(i).setBounds(0, (int)songsList.get(i-1).getLocation().getY()+70, 1130, 50);
+				}
+				songsList.get(i).setFont(new Font("Consolas", Font.BOLD, 20));
+				songsList.get(i).setForeground(Color.white);
+				songsList.get(i).setBackground(Color.black);
+				songsList.get(i).setFocusable(false);
+				songsList.get(i).addMouseListener(this);
+				middlePanel.add(songsList.get(i));
+				
+			}
+		}
+		
 	}
 	
 

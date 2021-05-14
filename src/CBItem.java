@@ -10,6 +10,14 @@ public class CBItem
 		this.ID = ID;
 		this.text = ArtistName;
 	}
+	public String getText() {
+		return text;
+	}
+
+
+
+
+	
 	
 
 	

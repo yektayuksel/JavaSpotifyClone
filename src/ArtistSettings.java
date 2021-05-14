@@ -31,14 +31,23 @@ public class ArtistSettings extends JPanel implements MouseListener, ActionListe
 	JButton addButton;
 	JButton AlbumSettingsButton;
 	static final int GENERAL_OBJ_LOC_Y = 360;
-	static final int GENERAL_OBJ_LOC_X = 420;
+	static final int GENERAL_OBJ_LOC_X = 175;
 	
+	
+	JLabel selectArtistNameToUpdate;
+	JLabel selectArtistPropertyUpdateLabel;
+	JLabel newValueLabel;
+	JTextField newValueTxt;
+	JButton updateButton;
+	JComboBox<CBItem> selectArtistUpdateCB;
+	JComboBox<String> selectArtistPropertyUpdateCB;
 	ArtistSettings()
 	{
 		this.setBackground(new Color(33,33,33));
 		initComboBoxes();
 		initCreateArtist();
 		addComponentsToPanel();
+	    initUpdateSettings();
 		try 
 		{
 			initArtistNameCB();
@@ -89,6 +98,76 @@ public class ArtistSettings extends JPanel implements MouseListener, ActionListe
 		
 		
 	}
+	public void initUpdateSettings()
+	{
+		selectArtistNameToUpdate = new JLabel();
+		selectArtistNameToUpdate.setText("Select an artist to update");
+		selectArtistNameToUpdate.setBounds(GENERAL_OBJ_LOC_X+520 ,GENERAL_OBJ_LOC_Y - 200, 500, 30);
+		selectArtistNameToUpdate.setFont(new Font("Consolas", Font.BOLD, 30));
+		selectArtistNameToUpdate.setForeground(Color.white);
+		this.add(selectArtistNameToUpdate);
+		
+		selectArtistUpdateCB = new JComboBox<CBItem>();
+		try 
+		{
+			selectArtistUpdateCB.removeAllItems();
+	        ResultSet rs = SpotifyDB.getAllArtists();
+
+	        while(rs.next())
+	        {                
+				CBItem comItem = new CBItem(rs.getString("ArtistID"), rs.getString("ArtistName"));
+				selectArtistUpdateCB.addItem(comItem);
+				
+
+	        }
+	    }
+		catch (Exception e) 
+		{
+	        JOptionPane.showMessageDialog(this, "Error" + e  );
+	    }
+		
+		selectArtistUpdateCB.setEditable(true);
+		selectArtistUpdateCB.setBounds(GENERAL_OBJ_LOC_X+520, GENERAL_OBJ_LOC_Y - 150, 450, 30);
+		selectArtistUpdateCB.addActionListener(this);
+		this.add(selectArtistUpdateCB);
+		
+		selectArtistPropertyUpdateLabel = new JLabel();
+		selectArtistPropertyUpdateLabel.setText("Select a property to update ");
+		selectArtistPropertyUpdateLabel.setBounds(GENERAL_OBJ_LOC_X+520,GENERAL_OBJ_LOC_Y - 100, 500, 30);
+		selectArtistPropertyUpdateLabel.setFont(new Font("Consolas", Font.BOLD, 20));
+		selectArtistPropertyUpdateLabel.setForeground(Color.white);
+		this.add(selectArtistPropertyUpdateLabel);
+		
+		selectArtistPropertyUpdateCB = new JComboBox<String>();
+		selectArtistPropertyUpdateCB.addItem("Artist Name");
+		selectArtistPropertyUpdateCB.addItem("Country");
+		selectArtistPropertyUpdateCB.setEditable(true);
+		selectArtistPropertyUpdateCB.setBounds(GENERAL_OBJ_LOC_X+520, GENERAL_OBJ_LOC_Y-50, 450, 30);
+		selectArtistPropertyUpdateCB.addActionListener(this);
+		this.add(selectArtistPropertyUpdateCB);
+		
+		newValueLabel = new JLabel();
+		newValueLabel.setText("Enter the new value");
+		newValueLabel.setBounds(GENERAL_OBJ_LOC_X+520,GENERAL_OBJ_LOC_Y, 500, 30);
+		newValueLabel.setFont(new Font("Consolas", Font.BOLD, 20));
+		newValueLabel.setForeground(Color.white);
+		this.add(newValueLabel);		
+		
+		newValueTxt = new JTextField();
+		newValueTxt.setBounds(GENERAL_OBJ_LOC_X+520, GENERAL_OBJ_LOC_Y + 50, 450,30);
+		newValueTxt.setFont(new Font("Consolas", Font.BOLD, 20));
+		this.add(newValueTxt);
+		
+		updateButton = new JButton();
+		updateButton.setBounds(GENERAL_OBJ_LOC_X+870, GENERAL_OBJ_LOC_Y + 100, 100, 30);
+		updateButton.setFont(new Font("Consolas", Font.BOLD, 20));
+		updateButton.setForeground(Color.white);
+		updateButton.setText("Update");
+		updateButton.setBackground(this.getBackground().brighter());
+		updateButton.setFocusable(false);
+		updateButton.addMouseListener(this);
+		this.add(updateButton);
+	}
 	public void initComboBoxes()
 	{
 		
@@ -108,7 +187,7 @@ public class ArtistSettings extends JPanel implements MouseListener, ActionListe
 		deleteButton.setFocusable(false);
 		deleteButton.addMouseListener(this);
 		
-		artistNameBox = new JComboBox();
+		artistNameBox = new JComboBox<CBItem>();
 		artistNameBox.setEditable(true);
 		artistNameBox.setBounds(GENERAL_OBJ_LOC_X, GENERAL_OBJ_LOC_Y - 150, 450, 30);
 		artistNameBox.addActionListener(this);
@@ -191,6 +270,30 @@ public class ArtistSettings extends JPanel implements MouseListener, ActionListe
 		{
 			new Screen(new AlbumSettings());
 			((Window) getRootPane().getParent()).dispose();
+		}
+		else if(e.getSource() == updateButton)
+		{
+			CBItem item = (CBItem)selectArtistUpdateCB.getSelectedItem();
+			String str = selectArtistPropertyUpdateCB.getSelectedItem().toString();
+			String newValue = newValueTxt.getText();
+			
+			try 
+			{
+				if(str.equals("Artist Name"))
+				{
+					SpotifyDB.updateArtistName(item.getID(), newValue);
+				}
+				else if (str.equals("Country"))
+				{
+					SpotifyDB.updateArtistCountry(item.getID(), newValue);
+				}
+				
+			} 
+			catch (SQLException e1) 
+			{
+				e1.printStackTrace();
+			}
+			repaint();
 		}
 	}
 
