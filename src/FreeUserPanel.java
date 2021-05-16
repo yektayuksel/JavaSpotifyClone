@@ -473,6 +473,7 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 			clearPanel(middlePanel);
 			songsList.clear();
 			songAddButtons.clear();
+			//TODO
 			try 
 			{
 				ResultSet rs = SpotifyDB.getAlbumSongs(button.getID());
@@ -653,7 +654,6 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 		{
 			Button btn2 = (Button)btn;
 			clearPanel(leftPanel);
-			System.out.println("vallaha burda");
 			playlistsCB.removeAllItems();
 			playlistsCB.addItem(new CBItem(btn2.getID(), "Jazz","1"));
 			playlistsCB.addItem(new CBItem(btn2.getID(), "Pop" , "2"));
@@ -812,8 +812,9 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 		{
 			CBItem item = (CBItem)playlistsCB.getSelectedItem();
 			clearPanel(middlePanel);
-			
+			//TODO
 			songsList.clear();
+			songAddButtons.clear();
 			if(item != null)
 			{
 				try 
@@ -825,6 +826,8 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 						String buttonText = rs.getString("s.SongName") + "  " + rs.getString("ar.ArtistName") + "   "
 								+ rs.getString("g.genre") + "   " + rs.getString("s.duration"); 
 						songsList.add(new Button(ID, buttonText));
+						songAddButtons.add(new Button(ID, "+"));
+						songAddButtons.get(songAddButtons.size()-1).setGenre(item.getGenreID());
 						
 					}
 					
@@ -837,11 +840,13 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 				{
 					if(i == 0)
 					{
-						songsList.get(i).setBounds(0, 50, 1130, 50);
+						songsList.get(i).setBounds(0, 50, MID_PNL_BTN_W-50, MID_PNL_BTN_H);
+						songAddButtons.get(i).setBounds(MID_PNL_BTN_W-50, 50, 50,MID_PNL_BTN_H);
 					}
 					else
 					{
-						songsList.get(i).setBounds(0, (int)songsList.get(i-1).getLocation().getY()+70, MID_PNL_BTN_W, MID_PNL_BTN_H);
+						songsList.get(i).setBounds(0, (int)songsList.get(i-1).getLocation().getY()+70, MID_PNL_BTN_W-50, MID_PNL_BTN_H);
+						songAddButtons.get(i).setBounds(MID_PNL_BTN_W-50, (int)songAddButtons.get(i-1).getLocation().getY()+70, 50,MID_PNL_BTN_H);
 					}
 					songsList.get(i).setFont(new Font("Consolas", Font.BOLD, 20));
 					songsList.get(i).setForeground(Color.white);
@@ -849,6 +854,13 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 					songsList.get(i).setFocusable(false);
 					songsList.get(i).addMouseListener(this);
 					middlePanel.add(songsList.get(i));
+					
+					songAddButtons.get(i).setFont(new Font("Consolas", Font.BOLD, 25));
+					songAddButtons.get(i).setForeground(Color.white);
+					songAddButtons.get(i).setBackground(Color.black);
+					songAddButtons.get(i).setFocusable(false);
+					songAddButtons.get(i).addMouseListener(this);
+					middlePanel.add(songAddButtons.get(i));
 					
 				}
 			}
