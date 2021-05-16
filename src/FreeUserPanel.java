@@ -37,20 +37,22 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 	JComboBox<CBItem> playlistsCB = new JComboBox<CBItem>();
 	ArrayList<Button> userPlaylistButtons = new ArrayList<Button>();
 	ArrayList<Button> artistButtonsList = new ArrayList<Button>();
+	
 	/*---------------------------------------------------------*/
 	
 	//---Middle Panel---
 	/*Orta panelde bulunacak olan listelerin oluturulmasi*/
 	JPanel middlePanel;
-	final int MIDDLE_LABEL_WIDTH = 1100;
-	final int MIDDLE_LABEL_HEIGHT = 55;
+	final int MID_PNL_BTN_W = 1130;
+	final int MID_PNL_BTN_H = 57;
 	ArrayList<Button> followerList = new ArrayList<Button>();
 	ArrayList<Button> artistAlbumsList = new ArrayList<Button>();
 	ArrayList<Button> songsList = new ArrayList<Button>();
+	ArrayList<Button> songAddButtons = new ArrayList<Button>();
 	/*--------------------------------------------------------*/
 	
 	//---BottomPanel---
-	/*Alt panelde bulunan butonlar icin gerekli degiskenler*/
+	/*Alt panelde bulunan componentler icin gerekli degiskenler*/
 	JPanel bottomPanel;
 	JProgressBar progressBar;
 	JButton playButton;
@@ -59,6 +61,8 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 	JButton backwardButton;
 	JButton fastforwardButton;
 	JButton fastbackwardButton;
+	JLabel playingSongLabel;
+	/*--------------------------------------------------------*/
 	//Alt panelde bulunan butonların boyutlarinin ve lokasyonlarinin ayarlanmasi
 	final int BUTTON_SIZE = 30;
 	final int BUTTON_LOCATION_Y = 20;
@@ -105,6 +109,9 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 		initButtons();
 		initUserButtons();
 		initArtistButtons();
+		playlistsCB.setEditable(true);
+		playlistsCB.setSize(new Dimension(150, 25));
+		playlistsCB.addActionListener(this);
 		//initFollowerListButtons();
 		this.setPreferredSize(new Dimension(1280,720));
 	}
@@ -205,6 +212,12 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 		progressBar.setBounds(BUTTON_LOCATION_X-30,BUTTON_LOCATION_Y+50,350,15);
 		bottomPanel.add(progressBar);
 		this.add(bottomPanel);
+		playingSongLabel = new JLabel();
+		playingSongLabel.setBounds(25,25,400,50);
+		playingSongLabel.setFont(new Font("Consolas", Font.BOLD, 20));
+		playingSongLabel.setForeground(Color.black);
+		playingSongLabel.setVisible(true);
+		bottomPanel.add(playingSongLabel);
 	}
 	//Alt panelde bulunan play/pause/skip butonlarinin resimlerinin ayarlandigi metod
 	public void initButtonImgs()
@@ -337,29 +350,7 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 	}
 	/*-----------------------------------------------------------------------------------*/
 	
-	/*Gerekli butonlari alta itecek ve gerekli comboBox'i gosterecek olan metoddur*/
-	public void addPlayclistCB(ArrayList<Button> buttons, Button button, JPanel panel) throws SQLException
-	{
-		
-		clearPanel(leftPanel);
-		playlistsCB.removeAllItems();
-		playlistsCB.addItem(new CBItem(button.ID, "Jazz"));
-		playlistsCB.addItem(new CBItem(button.ID, "Pop"));
-		playlistsCB.addItem(new CBItem(button.ID, "Classical"));
-		playlistsCB.setEditable(true);
-		playlistsCB.setBounds((int)button.getLocation().getX(),  (int)button.getLocation().getY()+50, 150, 25);
-		playlistsCB.addActionListener(this);
-		panel.add(playlistsCB);
-		initUserButtons();
-		for(int i = 0; i < buttons.size(); i++)
-		{
-			leftPanel.add(buttons.get(i));
-		}
-		repaint();
-		
-		
-	}
-	/*-----------------------------------------------------------------------------------*/
+	
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -379,7 +370,20 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 			
 			Button btn2 = (Button) btn;
 			try {
-				addPlayclistCB(userButtons, btn2, leftPanel);
+				clearPanel(leftPanel);
+				playlistsCB.removeAllItems();
+				playlistsCB.addItem(new CBItem(btn2.getID(), "Jazz"));
+				playlistsCB.addItem(new CBItem(btn2.getID(), "Pop"));
+				playlistsCB.addItem(new CBItem(btn2.getID(), "Classical"));
+				playlistsCB.setLocation((int)btn2.getLocation().getX(),  (int)btn2.getLocation().getY()+50);
+				leftPanel.add(playlistsCB);
+				initUserButtons();
+				for(int i = 0; i < userButtons.size(); i++)
+				{
+					leftPanel.add(userButtons.get(i));
+				}
+				
+				repaint();
 			} catch (SQLException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -435,11 +439,11 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 			{
 				if(i == 0)
 				{
-					artistAlbumsList.get(i).setBounds(0, 50, 150, 50);
+					artistAlbumsList.get(i).setBounds(0, 50, MID_PNL_BTN_W, MID_PNL_BTN_H);
 				}
 				else
 				{
-					artistAlbumsList.get(i).setBounds(0, (int)artistAlbumsList.get(i-1).getLocation().getY()+70, 150, 50);
+					artistAlbumsList.get(i).setBounds(0, (int)artistAlbumsList.get(i-1).getLocation().getY()+50, MID_PNL_BTN_W, MID_PNL_BTN_H);
 				}
 				artistAlbumsList.get(i).setFont(new Font("Consolas", Font.BOLD, 20));
 				artistAlbumsList.get(i).setForeground(Color.white);
@@ -455,14 +459,19 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 			Button button = (Button)e.getSource();
 			clearPanel(middlePanel);
 			songsList.clear();
+			songAddButtons.clear();
 			try 
 			{
 				ResultSet rs = SpotifyDB.getAlbumSongs(button.getID());
 				//SongID SongName
 				while(rs.next())
 				{
-					songsList.add(new Button(rs.getString("SongID"), rs.getString("SongName")));
+					String ID = rs.getString("SongID");
+					String songName =  rs.getString("SongName");
+					songsList.add(new Button(ID,songName));
 					songsList.get(songsList.size()-1).setGenre(rs.getString("genre"));
+					songAddButtons.add(new Button(ID, "+"));
+					songAddButtons.get(songAddButtons.size()-1).setGenre(rs.getString("genre"));
 				}
 			} 
 			catch (SQLException e1) 
@@ -473,11 +482,13 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 			{
 				if(i == 0)
 				{
-					songsList.get(i).setBounds(0, 50, 150, 50);
+					songsList.get(i).setBounds(0, 0, MID_PNL_BTN_W-50, MID_PNL_BTN_H);
+					songAddButtons.get(i).setBounds(MID_PNL_BTN_W-50, 0, 50,MID_PNL_BTN_H);
 				}
 				else
 				{
-					songsList.get(i).setBounds(0, (int)songsList.get(i-1).getLocation().getY()+70, 150, 50);
+					songsList.get(i).setBounds(0, (int)songsList.get(i-1).getLocation().getY()+70, MID_PNL_BTN_W-50, MID_PNL_BTN_H);
+					songAddButtons.get(i).setBounds(MID_PNL_BTN_W-50, (int)songAddButtons.get(i-1).getLocation().getY()+70, 50,MID_PNL_BTN_H);
 				}
 				songsList.get(i).setFont(new Font("Consolas", Font.BOLD, 20));
 				songsList.get(i).setForeground(Color.white);
@@ -486,17 +497,47 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 				songsList.get(i).addMouseListener(this);
 				middlePanel.add(songsList.get(i));
 				
+				songAddButtons.get(i).setFont(new Font("Consolas", Font.BOLD, 25));
+				songAddButtons.get(i).setForeground(Color.white);
+				songAddButtons.get(i).setBackground(Color.black);
+				songAddButtons.get(i).setFocusable(false);
+				songAddButtons.get(i).addMouseListener(this);
+				middlePanel.add(songAddButtons.get(i));
+				
 			}
 			
 		}
 		else if(songsList.contains(btn))
 		{
 			Button button = (Button)btn;
-			int a = JOptionPane.showOptionDialog(null, button.getText() + " going to be added to your playlist.", "Warning", JOptionPane.YES_NO_OPTION , JOptionPane.INFORMATION_MESSAGE, null,null, 0);
+			try 
+			{
+				String tp = SpotifyDB.getTimesPlayed(button.getID());
+				Integer i = Integer.parseInt(tp);
+				i++;
+				String tp2 = i.toString();
+				SpotifyDB.updateSongTimesPlayed(button.getID(), tp2);
+				ResultSet rs = SpotifyDB.getSong(button.getID());
+				while(rs.next())
+				{
+					playingSongLabel.setText(rs.getString("SongName") + "   " +  rs.getString("duration") + "   " + rs.getString("timesPlayed"));
+					repaint();
+				}
+			} 
+			catch (SQLException e1) 
+			{
+				e1.printStackTrace();
+			}
+			
+		}
+		else if(songAddButtons.contains(btn))
+		{
+			Button button = (Button)btn;
+			int a = JOptionPane.showOptionDialog(null, "This song going to be added to your playlist.", "Warning", JOptionPane.YES_NO_OPTION , JOptionPane.INFORMATION_MESSAGE, null,null, 0);
 			if(a == JOptionPane.YES_OPTION)
 			{
 				try {
-					SpotifyDB.addToPlaylist(this.userID, button.getID(), button.getGenre());
+					SpotifyDB.addToPlaylist(this.userID, button.getID());
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -649,39 +690,42 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 		{
 			CBItem item = (CBItem)playlistsCB.getSelectedItem();
 			clearPanel(middlePanel);
-			
 			songsList.clear();
-			try 
+			if(item != null)
 			{
-				ResultSet rs = SpotifyDB.getPlaylist(item.getID(), item.getText());
-				while(rs.next())
+				try 
 				{
-					songsList.add(new Button(rs.getString("s.SongID"), rs.getString("a.ArtistName")+"   "+rs.getString("s.SongName") + rs.getString("s.genre") + "   " + rs.getString("s.duration")));
-					songsList.get(songsList.size()-1).setGenre(rs.getString("genre"));
+					ResultSet rs = SpotifyDB.getPlaylist(item.getID(), item.getText());
+					while(rs.next())
+					{
+						songsList.add(new Button(rs.getString("s.SongID"), rs.getString("a.ArtistName")+"   "+rs.getString("s.SongName") + rs.getString("s.genre") + "   " + rs.getString("s.duration")));
+						songsList.get(songsList.size()-1).setGenre(rs.getString("genre"));
+					}
+				} 
+				catch (SQLException e1) 
+				{
+					e1.printStackTrace();
 				}
-			} 
-			catch (SQLException e1) 
-			{
-				e1.printStackTrace();
+				for(int i = 0; i < songsList.size(); i++)
+				{
+					if(i == 0)
+					{
+						songsList.get(i).setBounds(0, 50, 1130, 50);
+					}
+					else
+					{
+						songsList.get(i).setBounds(0, (int)songsList.get(i-1).getLocation().getY()+70, MID_PNL_BTN_W, MID_PNL_BTN_H);
+					}
+					songsList.get(i).setFont(new Font("Consolas", Font.BOLD, 20));
+					songsList.get(i).setForeground(Color.white);
+					songsList.get(i).setBackground(Color.black);
+					songsList.get(i).setFocusable(false);
+					songsList.get(i).addMouseListener(this);
+					middlePanel.add(songsList.get(i));
+					
+				}
 			}
-			for(int i = 0; i < songsList.size(); i++)
-			{
-				if(i == 0)
-				{
-					songsList.get(i).setBounds(0, 50, 1130, 50);
-				}
-				else
-				{
-					songsList.get(i).setBounds(0, (int)songsList.get(i-1).getLocation().getY()+70, 1130, 50);
-				}
-				songsList.get(i).setFont(new Font("Consolas", Font.BOLD, 20));
-				songsList.get(i).setForeground(Color.white);
-				songsList.get(i).setBackground(Color.black);
-				songsList.get(i).setFocusable(false);
-				songsList.get(i).addMouseListener(this);
-				middlePanel.add(songsList.get(i));
-				
-			}
+			
 		}
 		
 	}

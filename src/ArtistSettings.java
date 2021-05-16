@@ -27,12 +27,13 @@ public class ArtistSettings extends JPanel implements MouseListener, ActionListe
 	JLabel addAnArtist;
 	JButton deleteButton;
 	JTextField enterArtistNameText;
-	JTextField enterArtistCountryText;
 	JButton addButton;
 	JButton AlbumSettingsButton;
 	static final int GENERAL_OBJ_LOC_Y = 360;
 	static final int GENERAL_OBJ_LOC_X = 175;
 	
+	JComboBox<CBItem> countryCB;
+	JButton addNewCountryButton;
 	
 	JLabel selectArtistNameToUpdate;
 	JLabel selectArtistPropertyUpdateLabel;
@@ -41,13 +42,14 @@ public class ArtistSettings extends JPanel implements MouseListener, ActionListe
 	JButton updateButton;
 	JComboBox<CBItem> selectArtistUpdateCB;
 	JComboBox<String> selectArtistPropertyUpdateCB;
-	ArtistSettings()
+	ArtistSettings() throws SQLException
 	{
 		this.setBackground(new Color(33,33,33));
 		initComboBoxes();
 		initCreateArtist();
 		addComponentsToPanel();
 	    initUpdateSettings();
+	    initCountryCB();
 		try 
 		{
 			initArtistNameCB();
@@ -69,10 +71,10 @@ public class ArtistSettings extends JPanel implements MouseListener, ActionListe
 		addAnArtist.setForeground(Color.white);
 		
 		addButton = new JButton();
-		addButton.setBounds(GENERAL_OBJ_LOC_X+350, GENERAL_OBJ_LOC_Y+150, 100, 30);
+		addButton.setBounds(GENERAL_OBJ_LOC_X+250, GENERAL_OBJ_LOC_Y+150, 250, 40);
 		addButton.setFont(new Font("Consolas", Font.BOLD, 20));
 		addButton.setForeground(Color.white);
-		addButton.setText("Add");
+		addButton.setText("Add artist to db");
 		addButton.setBackground(this.getBackground().brighter());
 		addButton.setFocusable(false);
 		addButton.addMouseListener(this);
@@ -81,11 +83,6 @@ public class ArtistSettings extends JPanel implements MouseListener, ActionListe
 		enterArtistNameText.setBounds(GENERAL_OBJ_LOC_X, GENERAL_OBJ_LOC_Y + 50, 450,30);
 		enterArtistNameText.setFont(new Font("Consolas", Font.BOLD, 20));
 		enterArtistNameText.setText("Enter the Artist's name");
-		
-		enterArtistCountryText = new JTextField();
-		enterArtistCountryText.setBounds(GENERAL_OBJ_LOC_X, GENERAL_OBJ_LOC_Y + 100, 450,30);
-		enterArtistCountryText.setFont(new Font("Consolas", Font.BOLD, 20));
-		enterArtistCountryText.setText("Enter the Artist's Country");
 		
 		AlbumSettingsButton = new JButton();
 		AlbumSettingsButton.setBounds(GENERAL_OBJ_LOC_X+550, GENERAL_OBJ_LOC_Y+250, 250, 50);
@@ -97,6 +94,33 @@ public class ArtistSettings extends JPanel implements MouseListener, ActionListe
 		AlbumSettingsButton.addMouseListener(this);
 		
 		
+	}
+	public void initCountryCB() throws SQLException
+	{
+		countryCB = new JComboBox<CBItem>();
+		initCountryCB2();
+		countryCB.setBounds(GENERAL_OBJ_LOC_X, GENERAL_OBJ_LOC_Y + 100, 450,30);
+		countryCB.setFont(new Font("Consolas", Font.BOLD, 25));
+		this.add(countryCB);
+		addNewCountryButton = new JButton();
+		addNewCountryButton.setBounds(GENERAL_OBJ_LOC_X-50, GENERAL_OBJ_LOC_Y+150, 250,40);
+		addNewCountryButton.setFont(new Font("Consolas", Font.BOLD, 20));
+		addNewCountryButton.setForeground(Color.white);
+		addNewCountryButton.setText("Add new country");
+		addNewCountryButton.setBackground(this.getBackground().brighter());
+		addNewCountryButton.setFocusable(false);
+		addNewCountryButton.addMouseListener(this);
+		this.add(addNewCountryButton);
+	}
+	public void initCountryCB2() throws SQLException
+	{
+		ResultSet rs = SpotifyDB.getAllCountires();
+		countryCB.removeAllItems();
+		while(rs.next())
+		{
+			countryCB.addItem(new CBItem(rs.getString("countryID"), rs.getString("country")));
+		}
+		repaint();
 	}
 	public void initUpdateSettings()
 	{
@@ -206,7 +230,6 @@ public class ArtistSettings extends JPanel implements MouseListener, ActionListe
 		this.add(deleteButton);
 		this.add(addAnArtist);
 		this.add(enterArtistNameText);
-		this.add(enterArtistCountryText);
 		this.add(addButton);
 		this.add(AlbumSettingsButton);
 	}
@@ -234,13 +257,26 @@ public class ArtistSettings extends JPanel implements MouseListener, ActionListe
 	public void mousePressed(MouseEvent e) 
 	{
 		
+		if(e.getSource() == addNewCountryButton)
+		{
+			
+			try 
+			{
+				SpotifyDB.addCountry();
+				initCountryCB2();
+			}
+			catch (SQLException e1) 
+			{
+				e1.printStackTrace();
+			}
+			return;
+		}
 		
-		
-		if(e.getSource() == addButton)
+		else if(e.getSource() == addButton)
 		{
 			//artist tablosuna gerekli verilerle yeni eleman ekle
 			String artistToAddName = enterArtistNameText.getText();
-			String artistToAddCountry = enterArtistCountryText.getText();
+			String artistToAddCountry = ((CBItem)countryCB.getSelectedItem()).getID();
 			try {
 				SpotifyDB.addArtist(artistToAddName, artistToAddCountry);
 				initArtistNameCB();

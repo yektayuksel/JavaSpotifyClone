@@ -1,6 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.SQLException;
+
 import javax.swing.border.Border;
 
 public class OpeningPanel extends JPanel implements MouseListener
@@ -58,7 +60,12 @@ public class OpeningPanel extends JPanel implements MouseListener
 	}
 	else if(e.getSource() == signButton)
 	{
-		new Screen(new SignInPanel());
+		try {
+			new Screen(new SignInPanel());
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		((Window) getRootPane().getParent()).dispose();
 	}
 		

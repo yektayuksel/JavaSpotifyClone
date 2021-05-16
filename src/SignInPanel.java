@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.swing.*;
@@ -12,9 +13,11 @@ public class SignInPanel extends JPanel implements MouseListener
 	JTextField userNameText;
 	JTextField passwordText;
 	JTextField emailText;
-	JTextField countryText;
+	
+	JComboBox<CBItem> countryCB;
 	JButton premiumButton;
 	JButton freeButton;
+	JButton addNewCountryButton;
 	final int TXTF_LOC_X = 390;
 	final int TXTF_LOC_Y = 350;
 	final int TXTF_GAPS = 60;
@@ -22,20 +25,20 @@ public class SignInPanel extends JPanel implements MouseListener
 	final int TXTF_H = 40;
 	final int TXTF_PUNTO = 25;
 			
-	SignInPanel()
+	SignInPanel() throws SQLException
 	{
 		this.setBackground(new Color(33,33,33));
 		
 		initTextFields();
 		initButtons();
-		
+		initCountryCB();
 		
 		this.add(userNameText);
 		this.add(passwordText);
 		this.add(emailText);
 		this.add(premiumButton);
 		this.add(freeButton);
-		this.add(countryText);
+		this.add(countryCB);
 		this.setLayout(new BorderLayout());
 		this.setPreferredSize(new Dimension(1280,720));
 	}
@@ -79,14 +82,34 @@ public class SignInPanel extends JPanel implements MouseListener
 		emailText.setFont(new Font("Consolas", Font.BOLD, TXTF_PUNTO));
 		emailText.setText("Email");
 		
-		countryText = new JTextField();
-		countryText.setBounds(TXTF_LOC_X, (int)emailText.getLocation().getY()+TXTF_GAPS, TXTF_W,TXTF_H);
-		countryText.setFont(new Font("Consolas", Font.BOLD, TXTF_PUNTO));
-		countryText.setText("Country");
-		
-		
-		
-		
+	}
+	
+	public void initCountryCB() throws SQLException
+	{
+		countryCB = new JComboBox<CBItem>();
+		initCountryCB2();
+		countryCB.setBounds(TXTF_LOC_X, (int)emailText.getLocation().getY()+TXTF_GAPS, TXTF_W,TXTF_H);
+		countryCB.setFont(new Font("Consolas", Font.BOLD, TXTF_PUNTO));
+		this.add(countryCB);
+		addNewCountryButton = new JButton();
+		addNewCountryButton.setBounds((int)countryCB.getLocation().getX() + 525, (int)emailText.getLocation().getY()+60, 250,40);
+		addNewCountryButton.setFont(new Font("Consolas", Font.BOLD, 20));
+		addNewCountryButton.setForeground(Color.white);
+		addNewCountryButton.setText("Add new country");
+		addNewCountryButton.setBackground(this.getBackground().brighter());
+		addNewCountryButton.setFocusable(false);
+		addNewCountryButton.addMouseListener(this);
+		this.add(addNewCountryButton);
+	}
+	public void initCountryCB2() throws SQLException
+	{
+		ResultSet rs = SpotifyDB.getAllCountires();
+		countryCB.removeAllItems();
+		while(rs.next())
+		{
+			countryCB.addItem(new CBItem(rs.getString("countryID"), rs.getString("country")));
+		}
+		repaint();
 	}
 	public void paintComponent(Graphics g)
 	{
@@ -103,7 +126,20 @@ public class SignInPanel extends JPanel implements MouseListener
 		String userName = userNameText.getText();
 		String pswrd = passwordText.getText();
 		String email = emailText.getText();
-		String country = countryText.getText();
+		if(e.getSource() == addNewCountryButton)
+		{
+			
+			try 
+			{
+				SpotifyDB.addCountry();
+				initCountryCB2();
+			}
+			catch (SQLException e1) 
+			{
+				e1.printStackTrace();
+			}
+			return;
+		}
 		
 		try 
 		{
@@ -131,6 +167,7 @@ public class SignInPanel extends JPanel implements MouseListener
 	
 		if(e.getSource() == premiumButton)
 		{
+			String countryID = ((CBItem)countryCB.getSelectedItem()).getID();
 			String cardNumber = JOptionPane.showInputDialog("Enter Your Card Number");
 			if(cardNumber == null)
 			{
@@ -141,16 +178,18 @@ public class SignInPanel extends JPanel implements MouseListener
 				JOptionPane.showMessageDialog(null, "Enter a card number", "Warning", JOptionPane.WARNING_MESSAGE);
 				return;
 			}
-			SpotifyDB.addUser(userName, email, pswrd, country, true, cardNumber, true);
+			SpotifyDB.addUser(userName, email, pswrd, countryID, true, cardNumber, true);
 			new Screen(new OpeningPanel());
 		}
 		else if(e.getSource() == freeButton)
 		{
-			SpotifyDB.addUser(userName, email, pswrd, country, false, null, false);
+			String countryID = ((CBItem)countryCB.getSelectedItem()).getID();
+			SpotifyDB.addUser(userName, email, pswrd, countryID, false, null, false);
 			
 			new Screen(new OpeningPanel());
 			
 		}
+		
 		((Window) getRootPane().getParent()).dispose();
 		
 	}

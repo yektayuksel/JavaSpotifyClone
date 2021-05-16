@@ -78,7 +78,12 @@ public class AdminPanel extends JPanel implements MouseListener
 		JButton button = (JButton)e.getSource();
 		if(button.getText().equals("Artist Settings"))
 		{
-			new Screen(new ArtistSettings());
+			try {
+				new Screen(new ArtistSettings());
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 		else if(button.getText().equals("Song Settings"))
 		{

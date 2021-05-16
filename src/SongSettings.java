@@ -24,7 +24,7 @@ public class SongSettings extends JPanel implements MouseListener,ActionListener
 	JLabel songToDeleteLabel;
 	JButton deleteButton;
 	
-	JLabel addSongLabel;
+    JLabel addSongLabel;
 	JLabel selectArtistLabel;
 	JLabel selectAlbumLabel;
 	
@@ -32,7 +32,7 @@ public class SongSettings extends JPanel implements MouseListener,ActionListener
 	JComboBox<CBItem> albumNameBox;
 	JComboBox<CBItem> artistNameBox;
 	JTextField songNameText;
-	JComboBox<String> genreCB;
+	JComboBox<CBItem> genreCB;
 	JTextField durationText;
 	JButton addButton;
 	JButton albumSettingsButton;
@@ -45,6 +45,7 @@ public class SongSettings extends JPanel implements MouseListener,ActionListener
 	JLabel selectTheAlbumUpdateLabel;
 	JComboBox<CBItem> selectTheAlbumUpdateCB;
 	JTextField newValueTxt;
+	JComboBox<CBItem> newValueGenreCB;
 	JButton updateButton;
 	JComboBox<CBItem> selectArtistUpdateCB;
 	JComboBox<CBItem> selectSongUpdateCB;
@@ -56,6 +57,7 @@ public class SongSettings extends JPanel implements MouseListener,ActionListener
 	{
 		this.setBackground(new Color(33,33,33));
 		initAll();
+		initValueBoxes();
 		this.add(songToDeleteBox);
 		this.add(songToDeleteLabel);
 		this.add(deleteButton);
@@ -69,6 +71,19 @@ public class SongSettings extends JPanel implements MouseListener,ActionListener
 		this.add(durationText);
 		this.add(addButton);
 		this.add(albumSettingsButton);
+		this.add(selectASongUpdateLabel);
+		this.add(artistNameUpdate);
+		this.add(selectArtistUpdateCB);
+		this.add(selectTheAlbumUpdateLabel);
+		this.add(selectTheAlbumUpdateCB);
+		this.add(songNameUpdate);
+		this.add(selectSongUpdateCB);
+		this.add(selectSongPropertyUpdateLabel);
+		this.add(selectSongPropertyUpdateCB);
+		this.add(newValueLabel);
+		this.add(newValueGenreCB);
+		this.add(newValueTxt);
+		this.add(updateButton);
 		this.setLayout(new BorderLayout());
 		this.setPreferredSize(new Dimension(1280,720));
 	}
@@ -116,12 +131,13 @@ public class SongSettings extends JPanel implements MouseListener,ActionListener
 		songNameText.setFont(new Font("Consolas", Font.BOLD, 20));
 		songNameText.setText("Enter Song Name");
 		
-		genreCB = new JComboBox<String>();
+		genreCB = new JComboBox<CBItem>();
 		genreCB.setBounds(GENERAL_OBJ_LOC_X, GENERAL_OBJ_LOC_Y + 290, 450,30);
 		genreCB.setFont(new Font("Consolas", Font.BOLD, 20));
-		genreCB.addItem("Jazz");
-		genreCB.addItem("Clasiccal");
-		genreCB.addItem("Pop");
+		genreCB.addItem(new CBItem("1","Jazz"));
+		genreCB.addItem(new CBItem("2","Pop"));
+		genreCB.addItem(new CBItem("3","Clasiccal"));
+		
 		
 
 		durationText = new JTextField();
@@ -170,7 +186,7 @@ public class SongSettings extends JPanel implements MouseListener,ActionListener
 		selectASongUpdateLabel.setBounds(GENERAL_OBJ_LOC_X+520 ,GENERAL_OBJ_LOC_Y - 200, 500, 30);
 		selectASongUpdateLabel.setFont(new Font("Consolas", Font.BOLD, 30));
 		selectASongUpdateLabel.setForeground(Color.white);
-		this.add(selectASongUpdateLabel);
+		
 		
 		selectArtistUpdateCB = new JComboBox<CBItem>();
 		try 
@@ -196,45 +212,44 @@ public class SongSettings extends JPanel implements MouseListener,ActionListener
 		artistNameUpdate.setBounds(GENERAL_OBJ_LOC_X+520,GENERAL_OBJ_LOC_Y - 150, 500, 30);
 		artistNameUpdate.setFont(new Font("Consolas", Font.BOLD, 20));
 		artistNameUpdate.setForeground(Color.white);
-		this.add(artistNameUpdate);
+		
 		
 		selectArtistUpdateCB.setEditable(true);
 		selectArtistUpdateCB.setBounds(GENERAL_OBJ_LOC_X+520, GENERAL_OBJ_LOC_Y - 100, 450, 30);
 		selectArtistUpdateCB.addActionListener(this);
-		this.add(selectArtistUpdateCB);
+		
 		
 		selectTheAlbumUpdateLabel = new JLabel();
 		selectTheAlbumUpdateLabel.setText("Select the album");
 		selectTheAlbumUpdateLabel.setBounds(GENERAL_OBJ_LOC_X+520,GENERAL_OBJ_LOC_Y - 50, 500, 30);
 		selectTheAlbumUpdateLabel.setFont(new Font("Consolas", Font.BOLD, 20));
 		selectTheAlbumUpdateLabel.setForeground(Color.white);
-		this.add(selectTheAlbumUpdateLabel);
 		
 		selectTheAlbumUpdateCB = new JComboBox<CBItem>();
 		selectTheAlbumUpdateCB.setEditable(true);
 		selectTheAlbumUpdateCB.setBounds(GENERAL_OBJ_LOC_X+520, GENERAL_OBJ_LOC_Y, 450, 30);
 		selectTheAlbumUpdateCB.addActionListener(this);
-		this.add(selectTheAlbumUpdateCB);
+		
 		
 		songNameUpdate = new JLabel();
 		songNameUpdate.setText("Select the song");
 		songNameUpdate.setBounds(GENERAL_OBJ_LOC_X+520,GENERAL_OBJ_LOC_Y +50, 500, 30);
 		songNameUpdate.setFont(new Font("Consolas", Font.BOLD, 20));
 		songNameUpdate.setForeground(Color.white);
-		this.add(songNameUpdate);
+		
 		
 		selectSongUpdateCB = new JComboBox<CBItem>();
 		selectSongUpdateCB.setEditable(true);
 		selectSongUpdateCB.setBounds(GENERAL_OBJ_LOC_X+520, GENERAL_OBJ_LOC_Y+100, 450, 30);
 		selectSongUpdateCB.addActionListener(this);
-		this.add(selectSongUpdateCB);
+		
 		
 		selectSongPropertyUpdateLabel = new JLabel();
 		selectSongPropertyUpdateLabel.setText("Select a property to update ");
 		selectSongPropertyUpdateLabel.setBounds(GENERAL_OBJ_LOC_X+520,GENERAL_OBJ_LOC_Y + 150, 500, 30);
 		selectSongPropertyUpdateLabel.setFont(new Font("Consolas", Font.BOLD, 20));
 		selectSongPropertyUpdateLabel.setForeground(Color.white);
-		this.add(selectSongPropertyUpdateLabel);
+		
 		
 		selectSongPropertyUpdateCB = new JComboBox<String>();
 		selectSongPropertyUpdateCB.addItem("Song name");
@@ -243,7 +258,7 @@ public class SongSettings extends JPanel implements MouseListener,ActionListener
 		selectSongPropertyUpdateCB.setEditable(true);
 		selectSongPropertyUpdateCB.setBounds(GENERAL_OBJ_LOC_X+520, GENERAL_OBJ_LOC_Y+200, 450, 30);
 		selectSongPropertyUpdateCB.addActionListener(this);
-		this.add(selectSongPropertyUpdateCB);
+		
 		
 		
 		newValueLabel = new JLabel();
@@ -251,13 +266,10 @@ public class SongSettings extends JPanel implements MouseListener,ActionListener
 		newValueLabel.setBounds(GENERAL_OBJ_LOC_X+520,GENERAL_OBJ_LOC_Y + 250, 500, 30);
 		newValueLabel.setFont(new Font("Consolas", Font.BOLD, 20));
 		newValueLabel.setForeground(Color.white);
-		this.add(newValueLabel);		
+				
 		
-		newValueTxt = new JTextField();
-		newValueTxt.setBounds(GENERAL_OBJ_LOC_X+520, GENERAL_OBJ_LOC_Y + 300, 450,30);
-		newValueTxt.setFont(new Font("Consolas", Font.BOLD, 20));
-		this.add(newValueTxt);
 		
+
 		updateButton = new JButton();
 		updateButton.setBounds(GENERAL_OBJ_LOC_X+870, GENERAL_OBJ_LOC_Y + 350, 100, 30);
 		updateButton.setFont(new Font("Consolas", Font.BOLD, 20));
@@ -265,8 +277,28 @@ public class SongSettings extends JPanel implements MouseListener,ActionListener
 		updateButton.setText("Update");
 		updateButton.setBackground(this.getBackground().brighter());
 		updateButton.setFocusable(false);
-		updateButton.addMouseListener(this);
-		this.add(updateButton);
+		updateButton.addMouseListener(this);		
+		
+		
+	}
+	public void initValueBoxes()
+	{
+		
+		newValueGenreCB = new JComboBox<CBItem>();
+		newValueGenreCB.setBounds(GENERAL_OBJ_LOC_X+520, GENERAL_OBJ_LOC_Y + 300, 450,30);
+		newValueGenreCB.setFont(new Font("Consolas", Font.BOLD, 20));
+		newValueGenreCB.addItem(new CBItem("1","Jazz"));
+		newValueGenreCB.addItem(new CBItem("2","Pop"));
+		newValueGenreCB.addItem(new CBItem("3","Clasiccal"));
+		newValueGenreCB.setVisible(false);
+		newValueGenreCB.setEnabled(false);
+
+		newValueTxt = new JTextField();
+		newValueTxt.setBounds(GENERAL_OBJ_LOC_X+520, GENERAL_OBJ_LOC_Y + 300, 450,30);
+		newValueTxt.setFont(new Font("Consolas", Font.BOLD, 20));
+		newValueTxt.setVisible(false);
+		newValueTxt.setEnabled(false);
+		
 		
 	}
 	public void initMenuButtons()
@@ -308,7 +340,6 @@ public class SongSettings extends JPanel implements MouseListener,ActionListener
 	{
 		try {
 			albumNameBox.removeAllItems();
-			
 			CBItem item = (CBItem)artistNameBox.getSelectedItem();
 	        ResultSet rs = SpotifyDB.getAllAlbums(item.getID());
 
@@ -319,13 +350,14 @@ public class SongSettings extends JPanel implements MouseListener,ActionListener
 				
 
 	        }
+	        
 	    } catch (Exception e) {
 	        JOptionPane.showMessageDialog(this, "Error" + e  );
 	    }
 	}
 	public void initSongToDeleteCB() throws SQLException
 	{
-		//songToDeleteBox
+		songToDeleteBox.removeAllItems();
 		ResultSet rs = SpotifyDB.getAllSongs();
 		while(rs.next())
 		{
@@ -348,20 +380,22 @@ public class SongSettings extends JPanel implements MouseListener,ActionListener
 		}
 		else if(e.getSource() == addButton)
 		{
-			
+		
 			CBItem cb = (CBItem)albumNameBox.getSelectedItem();
 			String albumID = cb.getID(); 
 			CBItem cb2 = (CBItem) artistNameBox.getSelectedItem();
 			String artistID = cb2.getID();
 			String songName = songNameText.getText();
-			String genre = genreCB.getSelectedItem().toString();
+			String genreID = ((CBItem)genreCB.getSelectedItem()).getID();
 			String duration = durationText.getText();
 			String releaseDate;
-			try {
+			try 
+			{
 				releaseDate = SpotifyDB.getAlbumRelaseDate(albumID);
-				SpotifyDB.addSong( songName,  artistID,  albumID,  genre,  duration,  releaseDate);
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
+				SpotifyDB.addSong( songName,  artistID,  albumID,  genreID,  duration,  releaseDate);
+			} 
+			catch (SQLException e1) 
+			{
 				e1.printStackTrace();
 			}
 			
@@ -382,23 +416,30 @@ public class SongSettings extends JPanel implements MouseListener,ActionListener
 		}
 		else if(e.getSource() == updateButton)
 		{
+			//TODO Yeni genreID'ye gore duzenle
 			String str = selectSongPropertyUpdateCB.getSelectedItem().toString();
-			String newValue = newValueTxt.getText(); 
+			String newValue;
 			CBItem item = (CBItem) selectSongUpdateCB.getSelectedItem();
 			
 			try 
 			{
 				if(str.equals("Song name"))
 				{
+					newValue = newValueTxt.getText();
 					SpotifyDB.updateSongName(item.getID(), newValue);
+					return;
 				}
 				else if(str.equals("Genre"))
 				{
+					newValue = ((CBItem)newValueGenreCB.getSelectedItem()).getID();
 					SpotifyDB.updateSongGenre(item.getID(), newValue);
+					return;
 				}
 				else if(str.equals("Duration"))
 				{
+					newValue = newValueTxt.getText();
 					SpotifyDB.updateSongDuration(item.getID(), newValue);
+					return;
 				}
 					
 			} 
@@ -433,7 +474,6 @@ public class SongSettings extends JPanel implements MouseListener,ActionListener
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -473,7 +513,6 @@ public class SongSettings extends JPanel implements MouseListener,ActionListener
 		if(e.getSource() == selectArtistUpdateCB)
 		{
 			CBItem item = (CBItem) selectArtistUpdateCB.getSelectedItem(); 
-			
 			try 
 			{
 				selectTheAlbumUpdateCB.removeAllItems();
@@ -482,7 +521,7 @@ public class SongSettings extends JPanel implements MouseListener,ActionListener
                 {
                 	selectTheAlbumUpdateCB.addItem(new CBItem(rs.getString("AlbumID"), rs.getString("AlbumName")));
                 }
-                repaint();
+               //repaint();
 			} 
 			catch (SQLException e1) 
 			{
@@ -492,7 +531,9 @@ public class SongSettings extends JPanel implements MouseListener,ActionListener
 		if(e.getSource() == selectTheAlbumUpdateCB)
 		{
 			CBItem item = (CBItem) selectTheAlbumUpdateCB.getSelectedItem(); 
-			selectSongUpdateCB.removeAll();
+			if(item == null)
+				return;
+			selectSongUpdateCB.removeAllItems();
 			try 
 			{
 				ResultSet rs = SpotifyDB.getAlbumSongs(item.getID());
@@ -508,6 +549,27 @@ public class SongSettings extends JPanel implements MouseListener,ActionListener
 				e1.printStackTrace();
 			}
 			repaint();
+		}
+		if(e.getSource() == selectSongPropertyUpdateCB)
+		{
+			//TODO
+			String value = selectSongPropertyUpdateCB.getSelectedItem().toString(); 
+			if(value.equals("Genre"))
+			{
+				newValueTxt.setVisible(false);
+				newValueTxt.setEnabled(false);
+				newValueGenreCB.setVisible(true);
+				newValueGenreCB.setEnabled(true);
+			}
+			else
+			{
+				newValueGenreCB.setVisible(false);
+				newValueGenreCB.setEnabled(false);
+				newValueTxt.setVisible(true);
+				newValueTxt.setEnabled(true);
+			}
+			
+			
 		}
 		
 		

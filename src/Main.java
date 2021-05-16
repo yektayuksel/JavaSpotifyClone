@@ -22,7 +22,7 @@ public class Main
         //new Screen(new FreeUserPanel("1"));
 		//new Screen(new SignInPanel());
 		//new Screen(new LoginPanel());
-		new Screen(new ArtistSettings());
+		new Screen(new SongSettings());
 		
 		
 		 

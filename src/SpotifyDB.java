@@ -35,13 +35,13 @@ public class SpotifyDB
 		 return null;
 	}
 	
-	public static void addUser(String userName, String email, String pswrd, String country, boolean isPremium, String cardNumber,boolean isPaid)
+	public static void addUser(String userName, String email, String pswrd, String countryID, boolean isPremium, String cardNumber,boolean isPaid)
 	{
 		Connection conn = getConnection(); 
 		try 
 		{
-			PreparedStatement adduser = conn.prepareStatement("INSERT INTO user (userName,email,pswrd,Country,isPremium, cardNumber,isPaid) "
-			+ "VALUES('"+userName+"','"+email+"','"+pswrd+"','"+country+"',"+isPremium+","+cardNumber+","+isPaid+")");
+			PreparedStatement adduser = conn.prepareStatement("INSERT INTO user (userName,email,pswrd,countryID,isPremium, cardNumber,isPaid) "
+			+ "VALUES('"+userName+"','"+email+"','"+pswrd+"','"+countryID+"',"+isPremium+","+cardNumber+","+isPaid+")");
 			
 			adduser.executeUpdate();
 			JOptionPane.showMessageDialog(null, userName+", you have been signed up successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
@@ -51,24 +51,33 @@ public class SpotifyDB
 			e.printStackTrace();
 		}
 	}
-	public static void addArtist(String artistName, String country) throws SQLException
+	public static void addArtist(String artistName, String countryID) throws SQLException
 	{
 		
 		
 		Connection conn = getConnection(); 
-		try 
-		{
-			PreparedStatement addartst = conn.prepareStatement("INSERT INTO artist (ArtistName,Country) VALUES('"+artistName+"','"+country+"')");
-			addartst.executeUpdate();
-			JOptionPane.showMessageDialog(null, "Artist added successfully", "Succes", JOptionPane.INFORMATION_MESSAGE);
+		PreparedStatement addartst = conn.prepareStatement("INSERT INTO artist (ArtistName,countryID) VALUES('"+artistName+"','"+countryID+"')");
+		addartst.executeUpdate();
+		JOptionPane.showMessageDialog(null, "Artist added successfully", "Succes", JOptionPane.INFORMATION_MESSAGE);
 			
-		}
-		catch (Exception e) 
+		
+	}
+	public static void addCountry() throws SQLException
+	{
+		String country = JOptionPane.showInputDialog("Enter new country");
+		if(country == null)
 		{
-			e.printStackTrace();
+			return;
+		}
+		else
+		{
+			Connection conn = getConnection(); 
+			PreparedStatement addcountry = conn.prepareStatement("INSERT INTO country (country) VALUES('"+country+"')");
+			addcountry.executeUpdate();
+			JOptionPane.showMessageDialog(null, "Country added successfully", "Succes", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
-	public static void addAlbum(String albumName, String artistID, String releaseDate, String genre) throws SQLException
+	public static void addAlbum(String albumName, String artistID, String releaseDate, String genreID) throws SQLException
 	{
 		Connection conn = getConnection(); 
 		
@@ -87,7 +96,7 @@ public class SpotifyDB
 		}	
 		try 
 		{
-			PreparedStatement addalbum = conn.prepareStatement("INSERT INTO album (AlbumName,ArtistID,releaseDate,genre) VALUES('"+albumName+"','"+artistID+"','"+releaseDate+"','"+genre+"')");
+			PreparedStatement addalbum = conn.prepareStatement("INSERT INTO album (AlbumName,ArtistID,releaseDate,genreID) VALUES('"+albumName+"','"+artistID+"','"+releaseDate+"','"+genreID+"')");
 			addalbum.executeUpdate();
 			JOptionPane.showMessageDialog(null, albumName+" has added successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 		}
@@ -96,8 +105,15 @@ public class SpotifyDB
 			e.printStackTrace();
 		}
 	}
-	public static void addSong(String songName, String artistID, String albumID, String genre, String duration, String releaseDate) throws SQLException
+	public static void addSong(String songName, String artistID, String albumID, String genreID, String duration, String releaseDate) throws SQLException
 	{
+		
+		if(!compareGenres(albumID, genreID))
+		{
+			
+			JOptionPane.showMessageDialog(null, "Album and song genres should be the same","Warning", JOptionPane.WARNING_MESSAGE);
+			return;
+		}
 		
 		Connection conn = getConnection();
 		
@@ -111,13 +127,11 @@ public class SpotifyDB
 				JOptionPane.showMessageDialog(null, "This song already exists", "Warning", JOptionPane.WARNING_MESSAGE);
 				return;
 			}
-			
-			
 		}	
 		
 		try 
 		{
-			PreparedStatement addsong = conn.prepareStatement("INSERT INTO song (SongName,ArtistID,AlbumID,genre,duration,releaseDate) VALUES('"+songName+"','"+artistID+"','"+albumID+"','"+genre+"','"+duration+"','"+releaseDate+"')");
+			PreparedStatement addsong = conn.prepareStatement("INSERT INTO song (SongName,ArtistID,AlbumID,genreID,duration,releaseDate) VALUES('"+songName+"','"+artistID+"','"+albumID+"','"+genreID+"','"+duration+"','"+releaseDate+"')");
 			addsong.executeUpdate();
 			JOptionPane.showMessageDialog(null, songName+" has added successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 		}
@@ -126,13 +140,34 @@ public class SpotifyDB
 			e.printStackTrace();
 		}
 	}
+	public static boolean compareGenres(String AlbumID, String genreID) throws SQLException
+	{
+		String albumGenre = getAlbumGenreID(AlbumID);
+		if(genreID.equals(albumGenre))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	public static String getAlbumGenreID(String AlbumID) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		String query = "SELECT genreID FROM album WHERE AlbumID = '"+ AlbumID+"'";
+		Statement st = conn.createStatement();
+		ResultSet rs = st.executeQuery(query);
+		rs.next();
+		return rs.getString("genreID");
+	}
 	public static void follow(String UserID, String followingID) throws SQLException
 	{
 		Connection conn = getConnection(); 
 		PreparedStatement Follow = conn.prepareStatement("INSERT INTO follow (FollowerID,FollowingID) VALUES('"+UserID+"','"+followingID+"'");
 		Follow.executeUpdate();
 	}
-	public static void addToPlaylist(String userID, String SongID, String genre) throws SQLException
+	public static void addToPlaylist(String userID, String SongID) throws SQLException
 	{
 		
 		Connection conn = getConnection(); 
@@ -142,7 +177,7 @@ public class SpotifyDB
 		ResultSet rs = st.executeQuery(query);
 		try 
 		{			
-			PreparedStatement addtoplaylst = conn.prepareStatement("INSERT INTO playlist (userID,SongID,genre) VALUES('"+userID+"','"+SongID+"','"+genre+"')");
+			PreparedStatement addtoplaylst = conn.prepareStatement("INSERT INTO playlist (userID,SongID) VALUES('"+userID+"','"+SongID+"'");
 			addtoplaylst.executeUpdate();
 		}
 		catch (Exception e) 
@@ -155,6 +190,24 @@ public class SpotifyDB
 	{
 		Connection conn = getConnection(); 
 		String query = "SELECT s.SongID, s.SongName, s.duration, a.ArtistName, s.genre FROM song as s, playlist as p, artist as a WHERE s.genre = '" + genre + "'and p.genre = '" + genre + "'and s.SongID = p.SongID and p.userID = '" + userID + "' and s.ArtistID = a.ArtistID;";
+		Statement st = conn.createStatement();
+		ResultSet rs = st.executeQuery(query);
+		return rs;
+	}
+	
+	public static ResultSet getSong(String SongID) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		String query = "SELECT SongName, duration, timesPlayed FROM song WHERE SongID = '" + SongID + "'";
+		Statement st = conn.createStatement();
+		ResultSet rs = st.executeQuery(query);
+		return rs;
+	}
+	
+	public static ResultSet showAllSongs() throws SQLException
+	{
+		Connection conn = getConnection(); 
+		String query = "SELECT s.SongName,a.ArtistName, al.AlbumName, s.duration, s.genre FROM song s, artist a, album al where s.ArtistID = a.ArtistID and al.AlbumID = s.AlbumID ";
 		Statement st = conn.createStatement();
 		ResultSet rs = st.executeQuery(query);
 		return rs;
@@ -176,9 +229,6 @@ public class SpotifyDB
 		rs.next();
 		return rs.getString("ArtistName");
 	}
-	
-	
-	
 	public static String getUserID(String userName) throws SQLException
 	{
 		Connection conn = getConnection(); 
@@ -190,9 +240,6 @@ public class SpotifyDB
 		
 		return ID.toString();
 	}
-	
-	
-	
 	public static ResultSet getUserName(String userID) throws SQLException
 	{
 		Connection conn = getConnection(); 
@@ -202,9 +249,6 @@ public class SpotifyDB
 		return rs;
 		
 	}
-	
-	
-	
 	public static ResultSet getFollowers(String userID) throws SQLException
 	{
 		Connection conn = getConnection(); 
@@ -236,7 +280,7 @@ public class SpotifyDB
 	public static ResultSet getAlbumSongs(String AlbumID) throws SQLException
 	{
 		Connection conn = getConnection(); 
-		String query = "SELECT SongID, SongName, genre FROM song WHERE AlbumID = '" + AlbumID + "'";
+		String query = "SELECT SongID, SongName, genreID FROM song WHERE AlbumID = '" + AlbumID + "'";
 		Statement st = conn.createStatement();
 		ResultSet rs = st.executeQuery(query);
 		return rs;
@@ -259,6 +303,24 @@ public class SpotifyDB
 		ResultSet rs = st.executeQuery(query);
 		return rs;
 	}
+	public static String getTimesPlayed(String SongID) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		String query = "SELECT timesPlayed FROM song WHERE SongID ='"+SongID+"'";
+		Statement st = conn.createStatement();
+		ResultSet rs = st.executeQuery(query);
+		rs.next();
+		return rs.getString("timesPlayed");
+	}
+	public static ResultSet getAllCountires() throws SQLException
+	{
+		Connection conn = getConnection(); 
+		String query = "SELECT * FROM country";
+		Statement st = conn.createStatement();
+		ResultSet rs = st.executeQuery(query);
+		return rs;
+	}
+
 	public static boolean checkIfUserExists(String userName) throws SQLException
 	{
 		Connection conn = getConnection(); 
@@ -323,7 +385,6 @@ public class SpotifyDB
 		PreparedStatement deleteSong = conn.prepareStatement("DELETE FROM song WHERE SongID = '" + SongID +"'");
 		deletePlayListsSong(SongID);
 		deleteSong.executeUpdate();
-		JOptionPane.showMessageDialog(null, "Song has deleted successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 		
 	}
 	
@@ -339,7 +400,6 @@ public class SpotifyDB
 		
 		PreparedStatement deleteAlbum = conn.prepareStatement("DELETE FROM album WHERE AlbumID = '" + AlbumID +"'");
 		deleteAlbum.executeUpdate();
-		JOptionPane.showMessageDialog(null, "Album has deleted successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	public static void deleteArtist(String ArtistID) throws SQLException
@@ -376,7 +436,8 @@ public class SpotifyDB
 		ResultSet rs = st.executeQuery(query);
 		return rs;
 	}
-
+	
+	
 	public static void updateArtistName(String artistID, String artistName) throws SQLException
 	{
 		Connection conn = getConnection(); 
@@ -419,12 +480,30 @@ public class SpotifyDB
 		updateSongName.executeUpdate();
 		JOptionPane.showMessageDialog(null, "You have updated the song name successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 	}
-	public static void updateSongGenre(String songID, String songGenre) throws SQLException
+	public static void updateSongGenre(String songID, String genreID) throws SQLException
 	{
+		//TODO album genre uyumu kontrolu
+		String albumID = getSongAlbumID(songID);
+		if(!compareGenres(albumID, genreID))
+		{
+			JOptionPane.showMessageDialog(null, "Album and song genres should be the same","Warning", JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+
 		Connection conn = getConnection(); 
-		PreparedStatement updateSongGenre = conn.prepareStatement("UPDATE song SET genre = '" + songGenre + "'  WHERE SongID = '"+ songID +"'");
+		PreparedStatement updateSongGenre = conn.prepareStatement("UPDATE song SET genreID = '" + genreID + "'  WHERE SongID = '"+ songID +"'");
 		updateSongGenre.executeUpdate();
 		JOptionPane.showMessageDialog(null, "You have updated the genre successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+	public static String getSongAlbumID(String SongID) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		String query = "SELECT AlbumID FROM song WHERE SongID = '"+ SongID+"'";
+		Statement st = conn.createStatement();
+		ResultSet rs = st.executeQuery(query);
+		rs.next();
+		return rs.getString("AlbumID");
 	}
 	public static void updateSongDuration(String songID, String duration) throws SQLException
 	{
@@ -490,5 +569,5 @@ public class SpotifyDB
 		PreparedStatement updateUserIsPaid = conn.prepareStatement("UPDATE user SET isPaid = '" + IsPaid + "'  WHERE userID = '"+ UserID +"'");
 		updateUserIsPaid.executeUpdate();
 	}
-
+	
 }

@@ -33,7 +33,7 @@ public class AlbumSettings extends JPanel implements MouseListener,ActionListene
 	JComboBox<CBItem> artistNameBox;
 	JTextField albumNameTxt;
 	JTextField relaseDateTxt;
-	JComboBox<String> genreCB;
+	JComboBox<CBItem> genreCB;
 	JButton addButton;
 	
 	JButton artistSettingsButton;
@@ -145,7 +145,7 @@ public class AlbumSettings extends JPanel implements MouseListener,ActionListene
 		artistNameBox = new JComboBox();
 		albumNameTxt = new JTextField();
 		relaseDateTxt = new JTextField();
-		genreCB = new JComboBox<String>();
+		genreCB = new JComboBox<CBItem>();
 		
 		
 		albumToAdd.setText("Add an album");
@@ -172,9 +172,9 @@ public class AlbumSettings extends JPanel implements MouseListener,ActionListene
 		
 		genreCB.setBounds(GENERAL_OBJ_LOC_X, GENERAL_OBJ_LOC_Y + 240, 450,30);
 		genreCB.setFont(new Font("Consolas", Font.BOLD, 20));
-		genreCB.addItem("Jazz");
-		genreCB.addItem("Clasiccal");
-		genreCB.addItem("Pop");
+		genreCB.addItem(new CBItem("1","Jazz"));
+		genreCB.addItem(new CBItem("2","Pop"));
+		genreCB.addItem(new CBItem("3","Clasiccal"));
 		
 		addButton = new JButton();
 		addButton.setBounds(GENERAL_OBJ_LOC_X+350, GENERAL_OBJ_LOC_Y +290, 100, 30);
@@ -356,10 +356,10 @@ public class AlbumSettings extends JPanel implements MouseListener,ActionListene
 			String artistID = id.getID();
 			String albumName = albumNameTxt.getText();
 			String releaseDate  = relaseDateTxt.getText();
-			String genre = genreCB.getSelectedItem().toString();
+			String genreID = ((CBItem)genreCB.getSelectedItem()).getID();
 			try 
 			{
-				SpotifyDB.addAlbum(albumName, artistID,releaseDate,genre);
+				SpotifyDB.addAlbum(albumName, artistID,releaseDate,genreID);
 			} 
 			catch (SQLException e1) 
 			{
@@ -385,7 +385,12 @@ public class AlbumSettings extends JPanel implements MouseListener,ActionListene
 		}
 		else if(e.getSource() == artistSettingsButton)
 		{
-			new Screen(new ArtistSettings());
+			try {
+				new Screen(new ArtistSettings());
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			((Window) getRootPane().getParent()).dispose();
 		}
 		else if(e.getSource() == songSettingsButton)
