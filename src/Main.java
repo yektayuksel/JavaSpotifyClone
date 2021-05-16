@@ -17,14 +17,13 @@ public class Main
 	public static void main(String[] args) throws ClassNotFoundException, SQLException 
 	{
 		
-		//new Screen(new OpeningPanel());
+		new Screen(new OpeningPanel());
 		//new Screen(new AdminPanel());
         //new Screen(new FreeUserPanel("1"));
 		//new Screen(new SignInPanel());
 		//new Screen(new LoginPanel());
-		new Screen(new SongSettings());
-		
-		
+		//new Screen(new AlbumSettings());
+		//new Screen(new AddExistingAlbumArtist());
 		 
     }
 	

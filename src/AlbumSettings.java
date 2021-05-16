@@ -2,6 +2,10 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GraphicsEnvironment;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,6 +16,7 @@ import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -49,6 +54,9 @@ public class AlbumSettings extends JPanel implements MouseListener,ActionListene
 	JButton updateButton;
 	JComboBox<CBItem> selectArtistUpdateCB;
 	JComboBox<String> selectAlbumUpdatePropCB;
+	JComboBox<CBItem> newValueGenreCB;
+	
+	JButton addAnArtistToAnExistingAlbumButton;
 	
 	AlbumSettings()
 	{
@@ -82,6 +90,7 @@ public class AlbumSettings extends JPanel implements MouseListener,ActionListene
 		this.add(songSettingsButton);
 		this.add(artistNameToDelete);
 		this.add(artistToDeleteNameBox);
+		this.add(addAnArtistToAnExistingAlbumButton);
 		this.setLayout(new BorderLayout());
 		this.setPreferredSize(new Dimension(1280,720));
 	}
@@ -117,6 +126,8 @@ public class AlbumSettings extends JPanel implements MouseListener,ActionListene
 		deleteButton.setBackground(this.getBackground().brighter());
 		deleteButton.setFocusable(false);
 		deleteButton.addMouseListener(this);
+		
+		
 	}
 	
 	public void initArtistNameCB() throws SQLException
@@ -289,7 +300,19 @@ public class AlbumSettings extends JPanel implements MouseListener,ActionListene
 		newValueTxt = new JTextField();
 		newValueTxt.setBounds(GENERAL_OBJ_LOC_X+520, GENERAL_OBJ_LOC_Y + 240, 450,30);
 		newValueTxt.setFont(new Font("Consolas", Font.BOLD, 20));
+		newValueTxt.setVisible(false);
+		newValueTxt.setEnabled(false);
 		this.add(newValueTxt);
+		
+		newValueGenreCB = new JComboBox<CBItem>();
+		newValueGenreCB.setBounds(GENERAL_OBJ_LOC_X+520, GENERAL_OBJ_LOC_Y + 240, 450,30);
+		newValueGenreCB.setFont(new Font("Consolas", Font.BOLD, 20));
+		newValueGenreCB.addItem(new CBItem("1","Jazz"));
+		newValueGenreCB.addItem(new CBItem("2","Pop"));
+		newValueGenreCB.addItem(new CBItem("3","Clasiccal"));
+		newValueGenreCB.setVisible(false);
+		newValueGenreCB.setEnabled(false);
+		this.add(newValueGenreCB);
 		
 		updateButton = new JButton();
 		updateButton.setBounds(GENERAL_OBJ_LOC_X+870, GENERAL_OBJ_LOC_Y + 290, 100, 30);
@@ -300,6 +323,16 @@ public class AlbumSettings extends JPanel implements MouseListener,ActionListene
 		updateButton.setFocusable(false);
 		updateButton.addMouseListener(this);
 		this.add(updateButton);
+		 //TODO var olan albuma artist ekleme butonu
+		
+		addAnArtistToAnExistingAlbumButton = new JButton();
+		addAnArtistToAnExistingAlbumButton.setBounds(GENERAL_OBJ_LOC_X+250, GENERAL_OBJ_LOC_Y +330, 200, 60);
+		addAnArtistToAnExistingAlbumButton.setFont(new Font("Consolas", Font.BOLD, 18));
+		addAnArtistToAnExistingAlbumButton.setForeground(Color.white);
+		addAnArtistToAnExistingAlbumButton.setText("<html>Add an artist<br>to an existing album</html>");
+		addAnArtistToAnExistingAlbumButton.setBackground(this.getBackground().brighter());
+		addAnArtistToAnExistingAlbumButton.setFocusable(false);
+		addAnArtistToAnExistingAlbumButton.addMouseListener(this);
 	}
 	public void initAlbumComboBoxes()
 	{
@@ -342,7 +375,6 @@ public class AlbumSettings extends JPanel implements MouseListener,ActionListene
 	}
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -388,7 +420,6 @@ public class AlbumSettings extends JPanel implements MouseListener,ActionListene
 			try {
 				new Screen(new ArtistSettings());
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			((Window) getRootPane().getParent()).dispose();
@@ -398,7 +429,6 @@ public class AlbumSettings extends JPanel implements MouseListener,ActionListene
 			try {
 				new Screen(new SongSettings());
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			((Window) getRootPane().getParent()).dispose();
@@ -407,21 +437,28 @@ public class AlbumSettings extends JPanel implements MouseListener,ActionListene
 		{
 			CBItem item = (CBItem)selectTheAlbumUpdateCB.getSelectedItem();
 			String str = selectAlbumUpdatePropCB.getSelectedItem().toString();
-			String newValue = newValueTxt.getText();
+			String newValue;
 			
 			try 
 			{
 				if(str.equals("Album Name"))
 				{
+					newValue = newValueTxt.getText();
 					SpotifyDB.updateAlbumName(item.getID(), newValue);
+					return;
 				}
-				else if (str.equals("Genre"))
+				else if(str.equals("Genre"))
 				{
+					//TODO album icindeki tum sarkilari updatele
+					newValue = ((CBItem)newValueGenreCB.getSelectedItem()).getID();
 					SpotifyDB.updateAlbumGenre(item.getID(), newValue);
+					return;
 				}
 				else if(str.equals("Release Date"))
 				{
+					newValue = newValueTxt.getText();
 					SpotifyDB.updateAlbumReleaseDate(item.getID(), newValue);
+					return;
 				}
 			} 
 			catch (SQLException e1) 
@@ -429,17 +466,23 @@ public class AlbumSettings extends JPanel implements MouseListener,ActionListene
 				e1.printStackTrace();
 			}
 			repaint();
-			
-			
 				
-				
+		}
+		else if(e.getSource() == addAnArtistToAnExistingAlbumButton)
+		{
+			try {
+				new Screen(new AddExistingAlbumArtist());
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+	
 		}
 		
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -490,6 +533,24 @@ public class AlbumSettings extends JPanel implements MouseListener,ActionListene
 			catch (SQLException e1) 
 			{
 				e1.printStackTrace();
+			}
+		}
+		if(e.getSource() == selectAlbumUpdatePropCB)
+		{
+			String value = selectAlbumUpdatePropCB.getSelectedItem().toString(); 
+			if(value.equals("Genre"))
+			{
+				newValueTxt.setVisible(false);
+				newValueTxt.setEnabled(false);
+				newValueGenreCB.setVisible(true);
+				newValueGenreCB.setEnabled(true);
+			}
+			else
+			{
+				newValueGenreCB.setVisible(false);
+				newValueGenreCB.setEnabled(false);
+				newValueTxt.setVisible(true);
+				newValueTxt.setEnabled(true);
 			}
 		}
 		

@@ -105,6 +105,36 @@ public class SpotifyDB
 			e.printStackTrace();
 		}
 	}
+	
+	public static void addAnArtistToAnExistingAlbum(String artistID, String albumID) throws SQLException
+	{
+		//TODO var olan albume artist ekleme islemi burada yapýlacak
+		ResultSet rs = getAlbum(albumID);
+		String genreID = null;
+		String albumName = null;
+		String releaseDate = null;
+		while(rs.next())
+		{
+			genreID = rs.getString("genreID");
+			albumName = rs.getString("AlbumName");
+			releaseDate = rs.getString("releaseDate");
+		}
+		
+		Connection conn = getConnection(); 
+		PreparedStatement addartst = conn.prepareStatement("INSERT INTO album (AlbumID,AlbumName,ArtistID,releaseDate,genreID)"
+				+ " VALUES('"+albumID+"', '"+albumName+"', '"+ artistID +"' , '"+releaseDate +"' , '"+genreID+"')");
+		addartst.executeUpdate();
+		JOptionPane.showMessageDialog(null, "Artist added to album successfully", "Succes", JOptionPane.INFORMATION_MESSAGE);
+	}
+	public static ResultSet getAlbum(String albumID) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		String query = "SELECT AlbumName, genreID, releaseDate FROM album WHERE AlbumID = '" +albumID+"'";
+		Statement st = conn.createStatement();
+		ResultSet rs = st.executeQuery(query);
+		
+		return rs;
+	}
 	public static void addSong(String songName, String artistID, String albumID, String genreID, String duration, String releaseDate) throws SQLException
 	{
 		
@@ -169,10 +199,10 @@ public class SpotifyDB
 	}
 	public static void addToPlaylist(String userID, String SongID) throws SQLException
 	{
-		
+		//TODO normalizasyona gore ayarla
 		Connection conn = getConnection(); 
 		
-		String query = "SELECT genre FROM song WHERE SongID = '" + SongID + "'";
+		String query = "SELECT genreID FROM song WHERE SongID = '" + SongID + "'";
 		Statement st = conn.createStatement();
 		ResultSet rs = st.executeQuery(query);
 		try 
@@ -186,10 +216,11 @@ public class SpotifyDB
 		}
 	}
 	
-	public static ResultSet getPlaylist(String userID, String genre) throws SQLException
+	public static ResultSet getPlaylist(String userID, String genreID) throws SQLException
 	{
+		//TODO normalizasyona gore ayarla
 		Connection conn = getConnection(); 
-		String query = "SELECT s.SongID, s.SongName, s.duration, a.ArtistName, s.genre FROM song as s, playlist as p, artist as a WHERE s.genre = '" + genre + "'and p.genre = '" + genre + "'and s.SongID = p.SongID and p.userID = '" + userID + "' and s.ArtistID = a.ArtistID;";
+		String query = "SELECT s.SongID, s.SongName, s.duration, a.ArtistName, s.genre FROM song as s, playlist as p, artist as a WHERE s.genre = '" + genreID + "'and p.genre = '" + genreID + "'and s.SongID = p.SongID and p.userID = '" + userID + "' and s.ArtistID = a.ArtistID;";
 		Statement st = conn.createStatement();
 		ResultSet rs = st.executeQuery(query);
 		return rs;
@@ -466,12 +497,25 @@ public class SpotifyDB
 		updateAlbumReleasedate.executeUpdate();
 		JOptionPane.showMessageDialog(null, "You have updated the release date successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 	}
-	public static void updateAlbumGenre(String albumID, String albumGenre) throws SQLException
+	public static void updateAlbumGenre(String albumID, String genreID) throws SQLException
 	{
+		int a = JOptionPane.showOptionDialog(null, "All the genres of the songs under this album will be changed.", "Warning", JOptionPane.YES_NO_OPTION , JOptionPane.INFORMATION_MESSAGE, null,null, 0);
+		if(a == JOptionPane.NO_OPTION)
+		{
+			return;
+		}
 		Connection conn = getConnection(); 
-		PreparedStatement updateAlbumgenre = conn.prepareStatement("UPDATE album SET genre = '" + albumGenre + "'  WHERE AlbumID = '"+ albumID +"'");
+		PreparedStatement updateAlbumgenre = conn.prepareStatement("UPDATE album SET genreID = '" + genreID + "'  WHERE AlbumID = '"+ albumID +"'");
 		updateAlbumgenre.executeUpdate();
-		JOptionPane.showMessageDialog(null, "You have updated the genre successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+		
+		ResultSet rs = getAlbumSongs(albumID);
+		while(rs.next())
+		{
+			updateSongGenre(rs.getString("SongID"), genreID);
+		}
+		
+		JOptionPane.showMessageDialog(null, "You have updated the genre of the album and the genres of the songs successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+		
 	}
 	public static void updateSongName(String songID, String songName) throws SQLException
 	{
@@ -482,7 +526,6 @@ public class SpotifyDB
 	}
 	public static void updateSongGenre(String songID, String genreID) throws SQLException
 	{
-		//TODO album genre uyumu kontrolu
 		String albumID = getSongAlbumID(songID);
 		if(!compareGenres(albumID, genreID))
 		{
