@@ -77,6 +77,21 @@ public class SpotifyDB
 			JOptionPane.showMessageDialog(null, "Country added successfully", "Succes", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
+	public static void addToPlaylist(String userID, String SongID, int where)
+	{
+		//TODO normalizasyona gore ayarla, sarki playlistte var mi yok mu kontrolü yap
+		Connection conn = getConnection(); 
+		PreparedStatement addtoplaylst;
+		try {
+			addtoplaylst = conn.prepareStatement("INSERT INTO playlist (userID,songID) VALUES('"+userID+"','"+SongID+"');");
+			addtoplaylst.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			if(where == 1)
+			JOptionPane.showMessageDialog(null, "This song already exists in this playlist", "Warning", JOptionPane.WARNING_MESSAGE);;
+		}
+	
+	}
 	public static void addAlbum(String albumName, String artistID, String releaseDate, String genreID) throws SQLException
 	{
 		Connection conn = getConnection(); 
@@ -108,7 +123,6 @@ public class SpotifyDB
 	
 	public static void addAnArtistToAnExistingAlbum(String artistID, String albumID) throws SQLException
 	{
-		//TODO var olan albume artist ekleme islemi burada yapýlacak
 		ResultSet rs = getAlbum(albumID);
 		String genreID = null;
 		String albumName = null;
@@ -167,7 +181,7 @@ public class SpotifyDB
 		}
 		catch (Exception e) 
 		{
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, " Song name is too long!", "Warning", JOptionPane.WARNING_MESSAGE);
 		}
 	}
 	public static boolean compareGenres(String AlbumID, String genreID) throws SQLException
@@ -194,33 +208,23 @@ public class SpotifyDB
 	public static void follow(String UserID, String followingID) throws SQLException
 	{
 		Connection conn = getConnection(); 
-		PreparedStatement Follow = conn.prepareStatement("INSERT INTO follow (FollowerID,FollowingID) VALUES('"+UserID+"','"+followingID+"'");
+		PreparedStatement Follow = conn.prepareStatement("INSERT INTO follow (FollowerID,FollowingID) VALUES('"+UserID+"','"+followingID+"')");
 		Follow.executeUpdate();
 	}
-	public static void addToPlaylist(String userID, String SongID) throws SQLException
-	{
-		//TODO normalizasyona gore ayarla
-		Connection conn = getConnection(); 
-		
-		String query = "SELECT genreID FROM song WHERE SongID = '" + SongID + "'";
-		Statement st = conn.createStatement();
-		ResultSet rs = st.executeQuery(query);
-		try 
-		{			
-			PreparedStatement addtoplaylst = conn.prepareStatement("INSERT INTO playlist (userID,SongID) VALUES('"+userID+"','"+SongID+"'");
-			addtoplaylst.executeUpdate();
-		}
-		catch (Exception e) 
-		{
-			e.printStackTrace();
-		}
-	}
+	
 	
 	public static ResultSet getPlaylist(String userID, String genreID) throws SQLException
 	{
 		//TODO normalizasyona gore ayarla
 		Connection conn = getConnection(); 
-		String query = "SELECT s.SongID, s.SongName, s.duration, a.ArtistName, s.genre FROM song as s, playlist as p, artist as a WHERE s.genre = '" + genreID + "'and p.genre = '" + genreID + "'and s.SongID = p.SongID and p.userID = '" + userID + "' and s.ArtistID = a.ArtistID;";
+		String query = "SELECT distinct s.SongID, s.SongName, g.genre, ar.ArtistName, s.duration "
+				       + "FROM playlist p, song s, genre g, album a, artist ar "
+				       + "WHERE g.genreID = '" + genreID + "' and "
+				       + "p.userID = '"+ userID+ "' and "
+				       + "p.songID = s.SongID and "
+				       + "s.ArtistID = ar.ArtistID and "
+				       + "a.genreID = s.genreID and "
+				       + "s.genreID = g.genreID;";
 		Statement st = conn.createStatement();
 		ResultSet rs = st.executeQuery(query);
 		return rs;
@@ -243,14 +247,7 @@ public class SpotifyDB
 		ResultSet rs = st.executeQuery(query);
 		return rs;
 	}
-	/*public static ResultSet getAllPlaylist(String userID) throws SQLException
-	{
-		Connection conn = getConnection(); 
-		String query = "SELECT SongID, FROM playlist WHERE userID = " + userID + "'";
-		Statement st = conn.createStatement();
-		ResultSet rs = st.executeQuery(query);
-		return rs;
-	}*/
+	
 	public static String getArtistName(String SongID) throws SQLException
 	{
 		Connection conn = getConnection(); 
@@ -283,7 +280,7 @@ public class SpotifyDB
 	public static ResultSet getFollowers(String userID) throws SQLException
 	{
 		Connection conn = getConnection(); 
-		String query = "SELECT f.FollowerID, u.userName FROM follow f, user uWHERE f.FollowingID = '" + userID + "' and f.FollowerID = u.userID";
+		String query = "SELECT f.FollowerID, u.userName FROM follow f, user u WHERE f.FollowingID = '" + userID + "' and f.FollowerID = u.userID";
 		Statement st = conn.createStatement();
 		ResultSet rs = st.executeQuery(query);
 		return rs;
@@ -292,13 +289,22 @@ public class SpotifyDB
 	public static ResultSet getFollowings(String userID) throws SQLException
 	{
 		Connection conn = getConnection(); 
-		String query = "SELECT FollowingID FROM follow WHERE FollowerID = " + userID;
+		String query = "SELECT f.FollowingID, u.userName FROM follow f, user u WHERE FollowerID = '" + userID + "' "
+				+ " and f.FollowingID = u.userID";
 		Statement st = conn.createStatement();
 		ResultSet rs = st.executeQuery(query);
 		return rs;
 		
 	}
 	
+	public static boolean isFollowing(String followerID, String followingID) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		String query = "SELECT * FROM follow WHERE FollowerID = '" + followerID + "' and FollowingID = '" + followingID + "'" ;
+		Statement st = conn.createStatement();
+		ResultSet rs = st.executeQuery(query);
+		return rs.next();
+	}
 	public static ResultSet getAllAlbums(String ArtistID) throws SQLException
 	{
 		Connection conn = getConnection(); 
@@ -445,7 +451,6 @@ public class SpotifyDB
 		
 		PreparedStatement deleteAlbum = conn.prepareStatement("DELETE FROM artist WHERE ArtistID = '" + ArtistID +"'");
 		deleteAlbum.executeUpdate();
-		JOptionPane.showMessageDialog(null, "Artist has deleted successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 	}
 	public static void deletePlayListsSong(String SongID) throws SQLException
 	{

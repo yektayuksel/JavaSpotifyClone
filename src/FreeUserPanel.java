@@ -37,6 +37,7 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 	JComboBox<CBItem> playlistsCB = new JComboBox<CBItem>();
 	ArrayList<Button> userPlaylistButtons = new ArrayList<Button>();
 	ArrayList<Button> artistButtonsList = new ArrayList<Button>();
+	ArrayList<Button> followingButtonList = new ArrayList<Button>();
 	
 	/*---------------------------------------------------------*/
 	
@@ -45,7 +46,6 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 	JPanel middlePanel;
 	final int MID_PNL_BTN_W = 1130;
 	final int MID_PNL_BTN_H = 57;
-	ArrayList<Button> followerList = new ArrayList<Button>();
 	ArrayList<Button> artistAlbumsList = new ArrayList<Button>();
 	ArrayList<Button> songsList = new ArrayList<Button>();
 	ArrayList<Button> songAddButtons = new ArrayList<Button>();
@@ -112,7 +112,6 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 		playlistsCB.setEditable(true);
 		playlistsCB.setSize(new Dimension(150, 25));
 		playlistsCB.addActionListener(this);
-		//initFollowerListButtons();
 		this.setPreferredSize(new Dimension(1280,720));
 	}
 	
@@ -302,6 +301,7 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 	 * bilgilere erisim saglanabilir.*/
 	public void initUserButtons() throws SQLException
 	{
+		
 		userButtons.clear();
 		ResultSet rs = SpotifyDB.getPremiumUsers(this.userID);
 		while(rs.next())
@@ -354,7 +354,6 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
@@ -367,14 +366,30 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 		/*"Users" butonuna tiklandiktan sonra eger sol panelden bir kullanici secilirse aktif olacak
 		 * if blogudur. Uzerine tiklanilan kullanici butonunun hemen altinda bir ComboBox olusturur. ComboBox
 		 * icerisinde ilgili kullanicinin calma listeleri bulunmaktadir.*/
-			
 			Button btn2 = (Button) btn;
+			try {
+				if(!SpotifyDB.isFollowing(this.userID, btn2.getID()))
+				{
+					int a = JOptionPane.showOptionDialog(null, "Are you sure you want to follow " + btn2.getText() + "?", "Warning", JOptionPane.YES_NO_OPTION , JOptionPane.INFORMATION_MESSAGE, null,null, 0);
+					if(a == JOptionPane.YES_OPTION)
+					{
+						SpotifyDB.follow(this.userID, btn2.getID());
+					}
+					else
+					{
+						return;
+					}
+				}
+				
+			} catch (SQLException e2) {
+				e2.printStackTrace();
+			}
 			try {
 				clearPanel(leftPanel);
 				playlistsCB.removeAllItems();
-				playlistsCB.addItem(new CBItem(btn2.getID(), "Jazz"));
-				playlistsCB.addItem(new CBItem(btn2.getID(), "Pop"));
-				playlistsCB.addItem(new CBItem(btn2.getID(), "Classical"));
+				playlistsCB.addItem(new CBItem(btn2.getID(), "Jazz","1"));
+				playlistsCB.addItem(new CBItem(btn2.getID(), "Pop" , "2"));
+				playlistsCB.addItem(new CBItem(btn2.getID(), "Classical", "3"));
 				playlistsCB.setLocation((int)btn2.getLocation().getX(),  (int)btn2.getLocation().getY()+50);
 				leftPanel.add(playlistsCB);
 				initUserButtons();
@@ -385,7 +400,6 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 				
 				repaint();
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			
@@ -393,7 +407,6 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 		}
 		else if(e.getSource() == myPlaylistsButton)
 		{
-			/*Kullanicinin kendi playlistlerine erisebilmesi icin gerekli islemler*/
 			clearPanel(leftPanel);
 			for(int i = 0; i < userPlaylistButtons.size(); i++)
 			{
@@ -463,15 +476,14 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 			try 
 			{
 				ResultSet rs = SpotifyDB.getAlbumSongs(button.getID());
-				//SongID SongName
 				while(rs.next())
 				{
 					String ID = rs.getString("SongID");
 					String songName =  rs.getString("SongName");
 					songsList.add(new Button(ID,songName));
-					songsList.get(songsList.size()-1).setGenre(rs.getString("genre"));
+					songsList.get(songsList.size()-1).setGenre(rs.getString("genreID"));
 					songAddButtons.add(new Button(ID, "+"));
-					songAddButtons.get(songAddButtons.size()-1).setGenre(rs.getString("genre"));
+					songAddButtons.get(songAddButtons.size()-1).setGenre(rs.getString("genreID"));
 				}
 			} 
 			catch (SQLException e1) 
@@ -506,6 +518,7 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 				
 			}
 			
+			
 		}
 		else if(songsList.contains(btn))
 		{
@@ -536,20 +549,154 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 			int a = JOptionPane.showOptionDialog(null, "This song going to be added to your playlist.", "Warning", JOptionPane.YES_NO_OPTION , JOptionPane.INFORMATION_MESSAGE, null,null, 0);
 			if(a == JOptionPane.YES_OPTION)
 			{
-				try {
-					SpotifyDB.addToPlaylist(this.userID, button.getID());
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				SpotifyDB.addToPlaylist(this.userID, button.getID(),1);
 			}
 			else
 			{
 				return;
 			}
 		}
+		else if(userPlaylistButtons.contains(btn))
+		{
+			Button button = (Button)btn;
+			String playlistName = button.getText();
+			String genre = null;
+			
+			clearPanel(middlePanel);
+			if(playlistName.equals("Jazz"))
+			{
+				genre = "1";
+			}
+			else if(playlistName.equals("Pop"))
+			{
+				genre = "2";
+			}
+			else if(playlistName.equals("Classical"))
+			{
+				genre = "3";
+			}
+			try 
+			{
+				ResultSet rs = SpotifyDB.getPlaylist(this.userID, genre);
+				songsList.clear();
+				while(rs.next())
+				{	
+					String ID = rs.getString("s.SongID");
+					String buttonText = rs.getString("s.SongName") + "  " + rs.getString("ar.ArtistName") + "   "
+							+ rs.getString("g.genre") + "   " + rs.getString("s.duration"); 
+					songsList.add(new Button(ID, buttonText));
+					
+				}
+				for(int i = 0; i < songsList.size(); i++)
+				{
+					if(i == 0)
+					{
+						songsList.get(i).setBounds(0, 0, MID_PNL_BTN_W-50, MID_PNL_BTN_H);
+					}
+					else
+					{
+						songsList.get(i).setBounds(0, (int)songsList.get(i-1).getLocation().getY()+70, MID_PNL_BTN_W-50, MID_PNL_BTN_H);
+					}
+					songsList.get(i).setFont(new Font("Consolas", Font.BOLD, 20));
+					songsList.get(i).setForeground(Color.white);
+					songsList.get(i).setBackground(Color.black);
+					songsList.get(i).setFocusable(false);
+					songsList.get(i).addMouseListener(this);
+					middlePanel.add(songsList.get(i));
+					
+					
+					
+				}
+			} 
+			catch (SQLException e1) 
+			{
+				e1.printStackTrace();
+			}
+		}
+		else if(e.getSource() == followers)
+		{
+			int y = 0;
+			clearPanel(middlePanel);
+			try 
+			{
+				ResultSet rs = SpotifyDB.getFollowers(this.userID);
+				while(rs.next())
+				{
+					JButton button = new JButton(rs.getString("u.userName"));
+					button.setFont(new Font("Consolas", Font.BOLD, 25));
+					button.setForeground(Color.white);
+					button.setBackground(Color.black);
+					button.setFocusable(false);
+					button.addMouseListener(this);
+					button.setBounds(0, y, MID_PNL_BTN_W, MID_PNL_BTN_H);
+					y+=MID_PNL_BTN_H;
+					middlePanel.add(button);
+				}
+			} 
+			catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			
+		}
+		else if(e.getSource() == following)
+		{
+			
+			try 
+			{
+				initFollowingButtonsList();
+			} catch (SQLException e1) 
+			{
+				e1.printStackTrace();
+			}
+		}
+		else if(followingButtonList.contains(btn))
+		{
+			Button btn2 = (Button)btn;
+			clearPanel(leftPanel);
+			System.out.println("vallaha burda");
+			playlistsCB.removeAllItems();
+			playlistsCB.addItem(new CBItem(btn2.getID(), "Jazz","1"));
+			playlistsCB.addItem(new CBItem(btn2.getID(), "Pop" , "2"));
+			playlistsCB.addItem(new CBItem(btn2.getID(), "Classical", "3"));
+			playlistsCB.setLocation((int)btn2.getLocation().getX(),  (int)btn2.getLocation().getY()+50);
+			leftPanel.add(playlistsCB);
+			for(int i = 0; i < followingButtonList.size(); i++)
+			{
+				leftPanel.add(followingButtonList.get(i));
+			}
+			repaint();
+		}
 			
 	}
+	public void initFollowingButtonsList() throws SQLException
+	{
+		ResultSet rs = SpotifyDB.getFollowings(userID);
+		followingButtonList.clear();
+		clearPanel(leftPanel);
+		while(rs.next())
+		{
+			followingButtonList.add(new Button(rs.getString("f.FollowingID"), rs.getString("u.userName")));
+		}
+		
+		for(int i = 0; i < followingButtonList.size(); i++)
+		{
+			if(i == 0)
+			{
+				followingButtonList.get(i).setBounds(0, 50, 150, 50);
+			}
+			else
+			{
+				followingButtonList.get(i).setBounds(0, (int)followingButtonList.get(i-1).getLocation().getY()+70, 150, 50);
+			}
+			followingButtonList.get(i).setFont(new Font("Consolas", Font.BOLD, 20));
+			followingButtonList.get(i).setForeground(Color.white);
+			followingButtonList.get(i).setBackground(Color.black);
+			followingButtonList.get(i).setFocusable(false);
+			followingButtonList.get(i).addMouseListener(this);
+			leftPanel.add(followingButtonList.get(i));
+		}
+	}
+	
 	
 	public void initUserPlaylistButtons()
 	{
@@ -605,32 +752,7 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 		
 		
 	}
-	public void initFollowerListButtons() throws SQLException
-	{
-		//followerList
-		ResultSet rs = SpotifyDB.getFollowers(userID);
-		while(rs.next())
-		{
-			followerList.add(new Button(rs.getString("f.FollowerID"), rs.getString("u.userID")));
-		}
-		
-		for(int i = 0; i < followerList.size(); i++)
-		{
-			if(i == 0)
-			{
-				followerList.get(i).setBounds(0, 50, 150, 50);
-			}
-			else
-			{
-				followerList.get(i).setBounds(0, (int)followerList.get(i-1).getLocation().getY()+70, 150, 50);
-			}
-			followerList.get(i).setFont(new Font("Consolas", Font.BOLD, 20));
-			followerList.get(i).setForeground(Color.white);
-			followerList.get(i).setBackground(Color.black);
-			followerList.get(i).setFocusable(false);
-			followerList.get(i).addMouseListener(this);
-		}
-	}
+	
 	
 	@Override
 	public void mouseReleased(MouseEvent e) 
@@ -690,17 +812,22 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 		{
 			CBItem item = (CBItem)playlistsCB.getSelectedItem();
 			clearPanel(middlePanel);
+			
 			songsList.clear();
 			if(item != null)
 			{
 				try 
 				{
-					ResultSet rs = SpotifyDB.getPlaylist(item.getID(), item.getText());
+					ResultSet rs = SpotifyDB.getPlaylist(item.getID(), item.getGenreID());
 					while(rs.next())
-					{
-						songsList.add(new Button(rs.getString("s.SongID"), rs.getString("a.ArtistName")+"   "+rs.getString("s.SongName") + rs.getString("s.genre") + "   " + rs.getString("s.duration")));
-						songsList.get(songsList.size()-1).setGenre(rs.getString("genre"));
+					{	
+						String ID = rs.getString("s.SongID");
+						String buttonText = rs.getString("s.SongName") + "  " + rs.getString("ar.ArtistName") + "   "
+								+ rs.getString("g.genre") + "   " + rs.getString("s.duration"); 
+						songsList.add(new Button(ID, buttonText));
+						
 					}
+					
 				} 
 				catch (SQLException e1) 
 				{
