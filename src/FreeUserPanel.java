@@ -408,6 +408,7 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 		else if(e.getSource() == myPlaylistsButton)
 		{
 			clearPanel(leftPanel);
+			clearPanel(middlePanel);
 			for(int i = 0; i < userPlaylistButtons.size(); i++)
 			{
 				leftPanel.add(userPlaylistButtons.get(i));
@@ -417,6 +418,7 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 		else if(e.getSource() == usersButton)
 		{
 			clearPanel(leftPanel);
+			clearPanel(middlePanel);
 			for(int i = 0; i < userButtons.size(); i++)
 			{
 				leftPanel.add(userButtons.get(i));
@@ -425,6 +427,7 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 		else if(e.getSource() == artistsButton)
 		{
 			clearPanel(leftPanel);
+			clearPanel(middlePanel);
 			for(int i = 0; i < artistButtonsList.size(); i++)
 			{
 				leftPanel.add(artistButtonsList.get(i));
@@ -618,6 +621,7 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 		{
 			int y = 0;
 			clearPanel(middlePanel);
+			clearPanel(leftPanel);
 			try 
 			{
 				ResultSet rs = SpotifyDB.getFollowers(this.userID);
@@ -641,7 +645,7 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 		}
 		else if(e.getSource() == following)
 		{
-			
+			clearPanel(middlePanel);
 			try 
 			{
 				initFollowingButtonsList();
