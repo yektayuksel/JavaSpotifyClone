@@ -255,6 +255,7 @@ public class SongSettings extends JPanel implements MouseListener,ActionListener
 		selectSongPropertyUpdateCB.addItem("Song name");
 		selectSongPropertyUpdateCB.addItem("Genre");
 		selectSongPropertyUpdateCB.addItem("Duration");
+		selectSongPropertyUpdateCB.addItem("Release date");
 		selectSongPropertyUpdateCB.setEditable(true);
 		selectSongPropertyUpdateCB.setBounds(GENERAL_OBJ_LOC_X+520, GENERAL_OBJ_LOC_Y+200, 450, 30);
 		selectSongPropertyUpdateCB.addActionListener(this);
@@ -439,6 +440,13 @@ public class SongSettings extends JPanel implements MouseListener,ActionListener
 				{
 					newValue = newValueTxt.getText();
 					SpotifyDB.updateSongDuration(item.getID(), newValue);
+					return;
+				}
+				else if(str.equals("Release date"))
+				{
+					//TODO
+					newValue = newValueTxt.getText();
+					SpotifyDB.updateSongReleaseDate(item.getID(), newValue);
 					return;
 				}
 					

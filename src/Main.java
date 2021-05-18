@@ -19,13 +19,12 @@ public class Main
 		
 		//new Screen(new OpeningPanel());
 		//new Screen(new AdminPanel());
-        new Screen(new FreeUserPanel("7"));
+        //new Screen(new FreeUserPanel("7"));
 		//new Screen(new SignInPanel());
 		//new Screen(new LoginPanel());
 		//new Screen(new AlbumSettings());
 		//new Screen(new AddExistingAlbumArtist());
-		//new Screen(new ArtistSettings());
-        //new Screen(new UserSettingsPanel("7"));
+		new Screen(new SongSettings());
     }
 	
 }

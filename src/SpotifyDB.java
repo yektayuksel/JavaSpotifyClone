@@ -564,11 +564,12 @@ public class SpotifyDB
 		PreparedStatement updateSongTimesPlayed = conn.prepareStatement("UPDATE song SET timesPlayed = '" + TimesPlayed + "'  WHERE SongID = '"+ songID +"'");
 		updateSongTimesPlayed.executeUpdate();
 	}
-	public static void updateSongReleaseDate(String songID, String songReleaseDate) throws SQLException
+	public static void updateSongReleaseDate(String songID, String date) throws SQLException
 	{
 		Connection conn = getConnection(); 
-		PreparedStatement updateSongReleaseDate = conn.prepareStatement("UPDATE song SET releaseDate = '" + songReleaseDate + "'  WHERE SongID = '"+ songID +"'");
+		PreparedStatement updateSongReleaseDate = conn.prepareStatement("UPDATE song SET releaseDate = '" + date + "'  WHERE SongID = '"+ songID +"'");
 		updateSongReleaseDate.executeUpdate();
+		JOptionPane.showMessageDialog(null, "You have updated the release of the song successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 	}
 	//TODO
 	public static void updateUserName(String UserID, String UserName) throws SQLException
