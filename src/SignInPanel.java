@@ -17,7 +17,6 @@ public class SignInPanel extends JPanel implements MouseListener
 	JComboBox<CBItem> countryCB;
 	JButton premiumButton;
 	JButton freeButton;
-	JButton addNewCountryButton;
 	final int TXTF_LOC_X = 390;
 	final int TXTF_LOC_Y = 350;
 	final int TXTF_GAPS = 60;
@@ -91,15 +90,7 @@ public class SignInPanel extends JPanel implements MouseListener
 		countryCB.setBounds(TXTF_LOC_X, (int)emailText.getLocation().getY()+TXTF_GAPS, TXTF_W,TXTF_H);
 		countryCB.setFont(new Font("Consolas", Font.BOLD, TXTF_PUNTO));
 		this.add(countryCB);
-		addNewCountryButton = new JButton();
-		addNewCountryButton.setBounds((int)countryCB.getLocation().getX() + 525, (int)emailText.getLocation().getY()+60, 250,40);
-		addNewCountryButton.setFont(new Font("Consolas", Font.BOLD, 20));
-		addNewCountryButton.setForeground(Color.white);
-		addNewCountryButton.setText("Add new country");
-		addNewCountryButton.setBackground(this.getBackground().brighter());
-		addNewCountryButton.setFocusable(false);
-		addNewCountryButton.addMouseListener(this);
-		this.add(addNewCountryButton);
+		
 	}
 	public void initCountryCB2() throws SQLException
 	{
@@ -126,20 +117,7 @@ public class SignInPanel extends JPanel implements MouseListener
 		String userName = userNameText.getText();
 		String pswrd = passwordText.getText();
 		String email = emailText.getText();
-		if(e.getSource() == addNewCountryButton)
-		{
-			
-			try 
-			{
-				SpotifyDB.addCountry();
-				initCountryCB2();
-			}
-			catch (SQLException e1) 
-			{
-				e1.printStackTrace();
-			}
-			return;
-		}
+		
 		
 		try 
 		{

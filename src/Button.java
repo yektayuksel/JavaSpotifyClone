@@ -6,6 +6,15 @@ public class Button extends JButton
 	public String displayText;
 	public String genre;
 	
+	public void setID(String iD) {
+		ID = iD;
+	}
+
+	public Button()
+	{
+		
+	}
+	
 	public Button(String ID, String displayText)
 	{
 		this.ID = ID;

@@ -79,14 +79,12 @@ public class SpotifyDB
 	}
 	public static void addToPlaylist(String userID, String SongID, int where)
 	{
-		//TODO normalizasyona gore ayarla, sarki playlistte var mi yok mu kontrolü yap
 		Connection conn = getConnection(); 
 		PreparedStatement addtoplaylst;
 		try {
 			addtoplaylst = conn.prepareStatement("INSERT INTO playlist (userID,songID) VALUES('"+userID+"','"+SongID+"');");
 			addtoplaylst.executeUpdate();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			if(where == 1)
 			JOptionPane.showMessageDialog(null, "This song already exists in this playlist", "Warning", JOptionPane.WARNING_MESSAGE);;
 		}
@@ -215,7 +213,6 @@ public class SpotifyDB
 	
 	public static ResultSet getPlaylist(String userID, String genreID) throws SQLException
 	{
-		//TODO normalizasyona gore ayarla
 		Connection conn = getConnection(); 
 		String query = "SELECT distinct s.SongID, s.SongName, g.genre, ar.ArtistName, s.duration "
 				       + "FROM playlist p, song s, genre g, album a, artist ar "
@@ -616,6 +613,14 @@ public class SpotifyDB
 		Connection conn = getConnection(); 
 		PreparedStatement updateUserIsPaid = conn.prepareStatement("UPDATE user SET isPaid = '" + IsPaid + "'  WHERE userID = '"+ UserID +"'");
 		updateUserIsPaid.executeUpdate();
+	}
+	
+	public static void removeFromMyPlaylist(String userID, String songID) throws SQLException
+	{
+		//TODO
+		Connection conn = getConnection();
+		PreparedStatement deleteSong = conn.prepareStatement("DELETE FROM playlist WHERE songID = '" + songID +"' and userID = '" +userID+"'");
+		deleteSong.executeUpdate();
 	}
 	
 }
