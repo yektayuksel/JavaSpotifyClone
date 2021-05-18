@@ -2,6 +2,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -248,10 +249,16 @@ public class UserSettingsPanel extends JPanel implements MouseListener
 				String newEmail = newEmailTxt.getText();
 				SpotifyDB.updateUserEmail(this.userID, newEmail);
 			}
+			else if(e.getSource() == changeCCButton)
+			{
+				String newCC = newCCTxt.getText();
+				SpotifyDB.updateUserCardNumber(this.userID, newCC);
+			}
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		
 		
 	}
 

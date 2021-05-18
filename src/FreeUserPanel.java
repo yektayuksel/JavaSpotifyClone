@@ -739,6 +739,7 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 			playlistsCB.addItem(new CBItem(btn2.getID(), "Jazz","1"));
 			playlistsCB.addItem(new CBItem(btn2.getID(), "Pop" , "2"));
 			playlistsCB.addItem(new CBItem(btn2.getID(), "Classical", "3"));
+			playlistsCB.addItem(new CBItem(btn2.getID(), "Unfollow"));
 			playlistsCB.setLocation((int)btn2.getLocation().getX(),  (int)btn2.getLocation().getY()+50);
 			leftPanel.add(playlistsCB);
 			for(int i = 0; i < followingButtonList.size(); i++)
@@ -943,6 +944,21 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 		if(e.getSource() == playlistsCB)
 		{
 			CBItem item = (CBItem)playlistsCB.getSelectedItem();
+			
+			if(item != null && item.getText().equals("Unfollow"))
+			{
+				int a = JOptionPane.showOptionDialog(null, "Are you sure you want to unfollow this user?", "Warning", JOptionPane.YES_NO_OPTION , JOptionPane.INFORMATION_MESSAGE, null,null, 0);
+				if(a == JOptionPane.NO_OPTION)
+				{
+					return;
+				}
+				try {
+					SpotifyDB.unfollow(userID, item.getID());
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
 			
 			if(item != null)
 			{
