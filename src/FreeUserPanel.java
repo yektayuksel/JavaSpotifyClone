@@ -28,6 +28,8 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 	JButton artistsButton;
 	JButton followers;
 	JButton following;
+	Color topPanelButtonColor = new Color(29,195,84).darker();
+	Color topPanelBGColor = new Color(33,33,33);
 	/*---------------------------------------------------------*/	
 	
 	//---Left Panel---
@@ -39,6 +41,8 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 	ArrayList<Button> artistButtonsList = new ArrayList<Button>();
 	ArrayList<Button> followingButtonList = new ArrayList<Button>();
 	JScrollPane leftScroll; 
+	Color leftPanelButtonColor = new Color(29,195,84).darker();
+	Color leftPanelBGColor = new Color(33,33,33);
 	//Dimensin left
 	
 	/*---------------------------------------------------------*/
@@ -55,6 +59,8 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 	ArrayList<Button> songAddButtons = new ArrayList<Button>();
 	ArrayList<Button> removeFromMyPlaylist = new ArrayList<Button>();
 	final Dimension middPanButtonSize = new Dimension(1130,57);
+	Color middlePanelBGColor = new Color(18,18,18);
+	Color middlePanelButtonColor = new Color(179,179,179);
 	/*--------------------------------------------------------*/
 	
 	//---BottomPanel---
@@ -68,6 +74,7 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 	JButton fastforwardButton;
 	JButton fastbackwardButton;
 	JLabel playingSongLabel;
+	Color bottomPanelBGColor = new Color(83,83,83).darker();
 	/*--------------------------------------------------------*/
 	//Alt panelde bulunan butonların boyutlarinin ve lokasyonlarinin ayarlanmasi
 	final int BUTTON_SIZE = 30;
@@ -128,14 +135,14 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 	{
 		topPanel = new JPanel();
 		topPanel.setBounds(150,0,1130,50);
-		topPanel.setBackground(Color.blue);
+		topPanel.setBackground(topPanelBGColor);
 		topPanel.setLayout(null);
 		myPlaylistsButton = new JButton();
 		myPlaylistsButton.setBounds(1, 0, 200, 50);
 		myPlaylistsButton.setFont(new Font("Consolas", Font.BOLD, 20));
 		myPlaylistsButton.setForeground(Color.white);
 		myPlaylistsButton.setText("My Playlists");
-		myPlaylistsButton.setBackground(Color.black);
+		myPlaylistsButton.setBackground(topPanelButtonColor);
 		myPlaylistsButton.setFocusable(false);
 		myPlaylistsButton.addMouseListener(this);
 		
@@ -145,7 +152,7 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 		usersButton.setFont(new Font("Consolas", Font.BOLD, 20));
 		usersButton.setForeground(Color.white);
 		usersButton.setText("Users");
-		usersButton.setBackground(Color.black);
+		usersButton.setBackground(topPanelButtonColor);
 		usersButton.setFocusable(false);
 		usersButton.addMouseListener(this);
 		 
@@ -154,7 +161,7 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 		artistsButton.setFont(new Font("Consolas", Font.BOLD, 20));
 		artistsButton.setForeground(Color.white);
 		artistsButton.setText("Artists");
-		artistsButton.setBackground(Color.black);
+		artistsButton.setBackground(topPanelButtonColor);
 		artistsButton.setFocusable(false);
 		artistsButton.addMouseListener(this);
 		
@@ -163,15 +170,16 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 		followers.setFont(new Font("Consolas", Font.BOLD, 20));
 		followers.setForeground(Color.white);
 		followers.setText("Followers");
-		followers.setBackground(Color.black);
+		followers.setBackground(topPanelButtonColor);
 		followers.setFocusable(false);
 		followers.addMouseListener(this);
+		
 		following = new JButton();
 		following.setBounds((int)followers.getLocation().getX()+232, 0, 200, 50);
 		following.setFont(new Font("Consolas", Font.BOLD, 20));
 		following.setForeground(Color.white);
 		following.setText("Following");
-		following.setBackground(Color.black);
+		following.setBackground(topPanelButtonColor);
 		following.setFocusable(false);
 		following.addMouseListener(this);
 		
@@ -188,7 +196,7 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 	public void initLeftPanel()
 	{
 		leftPanel = new JPanel();
-		leftPanel.setBackground(Color.red);
+		leftPanel.setBackground(leftPanelBGColor);
 		leftPanel.setPreferredSize(new Dimension(150,620));
 		leftScroll = new JScrollPane(leftPanel);
 		leftScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -204,7 +212,7 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 	{
 		middlePanel = new JPanel();
 		middlePanel.setPreferredSize(new Dimension(1130,570));
-		middlePanel.setBackground(Color.white);
+		middlePanel.setBackground(middlePanelBGColor);
 		middleScroll = new JScrollPane(middlePanel);
 		middleScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		middleScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -219,7 +227,7 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 		//TODO initBottomPanel
 		bottomPanel = new JPanel();
 		bottomPanel.setBounds(0,620,1280,100);
-		bottomPanel.setBackground(Color.green);
+		bottomPanel.setBackground(bottomPanelBGColor);
 		bottomPanel.setLayout(null);
 		progressBar = new JProgressBar();
 		progressBar.setBounds(BUTTON_LOCATION_X-30,BUTTON_LOCATION_Y+50,350,15);
@@ -236,7 +244,7 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 		addAllSongToPlaylistButton.setText("<html>Add all songs<br />to playlist</html>");
 		addAllSongToPlaylistButton.setFont(new Font("Consolas", Font.BOLD, 18));
 		addAllSongToPlaylistButton.setForeground(Color.white);
-		addAllSongToPlaylistButton.setBackground(Color.black);
+		addAllSongToPlaylistButton.setBackground(leftPanelButtonColor);
 		addAllSongToPlaylistButton.setFocusable(false);
 		addAllSongToPlaylistButton.addMouseListener(this);
 		addAllSongToPlaylistButton.setBounds(1000, 15, 180, 70);
@@ -349,7 +357,7 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 			}
 			userButtons.get(i).setFont(new Font("Consolas", Font.BOLD, 20));
 			userButtons.get(i).setForeground(Color.white);
-			userButtons.get(i).setBackground(Color.black);
+			userButtons.get(i).setBackground(leftPanelButtonColor);
 			userButtons.get(i).setFocusable(false);
 			userButtons.get(i).addMouseListener(this);
 		}
@@ -403,11 +411,15 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 					if(a == JOptionPane.YES_OPTION)
 					{
 						SpotifyDB.follow(this.userID, btn2.getID());
+						leftPanel.repaint();
+						
 					}
 					else
 					{
+						leftPanel.repaint();
 						return;
 					}
+					
 				}
 				
 			} catch (SQLException e2) {
@@ -759,7 +771,7 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 			
 			followingButtonList.get(i).setFont(new Font("Consolas", Font.BOLD, 20));
 			followingButtonList.get(i).setForeground(Color.white);
-			followingButtonList.get(i).setBackground(Color.black);
+			followingButtonList.get(i).setBackground(leftPanelButtonColor);
 			followingButtonList.get(i).setFocusable(false);
 			followingButtonList.get(i).addMouseListener(this);
 			leftPanel.add(followingButtonList.get(i));
@@ -781,7 +793,7 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 			userPlaylistButtons.get(i).setPreferredSize(new Dimension(150,50));
 			userPlaylistButtons.get(i).setFont(new Font("Consolas", Font.BOLD, 20));
 			userPlaylistButtons.get(i).setForeground(Color.white);
-			userPlaylistButtons.get(i).setBackground(Color.black);
+			userPlaylistButtons.get(i).setBackground(leftPanelButtonColor);
 			userPlaylistButtons.get(i).setFocusable(false);
 			userPlaylistButtons.get(i).addMouseListener(this);
 		}
@@ -800,7 +812,7 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 			artistButtonsList.get(i).setPreferredSize(new Dimension(150,50));
 			artistButtonsList.get(i).setFont(new Font("Consolas", Font.BOLD, 17));
 			artistButtonsList.get(i).setForeground(Color.white);
-			artistButtonsList.get(i).setBackground(Color.black);
+			artistButtonsList.get(i).setBackground(leftPanelButtonColor);
 			artistButtonsList.get(i).setFocusable(false);
 			artistButtonsList.get(i).addMouseListener(this);
 		}
