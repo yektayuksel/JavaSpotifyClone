@@ -513,7 +513,7 @@ public class SpotifyDB
 		ResultSet rs = getAlbumSongs(albumID);
 		while(rs.next())
 		{
-			updateSongGenre(rs.getString("SongID"), genreID);
+			updateSongGenre(rs.getString("SongID"), genreID, 0);
 		}
 		
 		JOptionPane.showMessageDialog(null, "You have updated the genre of the album and the genres of the songs successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
@@ -526,7 +526,7 @@ public class SpotifyDB
 		updateSongName.executeUpdate();
 		JOptionPane.showMessageDialog(null, "You have updated the song name successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 	}
-	public static void updateSongGenre(String songID, String genreID) throws SQLException
+	public static void updateSongGenre(String songID, String genreID, int a) throws SQLException
 	{
 		String albumID = getSongAlbumID(songID);
 		if(!compareGenres(albumID, genreID))
@@ -538,6 +538,7 @@ public class SpotifyDB
 		Connection conn = getConnection(); 
 		PreparedStatement updateSongGenre = conn.prepareStatement("UPDATE song SET genreID = '" + genreID + "'  WHERE SongID = '"+ songID +"'");
 		updateSongGenre.executeUpdate();
+		if(a == 1)
 		JOptionPane.showMessageDialog(null, "You have updated the genre successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
@@ -569,11 +570,13 @@ public class SpotifyDB
 		PreparedStatement updateSongReleaseDate = conn.prepareStatement("UPDATE song SET releaseDate = '" + songReleaseDate + "'  WHERE SongID = '"+ songID +"'");
 		updateSongReleaseDate.executeUpdate();
 	}
+	//TODO
 	public static void updateUserName(String UserID, String UserName) throws SQLException
 	{
 		Connection conn = getConnection(); 
 		PreparedStatement updateUserName = conn.prepareStatement("UPDATE user SET userName = '" + UserName + "'  WHERE userID = '"+ UserID +"'");
 		updateUserName.executeUpdate();
+		JOptionPane.showMessageDialog(null, "You have updated your username successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 	}
 	public static void updateUserEmail(String UserID, String Email) throws SQLException
 	{
@@ -586,20 +589,23 @@ public class SpotifyDB
 		Connection conn = getConnection(); 
 		PreparedStatement updateUserPswrd = conn.prepareStatement("UPDATE user SET pswrd = '" + Pswrd + "'  WHERE userID = '"+ UserID +"'");
 		updateUserPswrd.executeUpdate();
+		JOptionPane.showMessageDialog(null, "You have changed your password successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 	}
-	public static void updateUserCountry(String UserID, String UserCountry) throws SQLException
+	public static void updateUserCountry(String UserID, String countryID) throws SQLException
 	{
 		Connection conn = getConnection(); 
-		PreparedStatement updateUserCountry = conn.prepareStatement("UPDATE user SET Country = '" + UserCountry + "'  WHERE userID = '"+ UserID +"'");
+		PreparedStatement updateUserCountry = conn.prepareStatement("UPDATE user SET countryID = '" + countryID + "'  WHERE userID = '"+ UserID +"'");
 		updateUserCountry.executeUpdate();
+		JOptionPane.showMessageDialog(null, "You have changed your country successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	public static void updateUserPremium(String userID, String premiumStat) throws SQLException
 	{
 		
 			Connection conn = getConnection(); 
-			PreparedStatement updateUserPremium = conn.prepareStatement("UPDATE user SET isPremium = '" + premiumStat + "'  WHERE userID = '"+ userID +"'");
+			PreparedStatement updateUserPremium = conn.prepareStatement("UPDATE user SET isPremium = '" + premiumStat + "'  and isPaid = '"+premiumStat+"' WHERE userID = '"+ userID +"'");
 			updateUserPremium.executeUpdate();
+			JOptionPane.showMessageDialog(null, "You have updated your user status has updated successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 		
 	}
 	public static void updateUserCardNumber(String UserID, String CardNumber) throws SQLException
@@ -607,6 +613,7 @@ public class SpotifyDB
 		Connection conn = getConnection(); 
 		PreparedStatement updateUserCardNumber = conn.prepareStatement("UPDATE user SET cardNumber = '" + CardNumber + "'  WHERE userID = '"+ UserID +"'");
 		updateUserCardNumber.executeUpdate();
+		JOptionPane.showMessageDialog(null, "You have updated your creditcard has updated successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 	}
 	public static void updateUserIsPaid(String UserID, String IsPaid) throws SQLException
 	{

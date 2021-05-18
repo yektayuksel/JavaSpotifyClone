@@ -432,7 +432,7 @@ public class SongSettings extends JPanel implements MouseListener,ActionListener
 				else if(str.equals("Genre"))
 				{
 					newValue = ((CBItem)newValueGenreCB.getSelectedItem()).getID();
-					SpotifyDB.updateSongGenre(item.getID(), newValue);
+					SpotifyDB.updateSongGenre(item.getID(), newValue,1);
 					return;
 				}
 				else if(str.equals("Duration"))

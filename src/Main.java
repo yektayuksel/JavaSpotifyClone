@@ -25,6 +25,7 @@ public class Main
 		//new Screen(new AlbumSettings());
 		//new Screen(new AddExistingAlbumArtist());
 		//new Screen(new ArtistSettings());
+        //new Screen(new UserSettingsPanel("7"));
     }
 	
 }

@@ -75,6 +75,7 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 	JButton backwardButton;
 	JButton fastforwardButton;
 	JButton fastbackwardButton;
+	JButton userSettingButton;
 	JLabel playingSongLabel;
 	Color bottomPanelBGColor = new Color(83,83,83).darker();
 	/*--------------------------------------------------------*/
@@ -268,6 +269,17 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 		addAllSongToPlaylistButton.setVisible(false);
 		addAllSongToPlaylistButton.setEnabled(false);
 		bottomPanel.add(addAllSongToPlaylistButton);
+		
+		userSettingButton = new Button();
+		ImageIcon userSettingButtonImg = new ImageIcon("images\\settings.png");
+		userSettingButton.setIcon((new ImageIcon(getScaledImage(userSettingButtonImg.getImage(), 75, 75))));
+		userSettingButton.setFont(new Font("Consolas", Font.BOLD, 18));
+		userSettingButton.setForeground(Color.white);
+		userSettingButton.setBackground(leftPanelButtonColor);
+		userSettingButton.setFocusable(false);
+		userSettingButton.addMouseListener(this);
+		userSettingButton.setBounds(1200, 15, 70, 70);
+		bottomPanel.add(userSettingButton);
 		
 	}
 	//Alt panelde bulunan play/pause/skip butonlarinin resimlerinin ayarlandigi metod
@@ -698,7 +710,7 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 					button.setBackground(Color.black);
 					button.setFocusable(false);
 					button.addMouseListener(this);
-					button.setBounds(0, y, MID_PNL_BTN_W, MID_PNL_BTN_H);
+					button.setPreferredSize(middPanButtonSize);
 					y+=MID_PNL_BTN_H;
 					middlePanel.add(button);
 				}
@@ -758,6 +770,16 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 			leftPanel.add(top10CB);
 			
 		}
+		else if(e.getSource() == userSettingButton)
+		{
+			try {
+				new Screen(new UserSettingsPanel(this.userID));
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+			
 			
 	}
 	
