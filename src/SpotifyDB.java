@@ -478,10 +478,10 @@ public class SpotifyDB
 		updateArtistName.executeUpdate();
 		JOptionPane.showMessageDialog(null, "Artist name has updated successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 	}
-	public static void updateArtistCountry(String artistID, String artistCountry) throws SQLException
+	public static void updateArtistCountry(String artistID, String countryID) throws SQLException
 	{
 		Connection conn = getConnection(); 
-		PreparedStatement updateArtistCountry = conn.prepareStatement("UPDATE artist SET Country = '" + artistCountry + "'  WHERE ArtistID = '"+ artistID +"'");
+		PreparedStatement updateArtistCountry = conn.prepareStatement("UPDATE artist SET countryID= '" + countryID + "'  WHERE ArtistID = '"+ artistID +"'");
 		updateArtistCountry.executeUpdate();
 		JOptionPane.showMessageDialog(null, "Artist's country has updated successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 	}
@@ -615,12 +615,48 @@ public class SpotifyDB
 		updateUserIsPaid.executeUpdate();
 	}
 	
+	public static void updateCountry(String countryID, String country) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		PreparedStatement updateAlbumName = conn.prepareStatement("UPDATE country SET country = '" + country + "'  WHERE countryID = '"+ countryID +"'");
+		updateAlbumName.executeUpdate();
+		JOptionPane.showMessageDialog(null, "You have updated the country name successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+	}
 	public static void removeFromMyPlaylist(String userID, String songID) throws SQLException
 	{
 		//TODO
 		Connection conn = getConnection();
 		PreparedStatement deleteSong = conn.prepareStatement("DELETE FROM playlist WHERE songID = '" + songID +"' and userID = '" +userID+"'");
 		deleteSong.executeUpdate();
+	}
+	
+	public static ResultSet getMostPlayedByCountry(String countryID) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		String query = "SELECT s.SongID,s.SongName, a.AlbumName, s.timesPlayed, ar.ArtistName, c.country, g.genre, s.genreID FROM song s, album a, artist ar, country c, genre g WHERE ar.countryID = '"+ countryID +"' and ar.ArtistID = s.ArtistID and s.AlbumID = a.AlbumID and c.countryID = ar.countryID and g.genreID = a.genreID ORDER BY timesPlayed DESC;";
+		Statement st = conn.createStatement();
+		ResultSet rs = st.executeQuery(query);
+		
+		return rs;
+	}
+	public static ResultSet getMostPlayedWorld() throws SQLException
+	{
+		Connection conn = getConnection(); 
+		String query = "SELECT s.SongID,s.SongName, a.AlbumName, s.timesPlayed, ar.ArtistName, c.country, g.genre, s.genreID FROM song s, album a, artist ar, country c, genre g WHERE ar.ArtistID = s.ArtistID and s.AlbumID = a.AlbumID and c.countryID = ar.countryID and g.genreID = s.genreID ORDER BY timesPlayed DESC;";
+		Statement st = conn.createStatement();
+		ResultSet rs = st.executeQuery(query);
+		
+		return rs;
+	}
+	
+	public static ResultSet getMostPlayedByGenre(String genreID) throws SQLException
+	{
+		Connection conn = getConnection(); 
+		String query = "SELECT s.SongID,s.SongName, a.AlbumName, s.timesPlayed, ar.ArtistName, c.country, g.genre , s.genreID FROM song s, album a, artist ar, country c, genre g WHERE g.genreID = '"+genreID+"' AND ar.ArtistID = s.ArtistID and s.AlbumID = a.AlbumID and c.countryID = ar.countryID and g.genreID = a.genreID ORDER BY timesPlayed DESC";
+		Statement st = conn.createStatement();
+		ResultSet rs = st.executeQuery(query);
+		
+		return rs;
 	}
 	
 }

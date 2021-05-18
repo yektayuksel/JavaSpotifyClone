@@ -27,6 +27,7 @@ public class AlbumSettings extends JPanel implements MouseListener,ActionListene
 	static final int GENERAL_OBJ_LOC_Y = 310;
 	static final int GENERAL_OBJ_LOC_X = 175;
 	
+	
 	JComboBox<CBItem> albumNameBox;
 	JLabel albumToDelete;
 	JLabel artistNameToDelete;

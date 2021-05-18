@@ -5,6 +5,8 @@ public class CBItem
 	String ID;
 	String text;
 	String genreID;
+	
+	
 	CBItem(String ID, String ArtistName)
 	{
 		this.ID = ID;

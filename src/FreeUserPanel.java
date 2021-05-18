@@ -28,6 +28,7 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 	JButton artistsButton;
 	JButton followers;
 	JButton following;
+	JButton topTenButton;
 	Color topPanelButtonColor = new Color(29,195,84).darker();
 	Color topPanelBGColor = new Color(33,33,33);
 	/*---------------------------------------------------------*/	
@@ -43,6 +44,7 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 	JScrollPane leftScroll; 
 	Color leftPanelButtonColor = new Color(29,195,84).darker();
 	Color leftPanelBGColor = new Color(33,33,33);
+	JComboBox<CBItem> top10CB = new JComboBox<CBItem>();
 	//Dimensin left
 	
 	/*---------------------------------------------------------*/
@@ -138,8 +140,8 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 		topPanel.setBackground(topPanelBGColor);
 		topPanel.setLayout(null);
 		myPlaylistsButton = new JButton();
-		myPlaylistsButton.setBounds(1, 0, 200, 50);
-		myPlaylistsButton.setFont(new Font("Consolas", Font.BOLD, 20));
+		myPlaylistsButton.setBounds(30, 0, 150, 50);
+		myPlaylistsButton.setFont(new Font("Consolas", Font.BOLD, 17));
 		myPlaylistsButton.setForeground(Color.white);
 		myPlaylistsButton.setText("My Playlists");
 		myPlaylistsButton.setBackground(topPanelButtonColor);
@@ -148,7 +150,7 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 		
 		
 		usersButton = new JButton();
-		usersButton.setBounds((int)myPlaylistsButton.getLocation().getX()+232, 0, 200, 50);
+		usersButton.setBounds((int)myPlaylistsButton.getLocation().getX()+232-25-25, 0, 150, 50);
 		usersButton.setFont(new Font("Consolas", Font.BOLD, 20));
 		usersButton.setForeground(Color.white);
 		usersButton.setText("Users");
@@ -157,7 +159,7 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 		usersButton.addMouseListener(this);
 		 
 		artistsButton = new JButton();
-		artistsButton.setBounds((int)usersButton.getLocation().getX()+232, 0, 200, 50);
+		artistsButton.setBounds((int)usersButton.getLocation().getX()+232-25-25, 0, 150, 50);
 		artistsButton.setFont(new Font("Consolas", Font.BOLD, 20));
 		artistsButton.setForeground(Color.white);
 		artistsButton.setText("Artists");
@@ -166,7 +168,7 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 		artistsButton.addMouseListener(this);
 		
 		followers = new JButton();
-		followers.setBounds((int)artistsButton.getLocation().getX()+232, 0, 200, 50);
+		followers.setBounds((int)artistsButton.getLocation().getX()+232-25-25, 0, 150, 50);
 		followers.setFont(new Font("Consolas", Font.BOLD, 20));
 		followers.setForeground(Color.white);
 		followers.setText("Followers");
@@ -175,7 +177,7 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 		followers.addMouseListener(this);
 		
 		following = new JButton();
-		following.setBounds((int)followers.getLocation().getX()+232, 0, 200, 50);
+		following.setBounds((int)followers.getLocation().getX()+232-25-25, 0, 150, 50);
 		following.setFont(new Font("Consolas", Font.BOLD, 20));
 		following.setForeground(Color.white);
 		following.setText("Following");
@@ -183,6 +185,17 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 		following.setFocusable(false);
 		following.addMouseListener(this);
 		
+		
+		topTenButton = new JButton();
+		topTenButton.setBounds((int)following.getLocation().getX()+232-25-25, 0, 150, 50);
+		topTenButton.setFont(new Font("Consolas", Font.BOLD, 20));
+		topTenButton.setForeground(Color.white);
+		topTenButton.setText("Top 10");
+		topTenButton.setBackground(topPanelButtonColor);
+		topTenButton.setFocusable(false);
+		topTenButton.addMouseListener(this);
+		
+		topPanel.add(topTenButton);
 		topPanel.add(myPlaylistsButton);
 		topPanel.add(usersButton);
 		topPanel.add(artistsButton);
@@ -198,12 +211,17 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 		leftPanel = new JPanel();
 		leftPanel.setBackground(leftPanelBGColor);
 		leftPanel.setPreferredSize(new Dimension(150,620));
+		top10CB.setEditable(true);
+		top10CB.setSize(new Dimension(150, 25));
+		top10CB.addActionListener(this);
 		leftScroll = new JScrollPane(leftPanel);
 		leftScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 	    leftScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		leftScroll.setBounds(0,0,150,620);
 		
 		this.add(leftScroll);
+		
+		
 	}
 	/*-----------------------------------------------------------------------------------*/
 	
@@ -224,7 +242,6 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 	/*Alt panelin ayarlamalarinin yapildigi metod*/
 	public void initBottomPanel()
 	{
-		//TODO initBottomPanel
 		bottomPanel = new JPanel();
 		bottomPanel.setBounds(0,620,1280,100);
 		bottomPanel.setBackground(bottomPanelBGColor);
@@ -270,6 +287,7 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 		fastbackwardButtonImg = new ImageIcon("images\\fastBackwardButton.png");
 	}
 	//Alt panelde bulunan butonlarin konumlarinin ayarlandigi metod
+	
 	public void initButtons()
 	{
 		
@@ -398,6 +416,7 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 		JButton btn = (JButton)e.getSource();
 		changePressedBackground((JComponent)e.getSource());
 		disableAddAllSongsButton();
+		
 		if(userButtons.contains(btn))
 		{
 		/*"Users" butonuna tiklandiktan sonra eger sol panelden bir kullanici secilirse aktif olacak
@@ -723,16 +742,40 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 			try {
 				addMyPlaylistAllSongs();
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+		}
+		else if(e.getSource() == topTenButton)
+		{
+			//TODO TOPTEN
+			clearPanel(leftPanel);
+			clearPanel(middlePanel);
+			try {
+				initTop10CB();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			leftPanel.add(top10CB);
+			
 		}
 			
 	}
 	
+	
+	public void initTop10CB() throws SQLException
+	{
+		top10CB.addItem(new CBItem("-1","Global"));
+		top10CB.addItem(new CBItem("1","Jazz"));
+		top10CB.addItem(new CBItem("2","Pop"));
+		top10CB.addItem(new CBItem("3","Classical"));
+		ResultSet rs = SpotifyDB.getAllCountires();
+		while(rs.next())
+		{
+			top10CB.addItem(new CBItem(rs.getString("countryID"), rs.getString("country")));
+		}
+	}
 	public void addMyPlaylistAllSongs() throws SQLException
 	{
-		//TODO addMyPlayList metod 
 		int a = JOptionPane.showOptionDialog(null, "Are you sure you want to add all these song to your playlist?", "Warning", JOptionPane.YES_NO_OPTION , JOptionPane.INFORMATION_MESSAGE, null,null, 0);
 		if(a == JOptionPane.NO_OPTION)
 		{
@@ -927,6 +970,81 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 					
 				}
 			}
+			
+		}
+		if(e.getSource() == top10CB)
+		{
+			//TODO TOP10CB HALLET
+			songsList.clear();
+			songAddButtons.clear();
+			clearPanel(middlePanel);
+			String text = top10CB.getSelectedItem().toString();	
+			ResultSet rs;
+			try 
+			{
+				
+				if(text.equals("Global"))
+				{
+					rs = SpotifyDB.getMostPlayedWorld();
+				}
+				else if(text.equals("Jazz"))
+				{
+					rs = SpotifyDB.getMostPlayedByGenre("1");
+				}
+				else if(text.equals("Pop"))
+				{
+					rs = SpotifyDB.getMostPlayedByGenre("2");
+				}
+				else if(text.equals("Classical"))
+				{
+					rs = SpotifyDB.getMostPlayedByGenre("3");
+				}
+				else
+				{
+					CBItem item = (CBItem)top10CB.getSelectedItem();
+					rs = SpotifyDB.getMostPlayedByCountry(item.getID());
+				}
+				
+				int i = 1;
+				while(rs.next() && i <= 10)
+				{	
+					String ID = rs.getString("s.SongID");
+					String buttonText = i + ".    " +rs.getString("s.SongName") + "    " + rs.getString("a.AlbumName") + "    "
+							 + rs.getString("ar.ArtistName") + "    " + rs.getString("s.timesPlayed") + "    " 
+							 + rs.getString("g.genre") +"   " +  rs.getString("c.country"); 
+					songsList.add(new Button(ID, buttonText));
+					songAddButtons.add(new Button(ID, "+"));
+					songAddButtons.get(songAddButtons.size()-1).setGenre(rs.getString("genreID"));
+					i++;
+				}
+				
+				
+			} 
+			catch (SQLException e1) 
+			{
+				e1.printStackTrace();
+			}
+			for(int i = 0; i < songsList.size(); i++)
+			{
+				songsList.get(i).setPreferredSize(new Dimension(1000,50));
+				songAddButtons.get(i).setPreferredSize(new Dimension(50,50));
+				
+				songsList.get(i).setFont(new Font("Consolas", Font.BOLD, 17));
+				songsList.get(i).setForeground(Color.white);
+				songsList.get(i).setBackground(Color.black);
+				songsList.get(i).setFocusable(false);
+				songsList.get(i).addMouseListener(this);
+				middlePanel.add(songsList.get(i));
+				
+				songAddButtons.get(i).setFont(new Font("Consolas", Font.BOLD, 25));
+				songAddButtons.get(i).setForeground(Color.white);
+				songAddButtons.get(i).setBackground(Color.black);
+				songAddButtons.get(i).setFocusable(false);
+				songAddButtons.get(i).addMouseListener(this);
+				middlePanel.add(songAddButtons.get(i));
+				
+			}
+			
 			
 		}
 		

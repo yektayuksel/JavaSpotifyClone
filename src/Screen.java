@@ -15,6 +15,12 @@ public class Screen extends JFrame
 			this.setLocation(dim.width/2-this.getSize().width/2 - 250, dim.height/2-this.getSize().height/2-200);
 			
 		}
+		else if(panel.getClass().toString().equals("class UpdateExistingCountry"))
+		{
+			this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+			Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+			this.setLocation(dim.width/2-this.getSize().width/2 - 250, dim.height/2-this.getSize().height/2-150);
+		}
 		else
 		{
 			this.setDefaultCloseOperation(EXIT_ON_CLOSE);

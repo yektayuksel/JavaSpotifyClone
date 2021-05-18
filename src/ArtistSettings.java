@@ -35,6 +35,8 @@ public class ArtistSettings extends JPanel implements MouseListener, ActionListe
 	JComboBox<CBItem> countryCB;
 	JButton addNewCountryButton;
 	
+	JButton updateExistingCountry;
+	
 	JLabel selectArtistNameToUpdate;
 	JLabel selectArtistPropertyUpdateLabel;
 	JLabel newValueLabel;
@@ -42,6 +44,7 @@ public class ArtistSettings extends JPanel implements MouseListener, ActionListe
 	JButton updateButton;
 	JComboBox<CBItem> selectArtistUpdateCB;
 	JComboBox<String> selectArtistPropertyUpdateCB;
+	JComboBox <CBItem> countryUpdateCB;
 	ArtistSettings() throws SQLException
 	{
 		this.setBackground(new Color(33,33,33));
@@ -85,7 +88,7 @@ public class ArtistSettings extends JPanel implements MouseListener, ActionListe
 		enterArtistNameText.setText("Enter the Artist's name");
 		
 		AlbumSettingsButton = new JButton();
-		AlbumSettingsButton.setBounds(GENERAL_OBJ_LOC_X+550, GENERAL_OBJ_LOC_Y+250, 250, 50);
+		AlbumSettingsButton.setBounds(825+175, 310+340,  250, 50);
 		AlbumSettingsButton.setFont(new Font("Consolas", Font.BOLD, 25));
 		AlbumSettingsButton.setForeground(Color.white);
 		AlbumSettingsButton.setText("Album Settings");
@@ -111,6 +114,16 @@ public class ArtistSettings extends JPanel implements MouseListener, ActionListe
 		addNewCountryButton.setFocusable(false);
 		addNewCountryButton.addMouseListener(this);
 		this.add(addNewCountryButton);
+		
+		updateExistingCountry = new JButton();
+		updateExistingCountry.setBounds(GENERAL_OBJ_LOC_X-50, GENERAL_OBJ_LOC_Y+200, 250,40);
+		updateExistingCountry.setFont(new Font("Consolas", Font.BOLD, 20));
+		updateExistingCountry.setForeground(Color.white);
+		updateExistingCountry.setText("Update a country");
+		updateExistingCountry.setBackground(this.getBackground().brighter());
+		updateExistingCountry.setFocusable(false);
+		updateExistingCountry.addMouseListener(this);
+		this.add(updateExistingCountry);
 	}
 	public void initCountryCB2() throws SQLException
 	{
@@ -181,6 +194,15 @@ public class ArtistSettings extends JPanel implements MouseListener, ActionListe
 		newValueTxt.setBounds(GENERAL_OBJ_LOC_X+520, GENERAL_OBJ_LOC_Y + 50, 450,30);
 		newValueTxt.setFont(new Font("Consolas", Font.BOLD, 20));
 		this.add(newValueTxt);
+		newValueTxt.setVisible(false);
+		newValueTxt.setEnabled(false);
+		
+		try {
+			initCountryUpdateCB();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		updateButton = new JButton();
 		updateButton.setBounds(GENERAL_OBJ_LOC_X+870, GENERAL_OBJ_LOC_Y + 100, 100, 30);
@@ -191,6 +213,20 @@ public class ArtistSettings extends JPanel implements MouseListener, ActionListe
 		updateButton.setFocusable(false);
 		updateButton.addMouseListener(this);
 		this.add(updateButton);
+	}
+	public void initCountryUpdateCB() throws SQLException
+	{
+		countryUpdateCB = new JComboBox<CBItem>();
+		countryUpdateCB.setBounds(GENERAL_OBJ_LOC_X+520, GENERAL_OBJ_LOC_Y + 50, 450,30);
+		countryUpdateCB.setFont(new Font("Consolas", Font.BOLD, 20));
+		countryUpdateCB.setVisible(false);
+		countryUpdateCB.setEnabled(false);
+		ResultSet rs = SpotifyDB.getAllCountires();
+		while(rs.next())
+		{
+			countryUpdateCB.addItem(new CBItem(rs.getString("countryID"), rs.getString("country")));
+		}
+		this.add(countryUpdateCB);
 	}
 	public void initComboBoxes()
 	{
@@ -321,7 +357,8 @@ public class ArtistSettings extends JPanel implements MouseListener, ActionListe
 				}
 				else if (str.equals("Country"))
 				{
-					SpotifyDB.updateArtistCountry(item.getID(), newValue);
+					CBItem cntry = (CBItem)countryUpdateCB.getSelectedItem();
+					SpotifyDB.updateArtistCountry(item.getID(), cntry.getID());
 				}
 				
 			} 
@@ -330,6 +367,15 @@ public class ArtistSettings extends JPanel implements MouseListener, ActionListe
 				e1.printStackTrace();
 			}
 			repaint();
+		}
+		else if(e.getSource() == updateExistingCountry)
+		{
+			try {
+				new Screen(new UpdateExistingCountry());
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 	}
 
@@ -368,8 +414,26 @@ public class ArtistSettings extends JPanel implements MouseListener, ActionListe
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
+	public void actionPerformed(ActionEvent e) 
+	{
+		if(e.getSource() == selectArtistPropertyUpdateCB)
+		{
+			String prp = selectArtistPropertyUpdateCB.getSelectedItem().toString();
+			if(prp.equals("Artist Name"))
+			{
+				countryUpdateCB.setVisible(false);
+				countryUpdateCB.setEnabled(false);
+				newValueTxt.setVisible(true);
+				newValueTxt.setEnabled(true);
+			}
+			else if(prp.equals("Country"))
+			{
+				newValueTxt.setVisible(false);
+				newValueTxt.setEnabled(false);
+				countryUpdateCB.setVisible(true);
+				countryUpdateCB.setEnabled(true);
+			}
+		}
 		
 	}
 	
