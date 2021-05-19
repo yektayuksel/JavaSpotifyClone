@@ -632,7 +632,7 @@ public class SpotifyDB
 	
 	public static void updateUserPremium(String userID, String premiumStat) throws SQLException
 	{
-		
+		 
 			Connection conn = getConnection(); 
 			PreparedStatement updateUserPremium = conn.prepareStatement("UPDATE user SET isPremium = '" + premiumStat + "'  and isPaid = '"+premiumStat+"' WHERE userID = '"+ userID +"'");
 			updateUserPremium.executeUpdate();
@@ -651,6 +651,10 @@ public class SpotifyDB
 		Connection conn = getConnection(); 
 		PreparedStatement updateUserIsPaid = conn.prepareStatement("UPDATE user SET isPaid = '" + IsPaid + "'  WHERE userID = '"+ UserID +"'");
 		updateUserIsPaid.executeUpdate();
+		if(IsPaid.equals("1"))
+		JOptionPane.showMessageDialog(null, "Thanks for paying.", "Success", JOptionPane.INFORMATION_MESSAGE);
+		else
+			JOptionPane.showMessageDialog(null, "Please pay us we are broke.", "Success", JOptionPane.INFORMATION_MESSAGE);	
 	}
 	
 	public static void updateCountry(String countryID, String country) throws SQLException

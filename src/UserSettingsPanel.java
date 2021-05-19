@@ -18,6 +18,7 @@ import javax.swing.JTextField;
 
 public class UserSettingsPanel extends JPanel implements MouseListener
 {
+	
 	String userID;
 	JLabel newUserNameLabel;
 	JTextField newUserNameTxt;
@@ -42,6 +43,10 @@ public class UserSettingsPanel extends JPanel implements MouseListener
 	JLabel newCCLabel;
 	JTextField newCCTxt;
 	JButton changeCCButton;
+	
+	JLabel isPaidLabel;
+	JComboBox<CBItem> isPaidCB;
+	JButton changeIPButton;
 	UserSettingsPanel(String userID) throws SQLException
 	{
 		this.userID = userID;
@@ -52,8 +57,9 @@ public class UserSettingsPanel extends JPanel implements MouseListener
 		initEmilaField();
 		initCountryField();
 		initCCField();
+		initIsPaidField();
 		this.setLayout(new BorderLayout());
-		this.setPreferredSize(new Dimension(620,650));
+		this.setPreferredSize(new Dimension(620,750));
 	}
 	public void initUsernameField() 
 	{
@@ -192,7 +198,7 @@ public class UserSettingsPanel extends JPanel implements MouseListener
 	{
 		
 		newCCLabel = new JLabel();
-		newCCLabel.setText("Enter your new country");
+		newCCLabel.setText("Enter your new card number");
 		newCCLabel.setBounds(50,530, 500, 30);
 		newCCLabel.setFont(new Font("Consolas", Font.BOLD, 20));
 		newCCLabel.setForeground(Color.white);
@@ -212,6 +218,33 @@ public class UserSettingsPanel extends JPanel implements MouseListener
 		changeCCButton.setFocusable(false);
 		changeCCButton.addMouseListener(this);
 		this.add(changeCCButton);
+	}
+	
+	public void initIsPaidField()
+	{
+		
+		isPaidLabel = new JLabel();
+		isPaidLabel.setText("Do you want to pay for our program?");
+		isPaidLabel.setBounds(50,630, 500, 30);
+		isPaidLabel.setFont(new Font("Consolas", Font.BOLD, 20));
+		isPaidLabel.setForeground(Color.white);
+		this.add(isPaidLabel);
+		
+		isPaidCB = new JComboBox<CBItem>();
+		isPaidCB.addItem(new CBItem("1", "Yes"));
+		isPaidCB.addItem(new CBItem("0", "No"));
+		isPaidCB.setBounds(50,680,400,30);
+		this.add(isPaidCB);
+		
+		changeIPButton = new JButton();
+		changeIPButton.setBounds(480, 680, 100, 30);
+		changeIPButton.setFont(new Font("Consolas", Font.BOLD, 20));
+		changeIPButton.setForeground(Color.white);
+		changeIPButton.setText("Change");
+		changeIPButton.setBackground(this.getBackground().brighter());
+		changeIPButton.setFocusable(false);
+		changeIPButton.addMouseListener(this);
+		this.add(changeIPButton);
 	}
 	
 	
@@ -253,6 +286,11 @@ public class UserSettingsPanel extends JPanel implements MouseListener
 			{
 				String newCC = newCCTxt.getText();
 				SpotifyDB.updateUserCardNumber(this.userID, newCC);
+			}
+			else if(e.getSource() == changeIPButton)
+			{
+				CBItem item = (CBItem)isPaidCB.getSelectedItem();
+				SpotifyDB.updateUserIsPaid(this.userID, item.getID());
 			}
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block

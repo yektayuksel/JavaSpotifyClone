@@ -17,7 +17,7 @@ public class Main
 	public static void main(String[] args) throws ClassNotFoundException, SQLException 
 	{
 		
-		new Screen(new OpeningPanel());
+		//new Screen(new OpeningPanel());
 		//new Screen(new AdminPanel());
         //new Screen(new FreeUserPanel("7"));
 		//new Screen(new SignInPanel());
@@ -25,6 +25,8 @@ public class Main
 		//new Screen(new AlbumSettings());
 		//new Screen(new AddExistingAlbumArtist());
 		//new Screen(new SongSettings());
+		new Screen(new UserSettingsPanel("7"));
+		
     }
 	
 }
