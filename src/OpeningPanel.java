@@ -7,8 +7,6 @@ import javax.swing.border.Border;
 
 public class OpeningPanel extends JPanel implements MouseListener
 {
-	//Button loginButton = new Button(Button.SHAPE_CAPSULE, Button.VERTICAL, new Color(29,185,84),new Color(29,185,84).brighter(), Color.white, Color.white);
-	//Button signButton = new Button(Button.SHAPE_CAPSULE, Button.VERTICAL, new Color(29,185,84),new Color(29,185,84).brighter(), Color.white, Color.white);
    
 	JButton loginButton = new JButton();
 	JButton signButton = new JButton();

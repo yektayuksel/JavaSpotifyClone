@@ -76,7 +76,7 @@ public class UserTypePanel extends JPanel implements MouseListener
 			String password = JOptionPane.showInputDialog("Enter Your Password");
 			//þifre admin þifresi mi kontrol et ve alttaki kodu çalýþtýr.
 			//þifre yanlýþsa uyarý ver ve bu ekranda kalsýn.
-			if(password != null)
+			if(password != null && password.equals("admin"))
 			{
 				new Screen(new AdminPanel());
 				((Window) getRootPane().getParent()).dispose();
