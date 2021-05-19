@@ -77,6 +77,36 @@ public class SpotifyDB
 			JOptionPane.showMessageDialog(null, "Country added successfully", "Succes", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
+	
+	public static void addAnotherArtistToSong(String songID, String artistID) throws SQLException
+	{
+		//TODO ADDANOTHERARTIST
+			Connection conn = getConnection(); 
+			String query = "SELECT * FROM song WHERE SongID = '" + songID + "'";
+			Statement st = conn.createStatement();
+			ResultSet rs = st.executeQuery(query);
+			String songName = null;
+			String albumID = null;
+			String genreID = null;
+			String duration = null;
+			String timesPlayed = null;
+			String releaseDate = null;
+			while(rs.next())
+			{
+				songName = rs.getString("SongName");
+				albumID = rs.getString("AlbumID");
+				genreID = rs.getString("genreID");
+				duration = rs.getString("duration");
+				timesPlayed = rs.getString("timesPlayed");
+				releaseDate = rs.getString("releaseDate");
+			}
+		
+			Connection conn2 = getConnection(); 
+			PreparedStatement addcountry = conn2.prepareStatement("INSERT INTO song (SongID, SongName,ArtistID, AlbumID, genreID, duration, timesPlayed, releaseDate) "
+					+ "VALUES('"+songID+"', '"+songName+"', '"+artistID+"', '"+albumID+"', '"+genreID+"', '"+duration+"', '"+timesPlayed+"', '"+releaseDate+"');");
+			addcountry.executeUpdate();
+			JOptionPane.showMessageDialog(null, "Artist added successfully", "Succes", JOptionPane.INFORMATION_MESSAGE);
+	}
 	public static void addToPlaylist(String userID, String SongID, int where)
 	{
 		Connection conn = getConnection(); 

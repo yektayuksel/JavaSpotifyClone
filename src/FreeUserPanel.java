@@ -781,7 +781,8 @@ public class FreeUserPanel extends JPanel implements MouseListener,ActionListene
 			}
 		}
 			
-			
+			leftPanel.revalidate();
+			middlePanel.revalidate();
 	}
 	
 	

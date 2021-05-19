@@ -31,6 +31,7 @@ public class SongSettings extends JPanel implements MouseListener,ActionListener
 	
 	JComboBox<CBItem> albumNameBox;
 	JComboBox<CBItem> artistNameBox;
+	JComboBox<CBItem> addNewArtistToSongCB;
 	JTextField songNameText;
 	JComboBox<CBItem> genreCB;
 	JTextField durationText;
@@ -115,6 +116,8 @@ public class SongSettings extends JPanel implements MouseListener,ActionListener
 		artistNameBox.setEditable(true);
 		artistNameBox.setBounds(GENERAL_OBJ_LOC_X, GENERAL_OBJ_LOC_Y +90, 450, 30);
 		artistNameBox.addActionListener(this);
+		
+		
 		
 		selectAlbumLabel = new JLabel();
 		selectAlbumLabel.setText("Select the album");
@@ -256,6 +259,7 @@ public class SongSettings extends JPanel implements MouseListener,ActionListener
 		selectSongPropertyUpdateCB.addItem("Genre");
 		selectSongPropertyUpdateCB.addItem("Duration");
 		selectSongPropertyUpdateCB.addItem("Release date");
+		selectSongPropertyUpdateCB.addItem("Add another artist");
 		selectSongPropertyUpdateCB.setEditable(true);
 		selectSongPropertyUpdateCB.setBounds(GENERAL_OBJ_LOC_X+520, GENERAL_OBJ_LOC_Y+200, 450, 30);
 		selectSongPropertyUpdateCB.addActionListener(this);
@@ -300,6 +304,30 @@ public class SongSettings extends JPanel implements MouseListener,ActionListener
 		newValueTxt.setVisible(false);
 		newValueTxt.setEnabled(false);
 		
+		//TODO add new artist cb
+		addNewArtistToSongCB = new JComboBox<CBItem>();
+		addNewArtistToSongCB.setEditable(true);
+		addNewArtistToSongCB.setBounds(GENERAL_OBJ_LOC_X+520, GENERAL_OBJ_LOC_Y + 300, 450,30);
+		addNewArtistToSongCB.setFont(new Font("Consolas", Font.BOLD, 20));
+		try {
+			addNewArtistToSongCB.removeAllItems();
+
+	        ResultSet rs = SpotifyDB.getAllArtists();
+
+	        while(rs.next())
+	        {                
+				CBItem comItem = new CBItem(rs.getString("ArtistID"), rs.getString("ArtistName"));
+				addNewArtistToSongCB.addItem(comItem);
+				
+
+	        }
+	    } catch (Exception e) {
+	        JOptionPane.showMessageDialog(this, "Error" + e  );
+	    }
+		
+		addNewArtistToSongCB.setVisible(false);
+		addNewArtistToSongCB.setEnabled(false);
+		this.add(addNewArtistToSongCB);
 		
 	}
 	public void initMenuButtons()
@@ -442,6 +470,11 @@ public class SongSettings extends JPanel implements MouseListener,ActionListener
 					SpotifyDB.updateSongDuration(item.getID(), newValue);
 					return;
 				}
+				else if(str.equals("Add another artist"))
+				{
+					SpotifyDB.addAnotherArtistToSong(item.getID(), ((CBItem)addNewArtistToSongCB.getSelectedItem()).getID());
+					return;
+				}
 				else if(str.equals("Release date"))
 				{
 					//TODO
@@ -564,13 +597,28 @@ public class SongSettings extends JPanel implements MouseListener,ActionListener
 			String value = selectSongPropertyUpdateCB.getSelectedItem().toString(); 
 			if(value.equals("Genre"))
 			{
+				addNewArtistToSongCB.setVisible(false);
+				addNewArtistToSongCB.setEnabled(false);
 				newValueTxt.setVisible(false);
 				newValueTxt.setEnabled(false);
 				newValueGenreCB.setVisible(true);
 				newValueGenreCB.setEnabled(true);
 			}
+			else if(value.equals("Add another artist"))
+			{
+				addNewArtistToSongCB.setVisible(true);
+				addNewArtistToSongCB.setEnabled(true);
+				System.out.println("asdasd");
+				newValueTxt.setVisible(false);
+				newValueTxt.setEnabled(false);
+				newValueGenreCB.setVisible(false);
+				newValueGenreCB.setEnabled(false);
+				
+			}
 			else
 			{
+				addNewArtistToSongCB.setVisible(false);
+				addNewArtistToSongCB.setEnabled(false);
 				newValueGenreCB.setVisible(false);
 				newValueGenreCB.setEnabled(false);
 				newValueTxt.setVisible(true);
