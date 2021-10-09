@@ -23,7 +23,7 @@ public class SpotifyDB
 	      String myDriver = "com.mysql.cj.jdbc.Driver";
 	      String url = "jdbc:mysql://localhost:3306/spotify_db";
 	      Class.forName(myDriver);
-	      conn = DriverManager.getConnection(url, "root", "malcanus12");
+	      conn = DriverManager.getConnection(url, "root", "pwd");
 	      return conn;
 	     
 	    }
